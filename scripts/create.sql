@@ -41,6 +41,9 @@ CREATE TABLE city (
     name VARCHAR(255) NOT NULL CHECK (btrim(name) <> '')
 );
 
+-- TODO:
+-- add 'ARCHIVE' status
+-- add create/close date
 CREATE TABLE vacancy (
     vacancy_id BIGSERIAL PRIMARY KEY,
     title VARCHAR(255) NOT NULL CHECK (btrim(title) <> ''),

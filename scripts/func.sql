@@ -29,3 +29,17 @@ BEGIN
         ));
 END;
 $$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE PROCEDURE
+    archive_vacancies()
+AS $$
+BEGIN
+    UPDATE vacancy
+    SET status = 'ARCHIVE'
+    WHERE status = 'CLOSED'
+        AND NOW() - closed_at >= INTERVAL '6 Months';
+END;
+$$ LANGUAGE plpgsql;
+
+
