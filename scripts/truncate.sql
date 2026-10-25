@@ -10,6 +10,7 @@ TRUNCATE TABLE
     contest,
     interview_feedback,
     interview,
+    application_score,
     application_response,
     application,
     form_skill,
@@ -25,5 +26,3 @@ TRUNCATE TABLE
     person,
     company
 RESTART IDENTITY CASCADE;
-
-REFRESH MATERIALIZED VIEW application_score WITH NO DATA;

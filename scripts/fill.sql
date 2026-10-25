@@ -95,6 +95,10 @@ INSERT INTO application_response (response_id, application_id, hr_id, motivation
 (1, 1, 4, 95, 90, 85, 80, 92, 90),
 (2, 2, 3, 85, 80, 90, 75, 88, 85);
 
+INSERT INTO application_score (application_id, motivation, soft_skills, pet_projects, job_exp, hard_skills, work_format) VALUES
+(1, 95, 90, 85, 80, 92, 90),
+(2, 85, 80, 90, 75, 88, 85);
+
 INSERT INTO interview (interview_id, person_id, teamlead_id, vacancy_id, video_s3key, scheduled_time, status) VALUES
 (1, 6, 1, 1, 'videos/interviews/2026/interview_6_1.mp4', '2026-11-01 15:00:00+03', 'COMPLETED'),
 (2, 7, 2, 2, NULL, '2026-11-05 18:00:00+03', 'SCHEDULED');
@@ -162,6 +166,3 @@ SELECT setval('test_test_id_seq', (SELECT MAX(test_id) FROM test));
 SELECT setval('language_language_id_seq', (SELECT MAX(language_id) FROM language));
 SELECT setval('submission_submission_id_seq', (SELECT MAX(submission_id) FROM submission));
 SELECT setval('runner_server_runner_server_id_seq', (SELECT MAX(runner_server_id) FROM runner_server));
-
--- Обновление материализованного представления после загрузки данных
-REFRESH MATERIALIZED VIEW application_score;
