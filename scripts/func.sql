@@ -220,6 +220,45 @@ CREATE TRIGGER trg_check_interview_candidate_id
 EXECUTE FUNCTION check_candidate_id();
 
 
--- TODO триггер обновление application_score
+CREATE OR REPLACE FUNCTION
+    refresh_application_score()
+RETURNS TRIGGER
+AS $$
+BEGIN
+    INSERT INTO application_score (
+        application_id,
+        motivation,
+        soft_skills,
+        pet_projects,
+        job_exp,
+        hard_skills,
+        work_format
+    )
+    SELECT
+        application_id,
+        ROUND(AVG(motivation))::SMALLINT AS motivation,
+        ROUND(AVG(soft_skills))::SMALLINT AS soft_skills,
+        ROUND(AVG(pet_projects))::SMALLINT AS pet_projects,
+        ROUND(AVG(job_exp))::SMALLINT AS job_exp,
+        ROUND(AVG(hard_skills))::SMALLINT AS hard_skills,
+        ROUND(AVG(work_format))::SMALLINT AS work_format
+    FROM application_response
+    GROUP BY application_id
+    ON CONFLICT (application_id) DO UPDATE SET
+        motivation = EXCLUDED.motivation,
+        soft_skills = EXCLUDED.soft_skills,
+        pet_projects = EXCLUDED.pet_projects,
+        job_exp = EXCLUDED.job_exp,
+        hard_skills = EXCLUDED.hard_skills,
+        work_format = EXCLUDED.work_format;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_refresh_application_score
+    AFTER INSERT OR UPDATE OR DELETE ON application_response
+    FOR EACH ROW
+EXECUTE FUNCTION refresh_application_score();
+
+
 -- TODO триггер автоматического инкремента submission.attemp
 -- TODO триггер проверки подачи отклика на закрытую вакансию
