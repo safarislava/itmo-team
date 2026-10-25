@@ -278,4 +278,23 @@ CREATE TRIGGER trg_increment_attempt_counter
 EXECUTE FUNCTION increment_attempt_counter();
 
 
--- TODO триггер проверки подачи отклика на закрытую вакансию
+CREATE OR REPLACE FUNCTION
+    check_application_for_open_vacancy()
+RETURNS TRIGGER
+AS $$
+DECLARE
+    v_status VARCHAR;
+BEGIN
+    SELECT status INTO v_status FROM vacancy
+    WHERE vacancy_id = NEW.vacancy_id;
+    IF v_status <> 'OPEN' THEN
+        RAISE EXCEPTION 'Вакансия закрыта: %', NEW.vacancy_id;
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_check_application_for_open_vacancy
+    BEFORE INSERT ON application
+    FOR EACH ROW
+EXECUTE FUNCTION check_application_for_open_vacancy();
