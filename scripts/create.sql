@@ -41,17 +41,16 @@ CREATE TABLE city (
     name VARCHAR(255) NOT NULL CHECK (btrim(name) <> '')
 );
 
--- TODO:
--- add 'ARCHIVE' status
--- add create/close date
 CREATE TABLE vacancy (
     vacancy_id BIGSERIAL PRIMARY KEY,
     title VARCHAR(255) NOT NULL CHECK (btrim(title) <> ''),
     description TEXT NOT NULL CHECK (btrim(description) <> ''),
     team_id BIGINT NOT NULL REFERENCES team(team_id) ON DELETE CASCADE,
     city_id BIGINT REFERENCES city(city_id) ON DELETE SET NULL,
-    status VARCHAR(20) NOT NULL DEFAULT 'OPEN' CHECK (status IN ('DRAFT', 'OPEN', 'CLOSED')),
-    salary INTEGER CHECK (salary >= 0)
+    status VARCHAR(20) NOT NULL DEFAULT 'OPEN' CHECK (status IN ('DRAFT', 'OPEN', 'CLOSED', 'ARCHIVE')),
+    salary INTEGER CHECK (salary >= 0),
+    created_at TIMESTAMPTZ NOT NULL,
+    closed_at TIMESTAMPTZ
 );
 
 CREATE TABLE vacancy_city (
