@@ -87,7 +87,7 @@ CREATE OR REPLACE FUNCTION
     )
 RETURNS TABLE (
     application_id BIGINT,
-    person_id BIGINT,
+    candidate_id BIGINT,
     name VARCHAR,
     vacancy_id BIGINT,
     resume_id BIGINT,
@@ -98,7 +98,7 @@ RETURNS TABLE (
 BEGIN
     RETURN QUERY
         SELECT
-            a.application_id, a.person_id, p.name, a.vacancy_id, a.resume_id, a.form_id, a.status, (
+            a.application_id, a.candidate_id, p.name, a.vacancy_id, a.resume_id, a.form_id, a.status, (
             sc.motivation * p_motivation_weight +
             sc.soft_skills * p_soft_skills_weight +
             sc.pet_projects * p_pet_projects_weight +
@@ -107,7 +107,7 @@ BEGIN
             sc.work_format * p_work_format_weight
             )::FLOAT AS score
         FROM application a
-                 JOIN person p ON a.person_id = p.person_id
+                 JOIN person p ON a.candidate_id = p.person_id
                  JOIN application_score sc ON a.application_id = sc.application_id
         WHERE a.vacancy_id = p_vacancy_id
         ORDER BY score DESC;
@@ -122,12 +122,12 @@ CREATE OR REPLACE PROCEDURE
 )
 AS $$
 DECLARE
-    v_person_id BIGINT;
+    v_candidate_id BIGINT;
     v_vacancy_id BIGINT;
     v_teamlead_id BIGINT;
 BEGIN
-    SELECT a.person_id, a.vacancy_id, t.tl_id
-    INTO v_person_id, v_vacancy_id, v_teamlead_id
+    SELECT a.candidate_id, a.vacancy_id, t.tl_id
+    INTO v_candidate_id, v_vacancy_id, v_teamlead_id
     FROM application a
              JOIN vacancy v ON a.vacancy_id = v.vacancy_id
              JOIN team t ON v.team_id = t.team_id
@@ -145,13 +145,81 @@ BEGIN
         RAISE EXCEPTION 'У тимлида уже назначено собеседование на %', p_scheduled_time;
     END IF;
 
-    INSERT INTO interview (person_id, teamlead_id, vacancy_id, scheduled_time, status)
-    VALUES (v_person_id, v_teamlead_id, v_vacancy_id, p_scheduled_time, 'SCHEDULED');
+    INSERT INTO interview (candidate_id, teamlead_id, vacancy_id, scheduled_time, status)
+    VALUES (v_candidate_id, v_teamlead_id, v_vacancy_id, p_scheduled_time, 'SCHEDULED');
     UPDATE application SET status = 'INTERVIEW' WHERE application_id = p_application_id;
 END;
 $$ LANGUAGE plpgsql;
 
--- TODO триггеры для проверки ролей
+
+CREATE OR REPLACE FUNCTION
+    check_teamlead_id()
+RETURNS TRIGGER
+AS $$
+DECLARE
+    v_role VARCHAR(20);
+BEGIN
+    SELECT p.role INTO v_role FROM person p WHERE p.person_id = NEW.tl_id;
+    IF v_role <> 'TEAM_LEAD' THEN
+        RAISE EXCEPTION 'Персона - не тимлид: %', NEW.tl_id;
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_check_team_teamlead_id
+    BEFORE INSERT OR UPDATE ON team
+    FOR EACH ROW
+EXECUTE FUNCTION check_teamlead_id();
+
+
+CREATE OR REPLACE FUNCTION
+    check_hr_id()
+RETURNS TRIGGER
+AS $$
+DECLARE
+    v_role VARCHAR(20);
+BEGIN
+    SELECT p.role INTO v_role FROM person p WHERE p.person_id = NEW.hr_id;
+    IF v_role <> 'HR' THEN
+        RAISE EXCEPTION 'Персона - не HR: %', NEW.tl_id;
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_check_application_response_hr_id
+    BEFORE INSERT OR UPDATE ON application_response
+    FOR EACH ROW
+EXECUTE FUNCTION check_hr_id();
+
+
+CREATE OR REPLACE FUNCTION
+    check_candidate_id()
+RETURNS TRIGGER
+AS $$
+DECLARE
+    v_role VARCHAR(20);
+BEGIN
+    SELECT p.role INTO v_role FROM person p WHERE p.person_id = NEW.candidate_id;
+    IF v_role <> 'CANDIDATE' THEN
+        RAISE EXCEPTION 'Персона - не кандидат: %', NEW.tl_id;
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_check_application_candidate_id
+    BEFORE INSERT OR UPDATE ON application
+    FOR EACH ROW
+EXECUTE FUNCTION check_candidate_id();
+
+CREATE TRIGGER trg_check_interview_candidate_id
+    BEFORE INSERT OR UPDATE ON interview
+    FOR EACH ROW
+EXECUTE FUNCTION check_candidate_id();
+
+
 -- TODO триггер обновление application_score
 -- TODO триггер автоматического инкремента submission.attemp
 -- TODO триггер проверки подачи отклика на закрытую вакансию

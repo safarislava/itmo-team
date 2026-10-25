@@ -94,12 +94,12 @@ CREATE TABLE form_skill (
 
 CREATE TABLE application (
     application_id BIGSERIAL PRIMARY KEY,
-    person_id BIGINT NOT NULL REFERENCES person(person_id) ON DELETE CASCADE,
+    candidate_id BIGINT NOT NULL REFERENCES person(person_id) ON DELETE CASCADE,
     vacancy_id BIGINT NOT NULL REFERENCES vacancy(vacancy_id) ON DELETE CASCADE,
     resume_id BIGINT NOT NULL REFERENCES resume(resume_id) ON DELETE RESTRICT,
     form_id BIGINT NOT NULL REFERENCES form(form_id) ON DELETE RESTRICT,
     status VARCHAR(20) NOT NULL DEFAULT 'NEW' CHECK (status IN ('NEW', 'REVIEW', 'CONTEST', 'INTERVIEW', 'OFFER', 'REJECTED')),
-    CONSTRAINT uq_application_person_vacancy UNIQUE (person_id, vacancy_id)
+    CONSTRAINT uq_application_person_vacancy UNIQUE (candidate_id, vacancy_id)
 );
 
 CREATE TABLE application_response (
@@ -129,13 +129,13 @@ GROUP BY application_id;
 
 CREATE TABLE interview (
     interview_id BIGSERIAL PRIMARY KEY,
-    person_id BIGINT NOT NULL REFERENCES person(person_id) ON DELETE CASCADE,
+    candidate_id BIGINT NOT NULL REFERENCES person(person_id) ON DELETE CASCADE,
     teamlead_id BIGINT NOT NULL REFERENCES person(person_id) ON DELETE RESTRICT,
     vacancy_id BIGINT NOT NULL REFERENCES vacancy(vacancy_id) ON DELETE CASCADE,
     video_s3key VARCHAR(1024) UNIQUE,
     scheduled_time TIMESTAMPTZ NOT NULL,
     status VARCHAR(20) NOT NULL DEFAULT 'SCHEDULED' CHECK (status IN ('SCHEDULED', 'COMPLETED', 'CANCELLED')),
-    CONSTRAINT chk_interview_person_tl CHECK (teamlead_id <> person_id)
+    CONSTRAINT chk_interview_person_tl CHECK (teamlead_id <> candidate_id)
 );
 
 CREATE TABLE interview_feedback (
