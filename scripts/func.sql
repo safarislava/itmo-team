@@ -1,3 +1,5 @@
+CREATE EXTENSION IF NOT EXISTS pg_cron;
+
 CREATE OR REPLACE FUNCTION
     match_vacancies(
     p_skill_ids BIGINT[],
@@ -42,6 +44,11 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+SELECT cron.schedule(
+    'archive_vacancies',
+    '0 0 * * *',
+    'CALL archive_vacancies();'
+);
 
 CREATE OR REPLACE FUNCTION
     close_vacancy_with_rejections(
