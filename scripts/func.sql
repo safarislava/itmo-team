@@ -251,6 +251,7 @@ BEGIN
         job_exp = EXCLUDED.job_exp,
         hard_skills = EXCLUDED.hard_skills,
         work_format = EXCLUDED.work_format;
+    RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -260,5 +261,21 @@ CREATE TRIGGER trg_refresh_application_score
 EXECUTE FUNCTION refresh_application_score();
 
 
--- TODO триггер автоматического инкремента submission.attemp
+CREATE OR REPLACE FUNCTION
+    increment_attempt_counter()
+RETURNS TRIGGER
+AS $$
+BEGIN
+    SELECT COALESCE(MAX(attempt), 0) + 1 INTO NEW.attempt FROM submission
+    WHERE sender_id = NEW.sender_id AND contest_id = NEW.contest_id AND task_id = NEW.task_id;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_increment_attempt_counter
+    BEFORE INSERT ON submission
+    FOR EACH ROW
+EXECUTE FUNCTION increment_attempt_counter();
+
+
 -- TODO триггер проверки подачи отклика на закрытую вакансию
