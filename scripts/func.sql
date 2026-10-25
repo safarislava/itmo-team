@@ -111,3 +111,39 @@ BEGIN
         ORDER BY score DESC;
 END;
 $$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE PROCEDURE schedule_interview(
+    p_application_id BIGINT,
+    p_scheduled_time TIMESTAMPTZ
+)
+AS $$
+DECLARE
+    v_person_id BIGINT;
+    v_vacancy_id BIGINT;
+    v_teamlead_id BIGINT;
+BEGIN
+    SELECT a.person_id, a.vacancy_id, t.tl_id
+    INTO v_person_id, v_vacancy_id, v_teamlead_id
+    FROM application a
+             JOIN vacancy v ON a.vacancy_id = v.vacancy_id
+             JOIN team t ON v.team_id = t.team_id
+    WHERE a.application_id = p_application_id;
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'Отклик с ID % не найден', p_application_id;
+    END IF;
+
+    IF EXISTS (
+        SELECT 1 FROM interview
+        WHERE teamlead_id = v_teamlead_id
+          AND status = 'SCHEDULED'
+          AND scheduled_time = p_scheduled_time
+    ) THEN
+        RAISE EXCEPTION 'У тимлида уже назначено собеседование на %', p_scheduled_time;
+    END IF;
+
+    INSERT INTO interview (person_id, teamlead_id, vacancy_id, scheduled_time, status)
+    VALUES (v_person_id, v_teamlead_id, v_vacancy_id, p_scheduled_time, 'SCHEDULED');
+    UPDATE application SET status = 'INTERVIEW' WHERE application_id = p_application_id;
+END;
+$$ LANGUAGE plpgsql;
