@@ -125,10 +125,10 @@ INSERT INTO language (language_id, name, version) VALUES
 (3, 'Python', '3.12'),
 (4, 'C++', '20');
 
-INSERT INTO submission (submission_id, sender_id, contest_id, task_id, language_id, snapshot_s3key, status, verdict, execution_time, memory_used, attempt, ai_score) VALUES
-(1, 6, 1, 1, 2, 'submissions/2026/sub_alex_task1_att1.kt', 'FINISHED', 'OK', 145, 45, 1, 100),
-(2, 7, 1, 1, 1, 'submissions/2026/sub_dmitry_task1_att1.java', 'FINISHED', 'WRONG_ANSWER', 160, 50, 1, 40),
-(3, 7, 1, 1, 1, 'submissions/2026/sub_dmitry_task1_att2.java', 'FINISHED', 'OK', 152, 48, 2, 95);
+INSERT INTO submission (submission_id, sender_id, contest_id, task_id, language_id, snapshot_s3key, status, verdict, execution_time, memory_used, attempt, ai_score, submitted_at) VALUES
+(1, 6, 1, 1, 2, 'submissions/2026/sub_alex_task1_att1.kt', 'FINISHED', 'OK', 145, 45, 1, 100, '2026-10-28 18:15:00+03'),
+(2, 7, 1, 1, 1, 'submissions/2026/sub_dmitry_task1_att1.java', 'FINISHED', 'WRONG_ANSWER', 160, 50, 1, 40, '2026-10-28 18:30:00+03'),
+(3, 7, 1, 1, 1, 'submissions/2026/sub_dmitry_task1_att2.java', 'FINISHED', 'OK', 152, 48, 2, 95, '2026-10-28 18:45:00+03');
 
 INSERT INTO runner_server (runner_server_id, ip) VALUES
 (1, '10.100.0.1'),
