@@ -43,3 +43,25 @@ END;
 $$ LANGUAGE plpgsql;
 
 
+CREATE OR REPLACE FUNCTION
+    close_vacancy_with_rejections(
+       p_vacancy_id BIGINT
+    )
+RETURNS TABLE (
+       rejected_application_id BIGINT
+    )
+AS $$
+BEGIN
+    UPDATE vacancy
+    SET status = 'CLOSED',
+        closed_at = NOW()
+    WHERE vacancy_id = p_vacancy_id;
+
+    RETURN QUERY
+    UPDATE application
+    SET status = 'REJECTED'
+    WHERE vacancy_id = p_vacancy_id
+        AND status <> 'OFFER'
+    RETURNING application_id;
+END;
+$$ LANGUAGE plpgsql;
