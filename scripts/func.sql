@@ -147,3 +147,8 @@ BEGIN
     UPDATE application SET status = 'INTERVIEW' WHERE application_id = p_application_id;
 END;
 $$ LANGUAGE plpgsql;
+
+-- TODO триггеры для проверки ролей
+-- TODO триггер обновление application_score
+-- TODO триггер автоматического инкремента submission.attemp
+-- TODO триггер проверки подачи отклика на закрытую вакансию
