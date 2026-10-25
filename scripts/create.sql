@@ -116,15 +116,17 @@ CREATE TABLE application_response (
     CONSTRAINT uq_application_response_app_hr UNIQUE (application_id, hr_id)
 );
 
-CREATE TABLE application_score (
-    application_id BIGINT PRIMARY KEY REFERENCES application(application_id) ON DELETE CASCADE,
-    motivation SMALLINT NOT NULL CHECK (motivation BETWEEN 0 AND 100),
-    soft_skills SMALLINT NOT NULL CHECK (soft_skills BETWEEN 0 AND 100),
-    pet_projects SMALLINT NOT NULL CHECK (pet_projects BETWEEN 0 AND 100),
-    job_exp SMALLINT NOT NULL CHECK (job_exp BETWEEN 0 AND 100),
-    hard_skills SMALLINT NOT NULL CHECK (hard_skills BETWEEN 0 AND 100),
-    work_format SMALLINT NOT NULL CHECK (work_format BETWEEN 0 AND 100)
-);
+CREATE MATERIALIZED VIEW application_score AS
+SELECT 
+    application_id,
+    ROUND(AVG(motivation))::SMALLINT AS motivation,
+    ROUND(AVG(soft_skills))::SMALLINT AS soft_skills,
+    ROUND(AVG(pet_projects))::SMALLINT AS pet_projects,
+    ROUND(AVG(job_exp))::SMALLINT AS job_exp,
+    ROUND(AVG(hard_skills))::SMALLINT AS hard_skills,
+    ROUND(AVG(work_format))::SMALLINT AS work_format
+FROM application_response
+GROUP BY application_id;
 
 CREATE TABLE interview (
     interview_id BIGSERIAL PRIMARY KEY,
