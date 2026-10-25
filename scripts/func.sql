@@ -65,3 +65,42 @@ BEGIN
     RETURNING application_id;
 END;
 $$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE FUNCTION
+    get_candidate_leaderboard(
+    p_vacancy_id BIGINT,
+    p_motivation_weight FLOAT,
+    p_soft_skills_weight FLOAT,
+    p_pet_projects_weight FLOAT,
+    p_job_exp_weight FLOAT,
+    p_hard_skills_weight FLOAT,
+    p_work_format_weight FLOAT
+) RETURNS TABLE (
+    application_id BIGINT,
+    person_id BIGINT,
+    name VARCHAR,
+    vacancy_id BIGINT,
+    resume_id BIGINT,
+    form_id BIGINT,
+    status VARCHAR(20),
+    score FLOAT
+) AS $$
+BEGIN
+    RETURN QUERY
+        SELECT
+            a.application_id, a.person_id, p.name, a.vacancy_id, a.resume_id, a.form_id, a.status, (
+            sc.motivation * p_motivation_weight +
+            sc.soft_skills * p_soft_skills_weight +
+            sc.pet_projects * p_pet_projects_weight +
+            sc.job_exp * p_job_exp_weight +
+            sc.hard_skills * p_hard_skills_weight +
+            sc.work_format * p_work_format_weight
+            )::FLOAT AS score
+        FROM application a
+                 JOIN person p ON a.person_id = p.person_id
+                 JOIN application_score sc ON a.application_id = sc.application_id
+        WHERE a.vacancy_id = p_vacancy_id
+        ORDER BY score DESC;
+END;
+$$ LANGUAGE plpgsql;
