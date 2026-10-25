@@ -2,11 +2,12 @@ CREATE EXTENSION IF NOT EXISTS pg_cron;
 
 CREATE OR REPLACE FUNCTION
     match_vacancies(
-    p_skill_ids BIGINT[],
-    p_city_id BIGINT DEFAULT NULL,
-    p_min_salary INTEGER DEFAULT NULL,
-    p_max_salary INTEGER DEFAULT NULL
-) RETURNS TABLE (
+        p_skill_ids BIGINT[],
+        p_city_id BIGINT DEFAULT NULL,
+        p_min_salary INTEGER DEFAULT NULL,
+        p_max_salary INTEGER DEFAULT NULL
+    )
+RETURNS TABLE (
     vacancy_id BIGINT,
     title VARCHAR,
     description TEXT,
@@ -76,14 +77,15 @@ $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION
     get_candidate_leaderboard(
-    p_vacancy_id BIGINT,
-    p_motivation_weight FLOAT,
-    p_soft_skills_weight FLOAT,
-    p_pet_projects_weight FLOAT,
-    p_job_exp_weight FLOAT,
-    p_hard_skills_weight FLOAT,
-    p_work_format_weight FLOAT
-) RETURNS TABLE (
+        p_vacancy_id BIGINT,
+        p_motivation_weight FLOAT,
+        p_soft_skills_weight FLOAT,
+        p_pet_projects_weight FLOAT,
+        p_job_exp_weight FLOAT,
+        p_hard_skills_weight FLOAT,
+        p_work_format_weight FLOAT
+    )
+RETURNS TABLE (
     application_id BIGINT,
     person_id BIGINT,
     name VARCHAR,
@@ -113,7 +115,8 @@ END;
 $$ LANGUAGE plpgsql;
 
 
-CREATE OR REPLACE PROCEDURE schedule_interview(
+CREATE OR REPLACE PROCEDURE
+    schedule_interview(
     p_application_id BIGINT,
     p_scheduled_time TIMESTAMPTZ
 )
