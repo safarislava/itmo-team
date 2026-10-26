@@ -131,7 +131,8 @@ CREATE TABLE interview (
     teamlead_id BIGINT NOT NULL REFERENCES person(person_id) ON DELETE RESTRICT,
     vacancy_id BIGINT NOT NULL REFERENCES vacancy(vacancy_id) ON DELETE CASCADE,
     video_s3key VARCHAR(1024) UNIQUE,
-    scheduled_time TIMESTAMPTZ NOT NULL,
+    scheduled_start TIMESTAMPTZ NOT NULL,
+    scheduled_end TIMESTAMPTZ NOT NULL CHECK (scheduled_end > scheduled_start),
     status VARCHAR(20) NOT NULL DEFAULT 'SCHEDULED' CHECK (status IN ('SCHEDULED', 'COMPLETED', 'CANCELLED')),
     CONSTRAINT chk_interview_person_tl CHECK (teamlead_id <> candidate_id)
 );

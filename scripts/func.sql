@@ -118,7 +118,8 @@ $$ LANGUAGE plpgsql;
 CREATE OR REPLACE PROCEDURE
     schedule_interview(
     p_application_id BIGINT,
-    p_scheduled_time TIMESTAMPTZ
+    p_scheduled_start TIMESTAMPTZ,
+    p_scheduled_end TIMESTAMPTZ
 )
 AS $$
 DECLARE
@@ -140,13 +141,14 @@ BEGIN
         SELECT 1 FROM interview
         WHERE teamlead_id = v_teamlead_id
           AND status = 'SCHEDULED'
-          AND scheduled_time = p_scheduled_time
+          AND scheduled_end > p_scheduled_start
+          AND p_scheduled_end > scheduled_start
     ) THEN
-        RAISE EXCEPTION 'У тимлида уже назначено собеседование на %', p_scheduled_time;
+        RAISE EXCEPTION 'У тимлида есть  собеседование в интервал % - %', p_scheduled_start, p_scheduled_end;
     END IF;
 
-    INSERT INTO interview (candidate_id, teamlead_id, vacancy_id, scheduled_time, status)
-    VALUES (v_candidate_id, v_teamlead_id, v_vacancy_id, p_scheduled_time, 'SCHEDULED');
+    INSERT INTO interview (candidate_id, teamlead_id, vacancy_id, scheduled_start, scheduled_end, status)
+    VALUES (v_candidate_id, v_teamlead_id, v_vacancy_id, p_scheduled_start, p_scheduled_end, 'SCHEDULED');
     UPDATE application SET status = 'INTERVIEW' WHERE application_id = p_application_id;
 END;
 $$ LANGUAGE plpgsql;

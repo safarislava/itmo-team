@@ -99,9 +99,9 @@ INSERT INTO application_score (application_id, motivation, soft_skills, pet_proj
 (1, 95, 90, 85, 80, 92, 90),
 (2, 85, 80, 90, 75, 88, 85);
 
-INSERT INTO interview (interview_id, person_id, teamlead_id, vacancy_id, video_s3key, scheduled_time, status) VALUES
-(1, 6, 1, 1, 'videos/interviews/2026/interview_6_1.mp4', '2026-11-01 15:00:00+03', 'COMPLETED'),
-(2, 7, 2, 2, NULL, '2026-11-05 18:00:00+03', 'SCHEDULED');
+INSERT INTO interview (interview_id, person_id, teamlead_id, vacancy_id, video_s3key, scheduled_start, scheduled_end, status) VALUES
+(1, 6, 1, 1, 'videos/interviews/2026/interview_6_1.mp4', '2026-11-01 15:00:00+03', '2026-11-01 15:30:00+03', 'COMPLETED'),
+(2, 7, 2, 2, NULL, '2026-11-05 18:00:00+03', '2026-11-05 19:00:00+03','SCHEDULED');
 
 INSERT INTO interview_feedback (feedback_id, interview_id, review, score, decision) VALUES
 (1, 1, 'Кандидат продемонстрировал глубокое понимание архитектуры JVM, принципов работы PostgreSQL и многопоточности.', 9, 'HIRE');
