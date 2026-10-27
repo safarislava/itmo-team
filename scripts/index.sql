@@ -17,7 +17,7 @@ CREATE INDEX idx_application_vacancy_id
     ON application (vacancy_id);
 
 CREATE INDEX idx_interview_person_id
-    ON interview (person_id);
+    ON interview (candidate_id);
 
 CREATE INDEX idx_vacancy_contest_vacancy_id
     ON vacancy_contest (vacancy_id);
