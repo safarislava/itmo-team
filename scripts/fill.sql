@@ -72,10 +72,10 @@ INSERT INTO resume (resume_id, s3key, filename) VALUES
 (2, 'resumes/2026/dmitry_popov_cv.pdf', 'dmitry_popov_cv.pdf'),
 (3, 'resumes/2026/olga_nikolaeva_cv.pdf', 'olga_nikolaeva_cv.pdf');
 
-INSERT INTO form (form_id, university, motivation, pet_projects, job_exp, hard_skills, work_format) VALUES
-(1, 'Университет ИТМО', 'Хочу создавать надежные распределенные сервисы в сильной инженерной команде.', 'tg-bot-schedule, custom-cache-lib', '1.5 года бэкенд разработки на Java/Spring', 'Java, Spring Boot, PostgreSQL, Docker', 'HYBRID'),
-(2, 'СПбГУ', 'Интересны вопросы отказоустойчивости, контейнеризации и мониторинга инфраструктуры.', 'mini-k8s-operator, raft-consensus-impl', '1 год системного администрирования Linux', 'Go, Linux, Docker, Kubernetes, Bash', 'OFFICE'),
-(3, 'МГТУ им. Баумана', 'Хочу развиваться в промышленной разработке на Kotlin и высоконагруженных сервисах.', 'algos-visualizer, kotlin-async-chat', 'Учебные проекты и стажировка 6 месяцев', 'Kotlin, Coroutines, Git, SQL', 'DISTANT');
+INSERT INTO form (form_id, university, motivation, pet_projects, job_exp, work_format) VALUES
+(1, 'Университет ИТМО', 'Хочу создавать надежные распределенные сервисы в сильной инженерной команде.', 'tg-bot-schedule, custom-cache-lib', '1.5 года бэкенд разработки на Java/Spring', 'HYBRID'),
+(2, 'СПбГУ', 'Интересны вопросы отказоустойчивости, контейнеризации и мониторинга инфраструктуры.', 'mini-k8s-operator, raft-consensus-impl', '1 год системного администрирования Linux', 'OFFICE'),
+(3, 'МГТУ им. Баумана', 'Хочу развиваться в промышленной разработке на Kotlin и высоконагруженных сервисах.', 'algos-visualizer, kotlin-async-chat', 'Учебные проекты и стажировка 6 месяцев', 'DISTANT');
 
 INSERT INTO form_skill (form_id, skill_id) VALUES
 (1, 1),

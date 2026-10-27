@@ -83,7 +83,6 @@ CREATE TABLE form (
     motivation TEXT CHECK (btrim(motivation) <> ''),
     pet_projects TEXT CHECK (btrim(pet_projects) <> ''),
     job_exp TEXT CHECK (btrim(job_exp) <> ''),
-    hard_skills TEXT CHECK (btrim(hard_skills) <> ''),
     work_format VARCHAR(20) CHECK (work_format IN ('OFFICE', 'DISTANT', 'HYBRID'))
 );
 
