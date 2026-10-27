@@ -9,7 +9,7 @@ CREATE TABLE person (
     name VARCHAR(100) NOT NULL CHECK (btrim(name) <> ''),
     email VARCHAR(255) NOT NULL UNIQUE CHECK (email LIKE '%@%' AND btrim(email) <> ''),
     password_hash VARCHAR(255) NOT NULL,
-    role VARCHAR(20) NOT NULL CHECK (role IN ('CANDIDATE', 'HR', 'TEAM_LEAD', 'DEVELOPER', 'ADMIN')),
+    role VARCHAR(20) NOT NULL CHECK (role IN ('CANDIDATE', 'HR', 'TEAM_LEAD', 'DEVELOPER', 'MANAGER', 'ADMIN')),
     company_id BIGINT REFERENCES company(company_id) ON DELETE SET NULL,
     team_id BIGINT,
     github_id BIGINT UNIQUE
