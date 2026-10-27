@@ -33,7 +33,8 @@ CREATE TABLE coder_report (
     count_opened_pr INTEGER NOT NULL DEFAULT 0 CHECK (count_opened_pr >= 0),
     count_closed_pr INTEGER NOT NULL DEFAULT 0 CHECK (count_closed_pr >= 0),
     count_reviewed_pr INTEGER NOT NULL DEFAULT 0 CHECK (count_reviewed_pr >= 0),
-    count_commits INTEGER NOT NULL DEFAULT 0 CHECK (count_commits >= 0)
+    count_commits INTEGER NOT NULL DEFAULT 0 CHECK (count_commits >= 0),
+    report_date TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 CREATE TABLE city (

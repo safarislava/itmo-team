@@ -22,10 +22,11 @@ UPDATE person SET team_id = 1 WHERE person_id IN (1, 5);
 UPDATE person SET team_id = 2 WHERE person_id = 2;
 
 INSERT INTO coder_report (report_id, coder_id, count_opened_pr, count_closed_pr, count_reviewed_pr, count_commits) VALUES
-(1, 1, 15, 12, 34, 85),
-(2, 5, 8, 6, 20, 42),
-(3, 6, 5, 4, 10, 28),
-(4, 7, 2, 2, 3, 14);
+(1, 1, 15, 12, 34, 85);
+INSERT INTO coder_report (report_id, coder_id, count_opened_pr, count_closed_pr, count_reviewed_pr, count_commits, report_date) VALUES
+(2, 5, 8, 6, 20, 42, NOW() - INTERVAL '1 day'),
+(3, 6, 5, 4, 10, 28, NOW() - INTERVAL '2 day'),
+(4, 7, 2, 2, 3, 14, NOW() - INTERVAL '3 day');
 
 INSERT INTO city (city_id, name) VALUES
 (1, 'Санкт-Петербург'),
