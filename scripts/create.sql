@@ -50,7 +50,7 @@ CREATE TABLE vacancy (
     city_id BIGINT REFERENCES city(city_id) ON DELETE SET NULL,
     status VARCHAR(20) NOT NULL DEFAULT 'OPEN' CHECK (status IN ('DRAFT', 'OPEN', 'CLOSED', 'ARCHIVE')),
     salary INTEGER CHECK (salary >= 0),
-    created_at TIMESTAMPTZ NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     closed_at TIMESTAMPTZ
 );
 
@@ -189,7 +189,7 @@ CREATE TABLE submission (
     memory_used INTEGER CHECK (memory_used >= 0),
     attempt SMALLINT NOT NULL DEFAULT 1 CHECK (attempt >= 1),
     ai_score SMALLINT CHECK (ai_score BETWEEN 0 AND 100),
-    submitted_at TIMESTAMPTZ NOT NULL,
+    submitted_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     CONSTRAINT uq_submission_attempt UNIQUE (sender_id, contest_id, task_id, attempt)
 );
 
