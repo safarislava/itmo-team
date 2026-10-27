@@ -17,7 +17,7 @@ CREATE TABLE person (
 
 CREATE TABLE team (
     team_id BIGSERIAL PRIMARY KEY,
-    tl_id BIGINT NOT NULL UNIQUE REFERENCES person(person_id) ON DELETE RESTRICT,
+    teamlead_id BIGINT NOT NULL UNIQUE REFERENCES person(person_id) ON DELETE RESTRICT,
     name VARCHAR(100) NOT NULL CHECK (btrim(name) <> ''),
     company_id BIGINT NOT NULL REFERENCES company(company_id) ON DELETE CASCADE,
     CONSTRAINT uq_team_company_name UNIQUE (company_id, name)
@@ -134,7 +134,7 @@ CREATE TABLE interview (
     scheduled_start TIMESTAMPTZ NOT NULL,
     scheduled_end TIMESTAMPTZ NOT NULL CHECK (scheduled_end > scheduled_start),
     status VARCHAR(20) NOT NULL DEFAULT 'SCHEDULED' CHECK (status IN ('SCHEDULED', 'COMPLETED', 'CANCELLED')),
-    CONSTRAINT chk_interview_person_tl CHECK (teamlead_id <> candidate_id)
+    CONSTRAINT chk_interview_person_teamlead CHECK (teamlead_id <> candidate_id)
 );
 
 CREATE TABLE interview_feedback (

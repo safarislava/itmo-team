@@ -127,7 +127,7 @@ DECLARE
     v_vacancy_id BIGINT;
     v_teamlead_id BIGINT;
 BEGIN
-    SELECT a.candidate_id, a.vacancy_id, t.tl_id
+    SELECT a.candidate_id, a.vacancy_id, t.teamlead_id
     INTO v_candidate_id, v_vacancy_id, v_teamlead_id
     FROM application a
              JOIN vacancy v ON a.vacancy_id = v.vacancy_id
@@ -161,9 +161,9 @@ AS $$
 DECLARE
     v_role VARCHAR(20);
 BEGIN
-    SELECT p.role INTO v_role FROM person p WHERE p.person_id = NEW.tl_id;
+    SELECT p.role INTO v_role FROM person p WHERE p.person_id = NEW.teamlead_id;
     IF v_role <> 'TEAM_LEAD' THEN
-        RAISE EXCEPTION 'Персона - не тимлид: %', NEW.tl_id;
+        RAISE EXCEPTION 'Персона - не тимлид: %', NEW.teamlead_id;
     END IF;
     RETURN NEW;
 END;
@@ -184,7 +184,7 @@ DECLARE
 BEGIN
     SELECT p.role INTO v_role FROM person p WHERE p.person_id = NEW.hr_id;
     IF v_role <> 'HR' THEN
-        RAISE EXCEPTION 'Персона - не HR: %', NEW.tl_id;
+        RAISE EXCEPTION 'Персона - не HR: %', NEW.hr_id;
     END IF;
     RETURN NEW;
 END;
@@ -205,7 +205,7 @@ DECLARE
 BEGIN
     SELECT p.role INTO v_role FROM person p WHERE p.person_id = NEW.candidate_id;
     IF v_role <> 'CANDIDATE' THEN
-        RAISE EXCEPTION 'Персона - не кандидат: %', NEW.tl_id;
+        RAISE EXCEPTION 'Персона - не кандидат: %', NEW.candidate_id;
     END IF;
     RETURN NEW;
 END;

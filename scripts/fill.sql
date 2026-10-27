@@ -14,7 +14,7 @@ INSERT INTO person (person_id, name, email, password_hash, role, company_id, tea
 (8, 'Ольга Николаева', 'olga.nikolaeva@gmail.com', '$2b$12$e8w...hash8', 'CANDIDATE', NULL, NULL, 20003),
 (9, 'Администратор Системы', 'admin@itmo-team.ru', '$2b$12$e8w...hash9', 'ADMIN', NULL, NULL, NULL);
 
-INSERT INTO team (team_id, tl_id, name, company_id) VALUES
+INSERT INTO team (team_id, teamlead_id, name, company_id) VALUES
 (1, 1, 'Поисковая платформа', 1),
 (2, 2, 'Инфраструктура ленты', 2);
 
