@@ -33,10 +33,11 @@ INSERT INTO city (city_id, name) VALUES
 (3, 'Новосибирск'),
 (4, 'Екатеринбург');
 
-INSERT INTO vacancy (vacancy_id, title, description, team_id, city_id, status, salary) VALUES
-(1, 'Senior Backend Developer', 'Разработка сервисов поиска на Kotlin/Java и оптимизация работы с распределенными хранилищами.', 1, 1, 'OPEN', 320000),
-(2, 'Infrastructure Engineer', 'Эксплуатация, мониторинг и масштабирование высоконагруженных распределенных систем.', 2, 2, 'OPEN', 250000),
-(3, 'Junior Kotlin Developer', 'Разработка внутренних инструментов и автоматизация тестирования команды поиска.', 1, 1, 'CLOSED', 120000);
+INSERT INTO vacancy (vacancy_id, title, description, team_id, city_id, status, salary, created_at, closed_at) VALUES
+(1, 'Senior Backend Developer', 'Разработка сервисов поиска на Kotlin/Java и оптимизация работы с распределенными хранилищами.', 1, 1, 'OPEN', 320000, NOW() - INTERVAL '2 weeks', NULL),
+(2, 'Infrastructure Engineer', 'Эксплуатация, мониторинг и масштабирование высоконагруженных распределенных систем.', 2, 2, 'OPEN', 250000, NOW() - INTERVAL '1 month', NULL),
+(3, 'Junior Kotlin Developer', 'Разработка внутренних инструментов и автоматизация тестирования команды поиска.', 1, 1, 'CLOSED', 120000, NOW() - INTERVAL '3 months', NOW() - INTERVAL '2 months'),
+(4, 'QA Automation Engineer', 'Автоматизация регрессионного тестирования сервисов.', 2, 1, 'CLOSED', 160000, NOW() - INTERVAL '9 months', NOW() - INTERVAL '7 months');
 
 INSERT INTO vacancy_city (vacancy_id, city_id) VALUES
 (1, 1),
@@ -86,20 +87,16 @@ INSERT INTO form_skill (form_id, skill_id) VALUES
 (3, 2),
 (3, 6);
 
-INSERT INTO application (application_id, person_id, vacancy_id, resume_id, form_id, status) VALUES
+INSERT INTO application (application_id, candidate_id, vacancy_id, resume_id, form_id, status) VALUES
 (1, 6, 1, 1, 1, 'INTERVIEW'),
 (2, 7, 2, 2, 2, 'CONTEST'),
-(3, 8, 3, 3, 3, 'REJECTED');
+(3, 8, 2, 3, 3, 'REJECTED');
 
 INSERT INTO application_response (response_id, application_id, hr_id, motivation, soft_skills, pet_projects, job_exp, hard_skills, work_format) VALUES
 (1, 1, 4, 95, 90, 85, 80, 92, 90),
 (2, 2, 3, 85, 80, 90, 75, 88, 85);
 
-INSERT INTO application_score (application_id, motivation, soft_skills, pet_projects, job_exp, hard_skills, work_format) VALUES
-(1, 95, 90, 85, 80, 92, 90),
-(2, 85, 80, 90, 75, 88, 85);
-
-INSERT INTO interview (interview_id, person_id, teamlead_id, vacancy_id, video_s3key, scheduled_start, scheduled_end, status) VALUES
+INSERT INTO interview (interview_id, candidate_id, teamlead_id, vacancy_id, video_s3key, scheduled_start, scheduled_end, status) VALUES
 (1, 6, 1, 1, 'videos/interviews/2026/interview_6_1.mp4', '2026-11-01 15:00:00+03', '2026-11-01 15:30:00+03', 'COMPLETED'),
 (2, 7, 2, 2, NULL, '2026-11-05 18:00:00+03', '2026-11-05 19:00:00+03','SCHEDULED');
 
