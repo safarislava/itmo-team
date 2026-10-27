@@ -18,7 +18,6 @@ TRUNCATE TABLE
     resume,
     vacancy_skill,
     skill,
-    vacancy_city,
     vacancy,
     city,
     coder_report,

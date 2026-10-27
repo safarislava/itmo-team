@@ -26,10 +26,7 @@ BEGIN
         ))
         AND (p_min_salary IS NULL OR v.salary >= p_min_salary)
         AND (p_max_salary IS NULL OR v.salary <= p_max_salary)
-        AND (p_city_id IS NULL OR EXISTS (
-            SELECT 1 FROM vacancy_city vc
-            WHERE vc.vacancy_id = v.vacancy_id AND vc.city_id = p_city_id
-        ));
+        AND (p_city_id IS NULL OR v.city_id = p_city_id);
 END;
 $$ LANGUAGE plpgsql;
 

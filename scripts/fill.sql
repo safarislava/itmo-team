@@ -40,13 +40,6 @@ INSERT INTO vacancy (vacancy_id, title, description, team_id, city_id, status, s
 (3, 'Junior Kotlin Developer', 'Разработка внутренних инструментов и автоматизация тестирования команды поиска.', 1, 1, 'CLOSED', 120000, NOW() - INTERVAL '3 months', NOW() - INTERVAL '2 months'),
 (4, 'QA Automation Engineer', 'Автоматизация регрессионного тестирования сервисов.', 2, 1, 'CLOSED', 160000, NOW() - INTERVAL '9 months', NOW() - INTERVAL '7 months');
 
-INSERT INTO vacancy_city (vacancy_id, city_id) VALUES
-(1, 1),
-(1, 2),
-(2, 2),
-(2, 3),
-(3, 1);
-
 INSERT INTO skill (skill_id, name) VALUES
 (1, 'Java'),
 (2, 'Kotlin'),

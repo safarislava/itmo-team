@@ -54,12 +54,6 @@ CREATE TABLE vacancy (
     closed_at TIMESTAMPTZ
 );
 
-CREATE TABLE vacancy_city (
-    vacancy_id BIGINT NOT NULL REFERENCES vacancy(vacancy_id) ON DELETE CASCADE,
-    city_id BIGINT NOT NULL REFERENCES city(city_id) ON DELETE CASCADE,
-    PRIMARY KEY (vacancy_id, city_id)
-);
-
 CREATE TABLE skill (
     skill_id BIGSERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL CHECK (btrim(name) <> '')
