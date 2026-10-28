@@ -297,3 +297,30 @@ CREATE TRIGGER trg_check_application_for_open_vacancy
     BEFORE INSERT ON application
     FOR EACH ROW
 EXECUTE FUNCTION check_application_for_open_vacancy();
+
+
+CREATE OR REPLACE FUNCTION
+    set_submission_status_from_response()
+RETURNS TRIGGER
+AS $$
+DECLARE
+    v_status VARCHAR;
+BEGIN
+    IF NEW.verdict = 'OK' THEN
+        v_status = 'FINISHED';
+    ELSE
+        v_status = 'FAILED';
+    END IF;
+
+    UPDATE submission
+    SET status = v_status
+    WHERE submission_id = NEW.submission_id;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_set_submission_status_from_response
+    AFTER INSERT on submission_response
+    FOR EACH ROW
+EXECUTE FUNCTION set_submission_status_from_response();
