@@ -74,7 +74,7 @@ CREATE TABLE resume (
 
 CREATE TABLE form (
     form_id BIGSERIAL PRIMARY KEY,
-    university VARCHAR(255) NOT NULL CHECK (btrim(university) <> ''),
+    university VARCHAR(255) CHECK (btrim(university) <> ''),
     motivation TEXT CHECK (btrim(motivation) <> ''),
     pet_projects TEXT CHECK (btrim(pet_projects) <> ''),
     job_exp TEXT CHECK (btrim(job_exp) <> ''),
