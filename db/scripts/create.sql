@@ -56,7 +56,8 @@ CREATE TABLE vacancy (
 
 CREATE TABLE skill (
     skill_id BIGSERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL CHECK (btrim(name) <> '')
+    name VARCHAR(255) NOT NULL CHECK (btrim(name) <> ''),
+    description TEXT CHECK (btrim(description) <> '')
 );
 
 CREATE TABLE vacancy_skill (
@@ -177,6 +178,9 @@ CREATE TABLE submission (
     language_id INTEGER NOT NULL REFERENCES language(language_id) ON DELETE RESTRICT,
     snapshot_s3key VARCHAR(1024) NOT NULL UNIQUE,
     status VARCHAR(20) NOT NULL DEFAULT 'QUEUED' CHECK (status IN ('QUEUED', 'RUNNING', 'FINISHED', 'FAILED')),
+    verdict VARCHAR(30) NULL CHECK (verdict IN ('OK', 'WRONG_ANSWER', 'TIME_LIMIT', 'MEMORY_LIMIT', 'RUNTIME_ERROR', 'COMPILATION_ERROR')),
+    execution_time INTEGER CHECK (execution_time >= 0),
+    memory_used INTEGER CHECK (memory_used >= 0),
     attempt SMALLINT NOT NULL DEFAULT 1 CHECK (attempt >= 1),
     ai_score SMALLINT CHECK (ai_score BETWEEN 0 AND 100),
     submitted_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
