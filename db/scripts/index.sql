@@ -1,5 +1,5 @@
-CREATE INDEX idx_vacancy_city_id
-    ON vacancy (city_id);
+CREATE INDEX idx_vacancy_city
+    ON vacancy (city);
 
 CREATE INDEX idx_vacancy_skill_skill_id
     ON vacancy_skill (skill_id, vacancy_id);

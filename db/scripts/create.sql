@@ -37,17 +37,12 @@ CREATE TABLE coder_report (
     report_date TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
-CREATE TABLE city (
-    city_id BIGSERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL CHECK (btrim(name) <> '')
-);
-
 CREATE TABLE vacancy (
     vacancy_id BIGSERIAL PRIMARY KEY,
     title VARCHAR(255) NOT NULL CHECK (btrim(title) <> ''),
     description TEXT NOT NULL CHECK (btrim(description) <> ''),
     team_id BIGINT NOT NULL REFERENCES team(team_id) ON DELETE CASCADE,
-    city_id BIGINT REFERENCES city(city_id) ON DELETE SET NULL,
+    city VARCHAR(255),
     status VARCHAR(20) NOT NULL DEFAULT 'OPEN' CHECK (status IN ('DRAFT', 'OPEN', 'CLOSED', 'ARCHIVE')),
     salary INTEGER CHECK (salary >= 0),
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),

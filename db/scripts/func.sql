@@ -3,7 +3,7 @@ CREATE EXTENSION IF NOT EXISTS pg_cron;
 CREATE OR REPLACE FUNCTION
     match_vacancies(
         p_skill_ids BIGINT[],
-        p_city_id BIGINT DEFAULT NULL,
+        p_city VARCHAR(255) DEFAULT NULL,
         p_min_salary INTEGER DEFAULT NULL,
         p_max_salary INTEGER DEFAULT NULL
     )
@@ -11,13 +11,12 @@ RETURNS TABLE (
     vacancy_id BIGINT,
     title VARCHAR,
     description TEXT,
-    city_name VARCHAR,
+    city VARCHAR,
     salary INTEGER
 ) AS $$
 BEGIN
     RETURN QUERY
-    SELECT v.vacancy_id, v.title, v.description, c.name, v.salary FROM vacancy v
-    LEFT JOIN city c ON c.city_id = v.city_id
+    SELECT v.vacancy_id, v.title, v.description, v.city, v.salary FROM vacancy v
     WHERE v.status = 'OPEN'
         AND (COALESCE(p_skill_ids, '{}') <@ (
             SELECT ARRAY_AGG(vs.skill_id)
@@ -26,7 +25,7 @@ BEGIN
         ))
         AND (p_min_salary IS NULL OR v.salary >= p_min_salary)
         AND (p_max_salary IS NULL OR v.salary <= p_max_salary)
-        AND (p_city_id IS NULL OR v.city_id = p_city_id);
+        AND (p_city IS NULL OR v.city = p_city);
 END;
 $$ LANGUAGE plpgsql;
 

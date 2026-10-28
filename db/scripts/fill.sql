@@ -28,17 +28,11 @@ INSERT INTO coder_report (report_id, coder_id, count_opened_pr, count_closed_pr,
 (3, 6, 5, 4, 10, 28, NOW() - INTERVAL '2 day'),
 (4, 7, 2, 2, 3, 14, NOW() - INTERVAL '3 day');
 
-INSERT INTO city (city_id, name) VALUES
-(1, 'Санкт-Петербург'),
-(2, 'Москва'),
-(3, 'Новосибирск'),
-(4, 'Екатеринбург');
-
-INSERT INTO vacancy (vacancy_id, title, description, team_id, city_id, status, salary, created_at, closed_at) VALUES
-(1, 'Senior Backend Developer', 'Разработка сервисов поиска на Kotlin/Java и оптимизация работы с распределенными хранилищами.', 1, 1, 'OPEN', 320000, NOW() - INTERVAL '2 weeks', NULL),
-(2, 'Infrastructure Engineer', 'Эксплуатация, мониторинг и масштабирование высоконагруженных распределенных систем.', 2, 2, 'OPEN', 250000, NOW() - INTERVAL '1 month', NULL),
-(3, 'Junior Kotlin Developer', 'Разработка внутренних инструментов и автоматизация тестирования команды поиска.', 1, 1, 'CLOSED', 120000, NOW() - INTERVAL '3 months', NOW() - INTERVAL '2 months'),
-(4, 'QA Automation Engineer', 'Автоматизация регрессионного тестирования сервисов.', 2, 1, 'CLOSED', 160000, NOW() - INTERVAL '9 months', NOW() - INTERVAL '7 months');
+INSERT INTO vacancy (vacancy_id, title, description, team_id, city, status, salary, created_at, closed_at) VALUES
+(1, 'Senior Backend Developer', 'Разработка сервисов поиска на Kotlin/Java и оптимизация работы с распределенными хранилищами.', 1, 'Санкт-Петербург', 'OPEN', 320000, NOW() - INTERVAL '2 weeks', NULL),
+(2, 'Infrastructure Engineer', 'Эксплуатация, мониторинг и масштабирование высоконагруженных распределенных систем.', 2, 'Москва', 'OPEN', 250000, NOW() - INTERVAL '1 month', NULL),
+(3, 'Junior Kotlin Developer', 'Разработка внутренних инструментов и автоматизация тестирования команды поиска.', 1, 'Санкт-Петербург', 'CLOSED', 120000, NOW() - INTERVAL '3 months', NOW() - INTERVAL '2 months'),
+(4, 'QA Automation Engineer', 'Автоматизация регрессионного тестирования сервисов.', 2, 'Санкт-Петербург', 'CLOSED', 160000, NOW() - INTERVAL '9 months', NOW() - INTERVAL '7 months');
 
 INSERT INTO skill (skill_id, name) VALUES
 (1, 'Java'),

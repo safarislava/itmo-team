@@ -19,7 +19,6 @@ TRUNCATE TABLE
     vacancy_skill,
     skill,
     vacancy,
-    city,
     coder_report,
     team,
     person,
