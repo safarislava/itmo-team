@@ -51,7 +51,7 @@ CREATE TABLE vacancy (
     status VARCHAR(20) NOT NULL DEFAULT 'OPEN' CHECK (status IN ('DRAFT', 'OPEN', 'CLOSED', 'ARCHIVE')),
     salary INTEGER CHECK (salary >= 0),
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    closed_at TIMESTAMPTZ
+    closed_at TIMESTAMPTZ CHECK (closed_at > created_at)
 );
 
 CREATE TABLE skill (
