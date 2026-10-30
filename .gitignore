@@ -1,3 +1,6 @@
+### Local secrets and configs
+config/application.yml
+
 ### Gradle
 .gradle
 **/build/
