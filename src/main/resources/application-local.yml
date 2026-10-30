@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/dev
+    username: postgres
+    password: postgres
+
+app:
+  datasource:
+    replica:
+      url: jdbc:postgresql://localhost:5432/dev
+      username: postgres
+      password: postgres

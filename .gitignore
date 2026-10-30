@@ -1,5 +1,6 @@
 ### Local secrets and configs
-config/application.yml
+config/
+config/*
 
 ### Gradle
 .gradle
@@ -289,4 +290,4 @@ tmbootpicker.efi
 *.vsix
 
 # Enviroment config
-.env
+deployment/.env
