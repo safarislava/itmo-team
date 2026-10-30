@@ -140,7 +140,6 @@ SELECT setval('company_company_id_seq', (SELECT MAX(company_id) FROM company));
 SELECT setval('person_person_id_seq', (SELECT MAX(person_id) FROM person));
 SELECT setval('team_team_id_seq', (SELECT MAX(team_id) FROM team));
 SELECT setval('coder_report_report_id_seq', (SELECT MAX(report_id) FROM coder_report));
-SELECT setval('city_city_id_seq', (SELECT MAX(city_id) FROM city));
 SELECT setval('vacancy_vacancy_id_seq', (SELECT MAX(vacancy_id) FROM vacancy));
 SELECT setval('skill_skill_id_seq', (SELECT MAX(skill_id) FROM skill));
 SELECT setval('resume_resume_id_seq', (SELECT MAX(resume_id) FROM resume));
