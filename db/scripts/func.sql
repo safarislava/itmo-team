@@ -30,23 +30,6 @@ END;
 $$ LANGUAGE plpgsql;
 
 
-CREATE OR REPLACE PROCEDURE
-    archive_vacancies()
-AS $$
-BEGIN
-    UPDATE vacancy
-    SET status = 'ARCHIVE'
-    WHERE status = 'CLOSED'
-        AND NOW() - closed_at >= INTERVAL '6 Months';
-END;
-$$ LANGUAGE plpgsql;
-
-SELECT cron.schedule(
-    'archive_vacancies',
-    '0 0 * * *',
-    'CALL archive_vacancies();'
-);
-
 CREATE OR REPLACE FUNCTION
     close_vacancy_with_rejections(
        p_vacancy_id BIGINT
@@ -346,3 +329,21 @@ CREATE TRIGGER trg_set_submission_status_from_response
     AFTER INSERT on submission_response
     FOR EACH ROW
 EXECUTE FUNCTION set_submission_status_from_response();
+
+
+CREATE OR REPLACE PROCEDURE
+    archive_vacancies()
+AS $$
+BEGIN
+    UPDATE vacancy
+    SET status = 'ARCHIVE'
+    WHERE status = 'CLOSED'
+        AND NOW() - closed_at >= INTERVAL '6 Months';
+END;
+$$ LANGUAGE plpgsql;
+
+SELECT cron.schedule(
+    'archive_vacancies',
+    '0 0 * * *',
+    'CALL archive_vacancies();'
+);
