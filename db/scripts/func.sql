@@ -219,8 +219,10 @@ EXECUTE FUNCTION check_candidate_id();
 
 
 CREATE OR REPLACE FUNCTION
-    refresh_application_score()
-RETURNS TRIGGER
+    refresh_application_score_for(
+        p_application_id BIGINT
+    )
+RETURNS VOID
 AS $$
 BEGIN
     INSERT INTO application_score (
@@ -241,6 +243,7 @@ BEGIN
         ROUND(AVG(hard_skills))::SMALLINT AS hard_skills,
         ROUND(AVG(work_format))::SMALLINT AS work_format
     FROM application_response
+    WHERE application_id = p_application_id
     GROUP BY application_id
     ON CONFLICT (application_id) DO UPDATE SET
         motivation = EXCLUDED.motivation,
@@ -249,7 +252,27 @@ BEGIN
         job_exp = EXCLUDED.job_exp,
         hard_skills = EXCLUDED.hard_skills,
         work_format = EXCLUDED.work_format;
-    RETURN NEW;
+
+    IF NOT FOUND THEN
+        DELETE FROM application_score WHERE application_id = p_application_id;
+    END IF;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION
+    refresh_application_score()
+RETURNS TRIGGER
+AS $$
+BEGIN
+    IF TG_OP IN ('INSERT', 'UPDATE') THEN
+        PERFORM refresh_application_score_for(NEW.application_id);
+    END IF;
+
+    IF TG_OP = 'DELETE' THEN
+        PERFORM refresh_application_score_for(OLD.application_id);
+    END IF;
+
+    RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;
 
