@@ -1,0 +1,75 @@
+services:
+  etcd:
+    image: quay.io/coreos/etcd:v3.5.15
+    container_name: etcd
+    environment:
+      ETCD_NAME: ${NODE_NAME}
+      ETCD_DATA_DIR: /etcd-data
+      ETCD_LISTEN_CLIENT_URLS: http://0.0.0.0:2379
+      ETCD_ADVERTISE_CLIENT_URLS: http://${NODE_IP}:2379
+      ETCD_LISTEN_PEER_URLS: http://0.0.0.0:2380
+      ETCD_INITIAL_ADVERTISE_PEER_URLS: http://${NODE_IP}:2380
+      ETCD_INITIAL_CLUSTER: ${ETCD_INITIAL_CLUSTER}
+      ETCD_INITIAL_CLUSTER_TOKEN: etcd-cluster
+      ETCD_INITIAL_CLUSTER_STATE: new
+    ports:
+      - "2379:2379"
+      - "2380:2380"
+    volumes:
+      - etcd_data:/etcd-data
+
+  patroni:
+    build: .
+    container_name: patroni
+    hostname: ${NODE_NAME}
+    environment:
+      PATRONI_CONFIGURATION: |
+        scope: ${PATRONI_SCOPE:-postgres-cluster}
+        name: ${NODE_NAME}
+        restapi:
+          listen: 0.0.0.0:8008
+          connect_address: ${NODE_IP}:8008
+        etcd3:
+          hosts: [${ETCD_HOSTS}]
+        bootstrap:
+          dcs:
+            postgresql:
+              use_pg_rewind: true
+          initdb:
+            - encoding: UTF8
+          pg_hba:
+            - host replication ${PATRONI_REPLICATION_USERNAME:-patroni} 0.0.0.0/0 md5
+            - host all all 0.0.0.0/0 md5
+          users:
+            ${POSTGRES_USER:-postgres}:
+              password: ${POSTGRES_PASSWORD:-postgres}
+              options: [superuser, createdb]
+            ${APP_USER:-app}:
+              password: ${APP_PASSWORD:-app}
+              options: [createdb]
+        postgresql:
+          listen: 0.0.0.0:5432
+          connect_address: ${NODE_IP}:5432
+          data_dir: /var/lib/postgresql/data
+          bin_dir: /usr/lib/postgresql/16/bin
+          pgpass: /tmp/.pgpass
+          authentication:
+            replication:
+              username: ${PATRONI_REPLICATION_USERNAME:-patroni}
+              password: ${PATRONI_REPLICATION_PASSWORD:-patroni}
+            superuser:
+              username: ${POSTGRES_USER:-postgres}
+              password: ${POSTGRES_PASSWORD:-postgres}
+          parameters:
+            unix_socket_directories: '/var/run/postgresql'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+      - "8008:8008"
+    depends_on:
+      - etcd
+
+volumes:
+  etcd_data:
+  pgdata:
