@@ -4,8 +4,9 @@
 CREATE INDEX idx_vacancy_city
     ON vacancy (city);
 
-CREATE INDEX idx_vacancy_skill_skill_id
-    ON vacancy_skill (skill_id, vacancy_id);
+CREATE INDEX idx_vacancy_skills_open
+    ON vacancy USING gin (skill_ids)
+    WHERE status = 'OPEN';
 
 CREATE INDEX idx_vacancy_team_id
     ON vacancy (team_id);

@@ -48,6 +48,7 @@ CREATE TABLE vacancy (
     city VARCHAR(255),
     status VARCHAR(20) NOT NULL DEFAULT 'OPEN' CHECK (status IN ('DRAFT', 'OPEN', 'CLOSED', 'ARCHIVE')),
     salary INTEGER CHECK (salary >= 0),
+    skill_ids BIGINT[],
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     closed_at TIMESTAMPTZ CHECK (closed_at > created_at)
 );
@@ -56,12 +57,6 @@ CREATE TABLE skill (
     skill_id BIGSERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL CHECK (btrim(name) <> ''),
     description TEXT CHECK (btrim(description) <> '')
-);
-
-CREATE TABLE vacancy_skill (
-    vacancy_id BIGINT NOT NULL REFERENCES vacancy(vacancy_id) ON DELETE CASCADE,
-    skill_id BIGINT NOT NULL REFERENCES skill(skill_id) ON DELETE CASCADE,
-    PRIMARY KEY (vacancy_id, skill_id)
 );
 
 CREATE TABLE resume (

@@ -407,30 +407,35 @@ FROM d
          JOIN gen_team t ON t.n = d.team_n
          JOIN gen_role r ON r.n = d.role_n;
 
--- Пока все вакансии, кроме черновиков, открыты: иначе триггер не даст создать отклики
-INSERT INTO vacancy (vacancy_id, title, description, team_id, city, status, salary, created_at, closed_at)
-SELECT vacancy_id, title, description, team_id, city,
-       CASE WHEN final_status = 'DRAFT' THEN 'DRAFT' ELSE 'OPEN' END,
-       salary, created_at, NULL
-FROM gen_vacancy;
-
-INSERT INTO vacancy_skill (vacancy_id, skill_id)
-SELECT v.vacancy_id, s.skill_id
-FROM gen_vacancy v
-         JOIN gen_role r ON r.n = v.role_n
-         JOIN skill s ON s.name = ANY (r.skills)
-ON CONFLICT DO NOTHING;
-
-WITH e AS MATERIALIZED (
-    SELECT v.vacancy_id, 1 + floor(power(random(), 1.5) * (SELECT count(*) FROM gen_skill))::int AS skill_n
+-- Собираем навыки для каждой вакансии: базовые от роли + дополнительные
+WITH role_skills AS (
+    SELECT v.vacancy_id, s.skill_id
+    FROM gen_vacancy v
+             JOIN gen_role r ON r.n = v.role_n
+             JOIN skill s ON s.name = ANY (r.skills)
+), extra_skills AS (
+    SELECT v.vacancy_id, s.skill_id
     FROM gen_vacancy v
              CROSS JOIN LATERAL generate_series(1, v.extra_skills)
+             JOIN gen_skill s ON s.n = 1 + floor(power(random(), 1.5) * (SELECT count(*) FROM gen_skill))::int
+), all_skills AS (
+    SELECT vacancy_id, skill_id FROM role_skills
+    UNION
+    SELECT vacancy_id, skill_id FROM extra_skills
+), agg_skills AS (
+    SELECT vacancy_id, array_agg(skill_id ORDER BY skill_id) AS skill_ids
+    FROM all_skills
+    GROUP BY vacancy_id
 )
-INSERT INTO vacancy_skill (vacancy_id, skill_id)
-SELECT e.vacancy_id, s.skill_id
-FROM e
-         JOIN gen_skill s ON s.n = e.skill_n
-ON CONFLICT DO NOTHING;
+-- Пока все вакансии, кроме черновиков, открыты: иначе триггер не даст создать отклики
+INSERT INTO vacancy (vacancy_id, title, description, team_id, city, status, salary, skill_ids, created_at, closed_at)
+SELECT v.vacancy_id, v.title, v.description, v.team_id, v.city,
+       CASE WHEN v.final_status = 'DRAFT' THEN 'DRAFT' ELSE 'OPEN' END,
+       v.salary,
+       COALESCE(s.skill_ids, '{}'),
+       v.created_at, NULL
+FROM gen_vacancy v
+         LEFT JOIN agg_skills s ON s.vacancy_id = v.vacancy_id;
 
 
 -- ---------------------------------------------------------------------
