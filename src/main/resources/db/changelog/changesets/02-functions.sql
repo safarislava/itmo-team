@@ -9,35 +9,6 @@ EXCEPTION WHEN OTHERS THEN
 END $$;
 
 CREATE OR REPLACE FUNCTION
-    match_vacancies(
-        p_skill_ids BIGINT[],
-        p_city VARCHAR(255) DEFAULT NULL,
-        p_min_salary INTEGER DEFAULT NULL,
-        p_max_salary INTEGER DEFAULT NULL
-    )
-RETURNS TABLE (
-    vacancy_id BIGINT,
-    title VARCHAR,
-    description TEXT,
-    city VARCHAR,
-    salary INTEGER
-) AS $$
-BEGIN
-    RETURN QUERY
-    SELECT v.vacancy_id, v.title, v.description, v.city, v.salary FROM vacancy v
-    WHERE v.status = 'OPEN'
-        AND (COALESCE(p_skill_ids, '{}') <@ (
-            SELECT ARRAY_AGG(vs.skill_id)
-            FROM vacancy_skill vs
-            WHERE vs.vacancy_id = v.vacancy_id
-        ))
-        AND (p_min_salary IS NULL OR v.salary >= p_min_salary)
-        AND (p_max_salary IS NULL OR v.salary <= p_max_salary)
-        AND (p_city IS NULL OR v.city = p_city);
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE OR REPLACE FUNCTION
     close_vacancy_with_rejections(
        p_vacancy_id BIGINT
     )
