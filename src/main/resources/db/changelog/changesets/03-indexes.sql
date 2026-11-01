@@ -28,6 +28,3 @@ CREATE INDEX idx_contest_task_contest_id
 
 CREATE INDEX idx_test_task_id
     ON test (task_id);
-
-CREATE INDEX idx_submission_sender_id
-    ON submission (sender_id);
