@@ -11,8 +11,8 @@ CREATE INDEX idx_vacancy_skills_open
 CREATE INDEX idx_vacancy_team_id
     ON vacancy (team_id);
 
-CREATE INDEX idx_form_skill_skill_id
-    ON form_skill (skill_id, form_id);
+CREATE INDEX idx_form_skills
+    ON form USING gin (skill_ids);
 
 CREATE INDEX idx_application_vacancy_id
     ON application (vacancy_id);

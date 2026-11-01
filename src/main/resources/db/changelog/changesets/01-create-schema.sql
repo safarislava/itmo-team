@@ -71,13 +71,8 @@ CREATE TABLE form (
     motivation TEXT CHECK (btrim(motivation) <> ''),
     pet_projects TEXT CHECK (btrim(pet_projects) <> ''),
     job_exp TEXT CHECK (btrim(job_exp) <> ''),
-    work_format VARCHAR(20) CHECK (work_format IN ('OFFICE', 'DISTANT', 'HYBRID'))
-);
-
-CREATE TABLE form_skill (
-    form_id BIGINT NOT NULL REFERENCES form(form_id) ON DELETE CASCADE,
-    skill_id BIGINT NOT NULL REFERENCES skill(skill_id) ON DELETE CASCADE,
-    PRIMARY KEY (form_id, skill_id)
+    work_format VARCHAR(20) CHECK (work_format IN ('OFFICE', 'DISTANT', 'HYBRID')),
+    skill_ids BIGINT[]
 );
 
 CREATE TABLE application (

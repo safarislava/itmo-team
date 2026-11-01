@@ -465,9 +465,29 @@ FROM (
          FROM gen_candidate
      ) r;
 
-INSERT INTO form (form_id, university, motivation, pet_projects, job_exp, work_format)
+WITH core AS (
+    SELECT c.form_id, s.skill_id
+    FROM gen_candidate c
+             JOIN gen_role r ON r.n = c.role_n
+             JOIN skill s ON s.name = ANY (r.skills)
+    WHERE random() < 0.8
+), extra AS (
+    SELECT c.form_id, s.skill_id
+    FROM gen_candidate c
+             CROSS JOIN LATERAL generate_series(1, c.extra_skills)
+             JOIN gen_skill s ON s.n = 1 + floor(power(random(), 1.5) * (SELECT count(*) FROM gen_skill))::int
+), all_form_skills AS (
+    SELECT form_id, skill_id FROM core
+    UNION
+    SELECT form_id, skill_id FROM extra
+), agg_form_skills AS (
+    SELECT form_id, array_agg(skill_id ORDER BY skill_id) AS skill_ids
+    FROM all_form_skills
+    GROUP BY form_id
+)
+INSERT INTO form (form_id, university, motivation, pet_projects, job_exp, work_format, skill_ids)
 SELECT
-    form_id,
+    c.form_id,
     pg_temp.pick(ARRAY[
         'Университет ИТМО', 'Университет ИТМО', 'Университет ИТМО', 'СПбГУ', 'МГУ им. М. В. Ломоносова', 'МФТИ',
         'НИУ ВШЭ', 'МГТУ им. Баумана', 'СПбПУ Петра Великого', 'НГУ', 'УрФУ', 'КФУ', 'ТПУ', 'СПбГЭТУ «ЛЭТИ»',
@@ -506,29 +526,10 @@ SELECT
         '3 года разработки в банке', '3 года в аутсорсе', '4 года, из них год тимлидом',
         '5 лет в высоконагруженных сервисах', '6 лет, участие в проектировании архитектуры', '2 года фриланса', NULL
         ]),
-    pg_temp.pick(ARRAY['OFFICE', 'DISTANT', 'HYBRID', 'HYBRID', NULL])
-FROM gen_candidate;
-
-WITH core AS MATERIALIZED (
-    SELECT c.form_id, s.skill_id, random() AS r
-    FROM gen_candidate c
-             JOIN gen_role r ON r.n = c.role_n
-             JOIN skill s ON s.name = ANY (r.skills)
-)
-INSERT INTO form_skill (form_id, skill_id)
-SELECT form_id, skill_id FROM core WHERE r < 0.8
-ON CONFLICT DO NOTHING;
-
-WITH e AS MATERIALIZED (
-    SELECT c.form_id, 1 + floor(power(random(), 1.5) * (SELECT count(*) FROM gen_skill))::int AS skill_n
-    FROM gen_candidate c
-             CROSS JOIN LATERAL generate_series(1, c.extra_skills)
-)
-INSERT INTO form_skill (form_id, skill_id)
-SELECT e.form_id, s.skill_id
-FROM e
-         JOIN gen_skill s ON s.n = e.skill_n
-ON CONFLICT DO NOTHING;
+    pg_temp.pick(ARRAY['OFFICE', 'DISTANT', 'HYBRID', 'HYBRID', NULL]),
+    COALESCE(s.skill_ids, '{}')
+FROM gen_candidate c
+         LEFT JOIN agg_form_skills s ON s.form_id = c.form_id;
 
 -- Пул вакансий для откликов: role_n = 0 - все вакансии, иначе вакансии конкретной роли
 CREATE TEMP TABLE gen_vacancy_pool ON COMMIT DROP AS
