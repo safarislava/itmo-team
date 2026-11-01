@@ -833,9 +833,9 @@ SELECT
     v.vacancy_id,
     date_trunc('hour', v.created_at + (COALESCE(v.closed_at, NOW() + INTERVAL '30 days') - v.created_at) * (0.1 + 0.4 * random())) AS scheduled_time,
     make_interval(mins => pg_temp.pick(ARRAY[60, 90, 120, 120, 180, 180, 240, 300])) AS duration,
-    2 + floor(random() * 5)::int AS task_count
+    3 + floor(random() * 5)::int AS task_count
 FROM gen_vacancy v
-WHERE v.final_status <> 'DRAFT' AND random() < 0.5;
+WHERE v.final_status <> 'DRAFT' AND random() < 0.6;
 
 INSERT INTO contest (contest_id, scheduled_time, duration)
 SELECT contest_id, scheduled_time, duration FROM gen_contest;
@@ -872,7 +872,7 @@ WITH pt AS MATERIALIZED (
         c.duration,
         t.time_limit,
         t.memory_limit,
-        1 + floor(power(random(), 2) * 5)::int AS attempts,
+        1 + floor(random() * 8)::int AS attempts,
         random() AS r_try,
         random() < 0.65 AS solved
     FROM contest_participant cp
@@ -890,7 +890,7 @@ WITH pt AS MATERIALIZED (
         random() AS r_status
     FROM pt
              CROSS JOIN LATERAL generate_series(1, pt.attempts) g(attempt)
-    WHERE pt.r_try < 0.75
+    WHERE pt.r_try < 0.85
 )
 SELECT
     s.*,
