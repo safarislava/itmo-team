@@ -1,0 +1,110 @@
+# TODO: SRS says there should be filters by job experience and grades?
+get:
+  tags: [ Vacancies ]
+  operationId: listVacancies
+  summary: List vacancies
+  description: |
+    Catalogue of vacancies. Anonymous users, candidates and developers
+    see only `OPEN` vacancies, other internal users also see the remaining vacancies of the own company.
+
+    **Public.**
+  security:
+    - { }
+    - BearerAuth: [ ]
+  parameters:
+    - $ref: "../../openapi.yaml#/components/parameters/PageNumber"
+    - $ref: "../../openapi.yaml#/components/parameters/PageSize"
+    - name: sort
+      in: query
+      description: Column to sort by.
+      schema:
+        type: string
+        default: createdAt
+        enum: [ id, title, salary, createdAt ]
+    - name: order
+      in: query
+      description: Sort direction.
+      schema:
+        type: string
+        enum: [ asc, desc ]
+        default: desc
+    - name: search
+      in: query
+      description: Case-insensitive substring of the title.
+      schema:
+        type: string
+    - name: skillIds
+      in: query
+      description: Only vacancies requiring **all** of the listed skills.
+      style: form
+      explode: true
+      schema:
+        type: array
+        items:
+          type: integer
+          format: int64
+    - name: city
+      in: query
+      description: Exact match on the city.
+      schema:
+        type: string
+    - name: minSalary
+      in: query
+      description: Only vacancies with a salary of at least this value.
+      schema:
+        type: integer
+        format: int32
+        minimum: 0
+    - name: status
+      in: query
+      description: Defaults to `OPEN`. Other values are allowed only for internal users of the company.
+      schema:
+        $ref: "../../openapi.yaml#/components/schemas/VacancyStatus"
+    - name: companyId
+      in: query
+      schema:
+        type: integer
+        format: int64
+    - name: teamId
+      in: query
+      schema:
+        type: integer
+        format: int64
+  responses:
+    '200':
+      description: A page of vacancies.
+      content:
+        application/json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/VacancyPage"
+    '400':
+      $ref: "../../openapi.yaml#/components/responses/BadRequest"
+post:
+  tags: [ Vacancies ]
+  operationId: createVacancy
+  summary: Create a vacancy
+  description: |
+    Creates a `DRAFT` vacancy in the team of the current team lead.
+    After attaching contests it is published by setting the status `OPEN`
+    at `/api/vacancies/{vacancyId}/status`.
+
+    **Roles:** `TEAM_LEAD`.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../../openapi.yaml#/components/schemas/VacancyRequest"
+  responses:
+    '201':
+      description: The vacancy was created.
+      content:
+        application/json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Vacancy"
+    '400':
+      $ref: "../../openapi.yaml#/components/responses/BadRequest"
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"

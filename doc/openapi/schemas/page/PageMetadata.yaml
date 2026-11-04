@@ -1,0 +1,18 @@
+type: object
+required: [ page, size, totalElements, totalPages ]
+properties:
+  page:
+    type: integer
+    format: int32
+    description: Zero-based index of this page.
+  size:
+    type: integer
+    format: int32
+    description: Requested page size.
+  totalElements:
+    type: integer
+    format: int64
+    description: Number of objects matching the filter.
+  totalPages:
+    type: integer
+    format: int32

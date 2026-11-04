@@ -1,0 +1,49 @@
+parameters:
+  - $ref: "../../openapi.yaml#/components/parameters/ApplicationId"
+  - $ref: "../../openapi.yaml#/components/parameters/ResponseId"
+put:
+  tags: [ Screening ]
+  operationId: updateApplicationResponse
+  summary: Correct an HR assessment
+  description: |
+    The averaged score is recalculated.
+
+    **Roles:** `HR` (author of the assessment).
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../../openapi.yaml#/components/schemas/ScoreMetrics"
+  responses:
+    '200':
+      description: The updated assessment.
+      content:
+        application/json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/ApplicationResponse"
+    '400':
+      $ref: "../../openapi.yaml#/components/responses/BadRequest"
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"
+    '404':
+      $ref: "../../openapi.yaml#/components/responses/NotFound"
+delete:
+  tags: [ Screening ]
+  operationId: deleteApplicationResponse
+  summary: Withdraw an HR assessment
+  description: |
+    The averaged score is recalculated, the application returns to the screening queue.
+
+    **Roles:** `HR` (author of the assessment), `ADMIN`.
+  responses:
+    '204':
+      description: The assessment was deleted.
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"
+    '404':
+      $ref: "../../openapi.yaml#/components/responses/NotFound"

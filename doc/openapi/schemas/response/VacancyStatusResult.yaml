@@ -1,0 +1,13 @@
+type: object
+required: [ vacancy, rejectedApplicationIds ]
+properties:
+  vacancy:
+    $ref: "../../openapi.yaml#/components/schemas/Vacancy"
+  rejectedApplicationIds:
+    type: array
+    description: |
+      Applications rejected because of the closing, empty when the vacancy is published.
+      Their candidates are notified by email.
+    items:
+      type: integer
+      format: int64

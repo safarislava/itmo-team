@@ -1,0 +1,8 @@
+name: runnerId
+in: path
+required: true
+description: Identifier of the Runner Server.
+schema:
+  type: integer
+  format: int32
+  minimum: 1

@@ -1,0 +1,48 @@
+get:
+  tags: [ Dictionaries ]
+  operationId: listSkills
+  summary: List skills
+  description: |
+    Dictionary of skills used in vacancies and forms.
+
+    **Public.**
+  security: [ ]
+  parameters:
+    - name: search
+      in: query
+      description: Case-insensitive substring of the name.
+      schema:
+        type: string
+  responses:
+    '200':
+      description: Skills, sorted by name.
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "../../openapi.yaml#/components/schemas/Skill"
+post:
+  tags: [ Dictionaries ]
+  operationId: createSkill
+  summary: Add a skill to the dictionary
+  description: "**Roles:** `ADMIN`."
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../../openapi.yaml#/components/schemas/SkillRequest"
+  responses:
+    '201':
+      description: The skill was created.
+      content:
+        application/json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Skill"
+    '400':
+      $ref: "../../openapi.yaml#/components/responses/BadRequest"
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"

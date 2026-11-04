@@ -1,0 +1,26 @@
+parameters:
+  - $ref: "../../openapi.yaml#/components/parameters/ContestId"
+get:
+  tags: [ Contests ]
+  operationId: listContestTasks
+  summary: List tasks of a contest
+  description: |
+    Statements of the tasks. Candidates see them only while the contest runs.
+    Examples are available at `/api/tasks/{taskId}/tests`.
+
+    **Roles:** `CANDIDATE` (participant), `HR`, `TEAM_LEAD`, `ADMIN`.
+  responses:
+    '200':
+      description: Tasks of the contest.
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "../../openapi.yaml#/components/schemas/Task"
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"
+    '404':
+      $ref: "../../openapi.yaml#/components/responses/NotFound"

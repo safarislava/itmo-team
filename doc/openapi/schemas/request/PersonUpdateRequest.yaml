@@ -1,0 +1,19 @@
+type: object
+required: [ name, role ]
+properties:
+  name:
+    type: string
+    minLength: 1
+    maxLength: 100
+  role:
+    description: |
+      Changing the role of a team lead who still leads a team is rejected.
+      `CANDIDATE` can not be assigned to internal users.
+    $ref: "../../openapi.yaml#/components/schemas/Role"
+  teamId:
+    type: [ integer, "null" ]
+    format: int64
+    description: Identifier of an existing team of the same company, `null` removes the person from the team.
+  githubId:
+    type: [ integer, "null" ]
+    format: int64

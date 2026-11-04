@@ -1,0 +1,68 @@
+get:
+  tags: [ Companies ]
+  operationId: listCompanies
+  summary: List companies
+  description: "**Roles:** `ADMIN`."
+  parameters:
+    - $ref: "../../openapi.yaml#/components/parameters/PageNumber"
+    - $ref: "../../openapi.yaml#/components/parameters/PageSize"
+    - name: sort
+      in: query
+      description: Column to sort by.
+      schema:
+        type: string
+        default: id
+        enum: [ id, name, creationDate ]
+    - $ref: "../../openapi.yaml#/components/parameters/SortOrder"
+    - name: search
+      in: query
+      description: Case-insensitive substring of the name.
+      schema:
+        type: string
+  responses:
+    '200':
+      description: A page of companies.
+      content:
+        application/json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/CompanyPage"
+    '400':
+      $ref: "../../openapi.yaml#/components/responses/BadRequest"
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"
+post:
+  tags: [ Companies ]
+  operationId: createCompany
+  summary: Register a company
+  description: |
+    Creates a company and the account of its first employee, who receives the access
+    credentials by email.
+
+    **Roles:** `ADMIN`.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../../openapi.yaml#/components/schemas/CompanyCreateRequest"
+  responses:
+    '201':
+      description: The company was registered.
+      content:
+        application/json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Company"
+    '400':
+      $ref: "../../openapi.yaml#/components/responses/BadRequest"
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"
+    '409':
+      description: A company with this name or a user with the email of the representative already exists.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Problem"

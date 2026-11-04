@@ -1,0 +1,71 @@
+get:
+  tags: [ Teams ]
+  operationId: listTeams
+  summary: List teams
+  description: |
+    Internal users see the teams of the own company.
+
+    **Roles:** `HR`, `TEAM_LEAD`, `DEVELOPER`, `MANAGER`, `ADMIN`.
+  parameters:
+    - $ref: "../../openapi.yaml#/components/parameters/PageNumber"
+    - $ref: "../../openapi.yaml#/components/parameters/PageSize"
+    - name: sort
+      in: query
+      description: Column to sort by.
+      schema:
+        type: string
+        default: id
+        enum: [ id, name ]
+    - $ref: "../../openapi.yaml#/components/parameters/SortOrder"
+    - name: companyId
+      in: query
+      description: Exact match on the company. Ignored for internal users.
+      schema:
+        type: integer
+        format: int64
+  responses:
+    '200':
+      description: A page of teams.
+      content:
+        application/json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/TeamPage"
+    '400':
+      $ref: "../../openapi.yaml#/components/responses/BadRequest"
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"
+post:
+  tags: [ Teams ]
+  operationId: createTeam
+  summary: Create a team
+  description: |
+    The team lead becomes a member of the team.
+
+    **Roles:** `HR`, `ADMIN`.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../../openapi.yaml#/components/schemas/TeamRequest"
+  responses:
+    '201':
+      description: The team was created.
+      content:
+        application/json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Team"
+    '400':
+      $ref: "../../openapi.yaml#/components/responses/BadRequest"
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"
+    '409':
+      description: The company already has a team with this name or the team lead already leads a team.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Problem"

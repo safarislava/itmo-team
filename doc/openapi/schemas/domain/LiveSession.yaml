@@ -1,0 +1,36 @@
+type: object
+description: Credentials for connecting to the live-coding room of an interview.
+required: [ interviewId, websocketUrl, token, expiresAt, iceServers ]
+properties:
+  interviewId:
+    type: integer
+    format: int64
+    minimum: 1
+  websocketUrl:
+    type: string
+    format: uri
+    description: Endpoint of the WebSocket used for code synchronization and WebRTC signalling.
+    examples: [ wss://example.org/ws/interviews/42 ]
+  token:
+    type: string
+    description: One-time token to pass when opening the WebSocket.
+  expiresAt:
+    type: string
+    format: date-time
+    description: The token is valid until the scheduled end of the interview.
+  iceServers:
+    type: array
+    description: STUN/TURN servers for establishing the WebRTC connection.
+    items:
+      type: object
+      required: [ urls ]
+      properties:
+        urls:
+          type: array
+          items:
+            type: string
+          examples: [ [ "stun:stun.example.org:3478" ] ]
+        username:
+          type: string
+        credential:
+          type: string

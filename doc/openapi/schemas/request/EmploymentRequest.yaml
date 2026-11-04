@@ -1,0 +1,8 @@
+type: object
+properties:
+  closeVacancy:
+    type: boolean
+    default: false
+    description: |
+      Close the vacancy after hiring. All other applications to it, except those with an offer,
+      are rejected and the candidates are notified.

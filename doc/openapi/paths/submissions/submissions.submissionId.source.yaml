@@ -1,0 +1,23 @@
+parameters:
+  - $ref: "../../openapi.yaml#/components/parameters/SubmissionId"
+get:
+  tags: [ Submissions ]
+  operationId: getSubmissionSource
+  summary: Get the source code of a submission
+  description: |
+    Snapshot of the code taken at the moment of submitting.
+
+    **Roles:** `CANDIDATE` (own), `HR`, `TEAM_LEAD`, `ADMIN`.
+  responses:
+    '200':
+      description: The source code.
+      content:
+        text/plain:
+          schema:
+            type: string
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"
+    '404':
+      $ref: "../../openapi.yaml#/components/responses/NotFound"

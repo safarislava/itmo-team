@@ -1,0 +1,27 @@
+type: object
+description: |
+  Account of an internal user. A temporary password is generated and sent to the email.
+required: [ name, email, role ]
+properties:
+  name:
+    type: string
+    minLength: 1
+    maxLength: 100
+  email:
+    type: string
+    format: email
+    maxLength: 255
+    description: Must be unique among all users.
+  role:
+    description: "`CANDIDATE` is not allowed, `ADMIN` may be assigned only by an administrator."
+    $ref: "../../openapi.yaml#/components/schemas/Role"
+  companyId:
+    type: [ integer, "null" ]
+    format: int64
+    description: |
+      Identifier of an existing company. Ignored for HR, whose own company is used.
+      Required for an administrator creating a non-`ADMIN` user.
+  teamId:
+    type: [ integer, "null" ]
+    format: int64
+    description: Identifier of an existing team of the same company.

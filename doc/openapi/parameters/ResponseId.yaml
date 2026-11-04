@@ -1,0 +1,8 @@
+name: responseId
+in: path
+required: true
+description: Identifier of the HR assessment of an application.
+schema:
+  type: integer
+  format: int64
+  minimum: 1

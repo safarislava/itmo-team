@@ -1,0 +1,93 @@
+get:
+  tags: [ Submissions ]
+  operationId: listSubmissions
+  summary: List submissions
+  description: |
+    History of submissions with their statuses. A candidate sees only
+    the own submissions.
+
+    **Roles:** `CANDIDATE`, `HR`, `TEAM_LEAD`, `ADMIN`.
+  parameters:
+    - $ref: "../../openapi.yaml#/components/parameters/PageNumber"
+    - $ref: "../../openapi.yaml#/components/parameters/PageSize"
+    - name: contestId
+      in: query
+      schema:
+        type: integer
+        format: int64
+    - name: taskId
+      in: query
+      schema:
+        type: integer
+        format: int64
+    - name: senderId
+      in: query
+      description: Ignored for candidates.
+      schema:
+        type: integer
+        format: int64
+    - name: status
+      in: query
+      schema:
+        $ref: "../../openapi.yaml#/components/schemas/SubmissionStatus"
+  responses:
+    '200':
+      description: A page of submissions, the latest first.
+      content:
+        application/json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/SubmissionPage"
+    '400':
+      $ref: "../../openapi.yaml#/components/responses/BadRequest"
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"
+post:
+  tags: [ Submissions ]
+  operationId: createSubmission
+  summary: Submit a solution
+  description: |
+    Saves a snapshot of the source code, assigns the next attempt number and puts the
+    submission into the testing queue with the status `QUEUED`.
+    The status is then polled at `/api/submissions/{submissionId}`.
+
+    **Roles:** `CANDIDATE` (participant of the contest).
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../../openapi.yaml#/components/schemas/SubmissionRequest"
+  responses:
+    '201':
+      description: The submission was queued.
+      content:
+        application/json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Submission"
+    '400':
+      $ref: "../../openapi.yaml#/components/responses/BadRequest"
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      description: The candidate does not participate in the contest.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Problem"
+    '404':
+      description: The contest, the task or the language does not exist, or the task is not a part of the contest.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Problem"
+    '409':
+      description: |
+        The contest is not running or the attempts for the task are exhausted.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Problem"
+    '413':
+      $ref: "../../openapi.yaml#/components/responses/PayloadTooLarge"

@@ -1,0 +1,26 @@
+type: object
+description: The vacancy belongs to the team of the current team lead.
+required: [ title, description ]
+properties:
+  title:
+    type: string
+    minLength: 1
+    maxLength: 255
+  description:
+    type: string
+    minLength: 1
+  city:
+    type: [ string, "null" ]
+    maxLength: 255
+  salary:
+    type: [ integer, "null" ]
+    format: int32
+    minimum: 0
+  skillIds:
+    type: array
+    description: Identifiers of existing skills from the dictionary.
+    uniqueItems: true
+    default: [ ]
+    items:
+      type: integer
+      format: int64

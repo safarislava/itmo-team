@@ -1,0 +1,16 @@
+type: object
+required: [ accessToken, tokenType, expiresIn, person ]
+properties:
+  accessToken:
+    type: string
+    description: "JWT to pass as `Authorization: Bearer <token>`."
+  tokenType:
+    type: string
+    const: Bearer
+  expiresIn:
+    type: integer
+    format: int32
+    description: Lifetime of the access token, in seconds.
+    examples: [ 600 ]
+  person:
+    $ref: "../../openapi.yaml#/components/schemas/Person"

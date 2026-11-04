@@ -1,0 +1,39 @@
+# TODO: SRS says refresh-token is in HttpOnly-cookie and in Refresh at the same time?
+# TODO: refresh-tokens must be stored somewhere in order to revoke them
+post:
+  tags: [ Auth ]
+  operationId: createSessionTokens
+  summary: Refresh the tokens of the session
+  description: |
+    Issues a new pair of tokens for the session the refresh token belongs to. The refresh token is taken from the
+    `refreshToken` cookie or, if absent, from the `Refresh` header. The used refresh token is revoked.
+
+    **Public.**
+  security: [ ]
+  parameters:
+    - name: refreshToken
+      in: cookie
+      description: Refresh token set when the session was started.
+      schema:
+        type: string
+    - name: Refresh
+      in: header
+      description: Refresh token, used when the cookie is absent.
+      schema:
+        type: string
+  responses:
+    '201':
+      description: A new pair of tokens.
+      headers:
+        Set-Cookie:
+          $ref: "../../openapi.yaml#/components/headers/SetRefreshCookie"
+      content:
+        application/json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/TokenResponse"
+    '401':
+      description: The refresh token is missing, expired or revoked.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Problem"

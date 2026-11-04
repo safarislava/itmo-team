@@ -1,0 +1,653 @@
+openapi: 3.2.0
+
+info:
+  title: It's More Than Team API
+  version: 0.0.1
+  license:
+    name: Apache 2.0
+    identifier: Apache-2.0
+  description: |
+    REST API of the staff management system.
+
+    - All request and response bodies are represented as JSON (`application/json`).
+    - Errors are reported as problem details (`application/problem+json`).
+    - Collections are paginated, `page` is zero-based.
+    - Every endpoint requires an access token (`Authorization: Bearer <token>`) unless it
+      is marked as public.
+    - Access tokens are kept in an `HttpOnly` cookie.
+
+servers:
+  - url: https://itmorethan.team
+    name: prod
+    description: Production Server
+  - url: https://dev.itmorethan.team
+    name: dev
+    description: Development Server
+  - url: http://localhost:8080
+    name: local
+    description: Local Server
+
+security:
+  - BearerAuth: [ ]
+
+tags:
+  - name: Accounts
+    summary: Accounts
+    description: Authentication, user accounts and profiles.
+    kind: nav
+  - name: Auth
+    summary: Authentication
+    description: Authentication and token management.
+    parent: Accounts
+    kind: nav
+  - name: Persons
+    summary: Persons
+    description: User accounts and profiles.
+    parent: Accounts
+    kind: nav
+
+  - name: Organization
+    summary: Organization
+    description: Companies and their teams.
+    kind: nav
+  - name: Companies
+    summary: Companies
+    description: Companies registered on the platform.
+    parent: Organization
+    kind: nav
+  - name: Teams
+    summary: Teams
+    description: Teams of a company.
+    parent: Organization
+    kind: nav
+
+  - name: Hiring
+    summary: Hiring
+    description: The hiring process from a vacancy to a hired candidate.
+    kind: nav
+  - name: Vacancies
+    summary: Vacancies
+    description: Vacancy catalogue and management.
+    parent: Hiring
+    kind: nav
+  - name: Applications
+    summary: Applications
+    description: Candidates' applications to vacancies and their resumes.
+    parent: Hiring
+    kind: nav
+  - name: Screening
+    summary: HR screening
+    description: HR screening and ranking of applications.
+    parent: Hiring
+    kind: nav
+  - name: Interviews
+    summary: Interviews
+    description: Live-coding interviews.
+    parent: Hiring
+    kind: nav
+
+  - name: Assessment
+    summary: Assessment
+    description: Contests and the task library.
+    kind: nav
+  - name: Contests
+    summary: Contests
+    description: Contests attached to vacancies.
+    parent: Assessment
+    kind: nav
+  - name: Tasks
+    summary: Tasks
+    description: Task library and tests.
+    parent: Assessment
+    kind: nav
+  - name: Submissions
+    summary: Submissions
+    description: Solutions submitted to tasks.
+    parent: Assessment
+    kind: nav
+
+  - name: Administration
+    summary: Administration
+    description: Analytics and platform configuration.
+    kind: nav
+  - name: Analytics
+    summary: Analytics
+    description: Productivity and hiring metrics.
+    parent: Administration
+    kind: nav
+  - name: Dictionaries
+    summary: Dictionaries
+    description: System dictionaries of skills and programming languages.
+    parent: Administration
+    kind: nav
+  - name: System
+    summary: System
+    description: Monitoring and configuration of the platform.
+    parent: Administration
+    kind: nav
+
+paths:
+  /api/auth/accounts:
+    $ref: "./paths/auth/auth.accounts.yaml"
+
+  /api/auth/sessions:
+    $ref: "./paths/auth/auth.sessions.yaml"
+
+  /api/auth/sessions/current:
+    $ref: "./paths/auth/auth.sessions.current.yaml"
+
+  /api/auth/sessions/current/tokens:
+    $ref: "./paths/auth/auth.sessions.current.tokens.yaml"
+
+  /api/persons:
+    $ref: "./paths/persons/persons.yaml"
+
+  /api/persons/me:
+    $ref: "./paths/persons/persons.me.yaml"
+
+  /api/persons/me/password:
+    $ref: "./paths/persons/persons.me.password.yaml"
+
+  /api/persons/{personId}:
+    $ref: "./paths/persons/persons.personId.yaml"
+
+  /api/companies:
+    $ref: "./paths/companies/companies.yaml"
+
+  /api/companies/{companyId}:
+    $ref: "./paths/companies/companies.companyId.yaml"
+
+  /api/teams:
+    $ref: "./paths/teams/teams.yaml"
+
+  /api/teams/{teamId}:
+    $ref: "./paths/teams/teams.teamId.yaml"
+
+  /api/teams/{teamId}/members:
+    $ref: "./paths/teams/teams.teamId.members.yaml"
+
+  /api/teams/{teamId}/members/{personId}:
+    $ref: "./paths/teams/teams.teamId.members.personId.yaml"
+
+  /api/skills:
+    $ref: "./paths/skills/skills.yaml"
+
+  /api/skills/{skillId}:
+    $ref: "./paths/skills/skills.skillId.yaml"
+
+  /api/languages:
+    $ref: "./paths/languages/languages.yaml"
+
+  /api/languages/{languageId}:
+    $ref: "./paths/languages/languages.languageId.yaml"
+
+  /api/vacancies:
+    $ref: "./paths/vacancies/vacancies.yaml"
+
+  /api/vacancies/{vacancyId}:
+    $ref: "./paths/vacancies/vacancies.vacancyId.yaml"
+
+  /api/vacancies/{vacancyId}/status:
+    $ref: "./paths/vacancies/vacancies.vacancyId.status.yaml"
+
+  /api/vacancies/{vacancyId}/contests:
+    $ref: "./paths/vacancies/vacancies.vacancyId.contests.yaml"
+
+  /api/vacancies/{vacancyId}/contests/{contestId}:
+    $ref: "./paths/vacancies/vacancies.vacancyId.contests.contestId.yaml"
+
+  /api/vacancies/{vacancyId}/leaderboard:
+    $ref: "./paths/vacancies/vacancies.vacancyId.leaderboard.yaml"
+
+  /api/resumes:
+    $ref: "./paths/resumes/resumes.yaml"
+
+  /api/resumes/{resumeId}/content:
+    $ref: "./paths/resumes/resumes.resumeId.content.yaml"
+
+  /api/applications:
+    $ref: "./paths/applications/applications.yaml"
+
+  /api/applications/{applicationId}:
+    $ref: "./paths/applications/applications.applicationId.yaml"
+
+  /api/applications/{applicationId}/responses:
+    $ref: "./paths/applications/applications.applicationId.responses.yaml"
+
+  /api/applications/{applicationId}/responses/{responseId}:
+    $ref: "./paths/applications/applications.applicationId.responses.responseId.yaml"
+
+  /api/applications/{applicationId}/status:
+    $ref: "./paths/applications/applications.applicationId.status.yaml"
+
+  /api/applications/{applicationId}/employment:
+    $ref: "./paths/applications/applications.applicationId.employment.yaml"
+
+  /api/screening/assignments:
+    $ref: "./paths/screening/screening.assignments.yaml"
+
+  /api/interviews:
+    $ref: "./paths/interviews/interviews.yaml"
+
+  /api/interviews/{interviewId}:
+    $ref: "./paths/interviews/interviews.interviewId.yaml"
+
+  /api/interviews/{interviewId}/connections:
+    $ref: "./paths/interviews/interviews.interviewId.connections.yaml"
+
+  /api/interviews/{interviewId}/status:
+    $ref: "./paths/interviews/interviews.interviewId.status.yaml"
+
+  /api/interviews/{interviewId}/feedback:
+    $ref: "./paths/interviews/interviews.interviewId.feedback.yaml"
+
+  /api/interviews/{interviewId}/recording:
+    $ref: "./paths/interviews/interviews.interviewId.recording.yaml"
+
+  /api/contests:
+    $ref: "./paths/contests/contests.yaml"
+
+  /api/contests/{contestId}:
+    $ref: "./paths/contests/contests.contestId.yaml"
+
+  /api/contests/{contestId}/tasks:
+    $ref: "./paths/contests/contests.contestId.tasks.yaml"
+
+  /api/contests/{contestId}/tasks/{taskId}:
+    $ref: "./paths/contests/contests.contestId.tasks.taskId.yaml"
+
+  /api/contests/{contestId}/results:
+    $ref: "./paths/contests/contests.contestId.results.yaml"
+
+  /api/tasks:
+    $ref: "./paths/tasks/tasks.yaml"
+
+  /api/tasks/{taskId}:
+    $ref: "./paths/tasks/tasks.taskId.yaml"
+
+  /api/tasks/{taskId}/tests:
+    $ref: "./paths/tasks/tasks.taskId.tests.yaml"
+
+  /api/tasks/{taskId}/tests/{testId}:
+    $ref: "./paths/tasks/tasks.taskId.tests.testId.yaml"
+
+  /api/submissions:
+    $ref: "./paths/submissions/submissions.yaml"
+
+  /api/submissions/{submissionId}:
+    $ref: "./paths/submissions/submissions.submissionId.yaml"
+
+  /api/submissions/{submissionId}/source:
+    $ref: "./paths/submissions/submissions.submissionId.source.yaml"
+
+  /api/analytics/hiring:
+    $ref: "./paths/analytics/analytics.hiring.yaml"
+
+  /api/analytics/productivity:
+    $ref: "./paths/analytics/analytics.productivity.yaml"
+
+  /api/analytics/persons/{personId}/statistics:
+    $ref: "./paths/analytics/analytics.persons.personId.statistics.yaml"
+
+  /api/system/health:
+    $ref: "./paths/system/system.health.yaml"
+
+  /api/system/logs:
+    $ref: "./paths/system/system.logs.yaml"
+
+  /api/system/settings:
+    $ref: "./paths/system/system.settings.yaml"
+
+  /api/system/runners:
+    $ref: "./paths/system/system.runners.yaml"
+
+  /api/system/runners/{runnerId}:
+    $ref: "./paths/system/system.runners.runnerId.yaml"
+
+components:
+  securitySchemes:
+    BearerAuth:
+      $ref: "./security/BearerAuth.yaml"
+
+  parameters:
+    PageNumber:
+      $ref: "./parameters/PageNumber.yaml"
+
+    PageSize:
+      $ref: "./parameters/PageSize.yaml"
+
+    SortOrder:
+      $ref: "./parameters/SortOrder.yaml"
+
+    DateFrom:
+      $ref: "./parameters/DateFrom.yaml"
+
+    DateTo:
+      $ref: "./parameters/DateTo.yaml"
+
+    PersonId:
+      $ref: "./parameters/PersonId.yaml"
+
+    CompanyId:
+      $ref: "./parameters/CompanyId.yaml"
+
+    TeamId:
+      $ref: "./parameters/TeamId.yaml"
+
+    SkillId:
+      $ref: "./parameters/SkillId.yaml"
+
+    LanguageId:
+      $ref: "./parameters/LanguageId.yaml"
+
+    VacancyId:
+      $ref: "./parameters/VacancyId.yaml"
+
+    ResumeId:
+      $ref: "./parameters/ResumeId.yaml"
+
+    ApplicationId:
+      $ref: "./parameters/ApplicationId.yaml"
+
+    ResponseId:
+      $ref: "./parameters/ResponseId.yaml"
+
+    InterviewId:
+      $ref: "./parameters/InterviewId.yaml"
+
+    ContestId:
+      $ref: "./parameters/ContestId.yaml"
+
+    TaskId:
+      $ref: "./parameters/TaskId.yaml"
+
+    TestId:
+      $ref: "./parameters/TestId.yaml"
+
+    SubmissionId:
+      $ref: "./parameters/SubmissionId.yaml"
+
+    RunnerId:
+      $ref: "./parameters/RunnerId.yaml"
+
+  headers:
+    SetRefreshCookie:
+      $ref: "./headers/SetRefreshCookie.yaml"
+
+    ContentDisposition:
+      $ref: "./headers/ContentDisposition.yaml"
+
+  responses:
+    BadRequest:
+      $ref: "./responses/BadRequest.yaml"
+
+    Unauthorized:
+      $ref: "./responses/Unauthorized.yaml"
+
+    Forbidden:
+      $ref: "./responses/Forbidden.yaml"
+
+    NotFound:
+      $ref: "./responses/NotFound.yaml"
+
+    Conflict:
+      $ref: "./responses/Conflict.yaml"
+
+    PayloadTooLarge:
+      $ref: "./responses/PayloadTooLarge.yaml"
+
+  schemas:
+    Role:
+      $ref: "./schemas/domain/Role.yaml"
+
+    Person:
+      $ref: "./schemas/domain/Person.yaml"
+
+    Company:
+      $ref: "./schemas/domain/Company.yaml"
+
+    Team:
+      $ref: "./schemas/domain/Team.yaml"
+
+    Skill:
+      $ref: "./schemas/domain/Skill.yaml"
+
+    Language:
+      $ref: "./schemas/domain/Language.yaml"
+
+    Vacancy:
+      $ref: "./schemas/domain/Vacancy.yaml"
+
+    VacancyStatus:
+      $ref: "./schemas/domain/VacancyStatus.yaml"
+
+    Resume:
+      $ref: "./schemas/domain/Resume.yaml"
+
+    Form:
+      $ref: "./schemas/domain/Form.yaml"
+
+    WorkFormat:
+      $ref: "./schemas/domain/WorkFormat.yaml"
+
+    Application:
+      $ref: "./schemas/domain/Application.yaml"
+
+    ApplicationStatus:
+      $ref: "./schemas/domain/ApplicationStatus.yaml"
+
+    ScoreMetrics:
+      $ref: "./schemas/domain/ScoreMetrics.yaml"
+
+    ApplicationResponse:
+      $ref: "./schemas/domain/ApplicationResponse.yaml"
+
+    LeaderboardEntry:
+      $ref: "./schemas/domain/LeaderboardEntry.yaml"
+
+    Interview:
+      $ref: "./schemas/domain/Interview.yaml"
+
+    InterviewStatus:
+      $ref: "./schemas/domain/InterviewStatus.yaml"
+
+    InterviewFeedback:
+      $ref: "./schemas/domain/InterviewFeedback.yaml"
+
+    InterviewDecision:
+      $ref: "./schemas/domain/InterviewDecision.yaml"
+
+    LiveSession:
+      $ref: "./schemas/domain/LiveSession.yaml"
+
+    Contest:
+      $ref: "./schemas/domain/Contest.yaml"
+
+    ContestResult:
+      $ref: "./schemas/domain/ContestResult.yaml"
+
+    Task:
+      $ref: "./schemas/domain/Task.yaml"
+
+    Test:
+      $ref: "./schemas/domain/Test.yaml"
+
+    Submission:
+      $ref: "./schemas/domain/Submission.yaml"
+
+    SubmissionStatus:
+      $ref: "./schemas/domain/SubmissionStatus.yaml"
+
+    SubmissionResult:
+      $ref: "./schemas/domain/SubmissionResult.yaml"
+
+    Verdict:
+      $ref: "./schemas/domain/Verdict.yaml"
+
+    PersonSummary:
+      $ref: "./schemas/summary/PersonSummary.yaml"
+
+    TeamSummary:
+      $ref: "./schemas/summary/TeamSummary.yaml"
+
+    VacancySummary:
+      $ref: "./schemas/summary/VacancySummary.yaml"
+
+    RegisterRequest:
+      $ref: "./schemas/request/RegisterRequest.yaml"
+
+    LoginRequest:
+      $ref: "./schemas/request/LoginRequest.yaml"
+
+    ProfileRequest:
+      $ref: "./schemas/request/ProfileRequest.yaml"
+
+    PasswordChangeRequest:
+      $ref: "./schemas/request/PasswordChangeRequest.yaml"
+
+    PersonCreateRequest:
+      $ref: "./schemas/request/PersonCreateRequest.yaml"
+
+    PersonUpdateRequest:
+      $ref: "./schemas/request/PersonUpdateRequest.yaml"
+
+    CompanyCreateRequest:
+      $ref: "./schemas/request/CompanyCreateRequest.yaml"
+
+    CompanyRequest:
+      $ref: "./schemas/request/CompanyRequest.yaml"
+
+    TeamRequest:
+      $ref: "./schemas/request/TeamRequest.yaml"
+
+    SkillRequest:
+      $ref: "./schemas/request/SkillRequest.yaml"
+
+    LanguageRequest:
+      $ref: "./schemas/request/LanguageRequest.yaml"
+
+    VacancyRequest:
+      $ref: "./schemas/request/VacancyRequest.yaml"
+
+    FormRequest:
+      $ref: "./schemas/request/FormRequest.yaml"
+
+    ApplicationRequest:
+      $ref: "./schemas/request/ApplicationRequest.yaml"
+
+    ApplicationStatusRequest:
+      $ref: "./schemas/request/ApplicationStatusRequest.yaml"
+
+    VacancyStatusRequest:
+      $ref: "./schemas/request/VacancyStatusRequest.yaml"
+
+    InterviewStatusRequest:
+      $ref: "./schemas/request/InterviewStatusRequest.yaml"
+
+    EmploymentRequest:
+      $ref: "./schemas/request/EmploymentRequest.yaml"
+
+    InterviewRequest:
+      $ref: "./schemas/request/InterviewRequest.yaml"
+
+    InterviewFeedbackRequest:
+      $ref: "./schemas/request/InterviewFeedbackRequest.yaml"
+
+    ContestRequest:
+      $ref: "./schemas/request/ContestRequest.yaml"
+
+    TaskRequest:
+      $ref: "./schemas/request/TaskRequest.yaml"
+
+    TestRequest:
+      $ref: "./schemas/request/TestRequest.yaml"
+
+    SubmissionRequest:
+      $ref: "./schemas/request/SubmissionRequest.yaml"
+
+    RunnerServerRequest:
+      $ref: "./schemas/request/RunnerServerRequest.yaml"
+
+    TokenResponse:
+      $ref: "./schemas/response/TokenResponse.yaml"
+
+    VacancyStatusResult:
+      $ref: "./schemas/response/VacancyStatusResult.yaml"
+
+    PageMetadata:
+      $ref: "./schemas/page/PageMetadata.yaml"
+
+    PersonPage:
+      $ref: "./schemas/page/PersonPage.yaml"
+
+    CompanyPage:
+      $ref: "./schemas/page/CompanyPage.yaml"
+
+    TeamPage:
+      $ref: "./schemas/page/TeamPage.yaml"
+
+    VacancyPage:
+      $ref: "./schemas/page/VacancyPage.yaml"
+
+    ApplicationPage:
+      $ref: "./schemas/page/ApplicationPage.yaml"
+
+    LeaderboardPage:
+      $ref: "./schemas/page/LeaderboardPage.yaml"
+
+    InterviewPage:
+      $ref: "./schemas/page/InterviewPage.yaml"
+
+    ContestPage:
+      $ref: "./schemas/page/ContestPage.yaml"
+
+    TaskPage:
+      $ref: "./schemas/page/TaskPage.yaml"
+
+    SubmissionPage:
+      $ref: "./schemas/page/SubmissionPage.yaml"
+
+    LogEntryPage:
+      $ref: "./schemas/page/LogEntryPage.yaml"
+
+    HiringStatistics:
+      $ref: "./schemas/analytics/HiringStatistics.yaml"
+
+    ProductivityStatistics:
+      $ref: "./schemas/analytics/ProductivityStatistics.yaml"
+
+    PersonStatistics:
+      $ref: "./schemas/analytics/PersonStatistics.yaml"
+
+    ActivityMetrics:
+      $ref: "./schemas/analytics/ActivityMetrics.yaml"
+
+    Granularity:
+      $ref: "./schemas/analytics/Granularity.yaml"
+
+    SystemHealth:
+      $ref: "./schemas/system/SystemHealth.yaml"
+
+    ComponentHealth:
+      $ref: "./schemas/system/ComponentHealth.yaml"
+
+    HealthStatus:
+      $ref: "./schemas/system/HealthStatus.yaml"
+
+    LogEntry:
+      $ref: "./schemas/system/LogEntry.yaml"
+
+    LogLevel:
+      $ref: "./schemas/system/LogLevel.yaml"
+
+    SystemSettings:
+      $ref: "./schemas/system/SystemSettings.yaml"
+
+    RunnerServer:
+      $ref: "./schemas/system/RunnerServer.yaml"
+
+    Problem:
+      $ref: "./schemas/error/Problem.yaml"
+
+    FieldError:
+      $ref: "./schemas/error/FieldError.yaml"

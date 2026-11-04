@@ -1,0 +1,38 @@
+parameters:
+  - $ref: "../../openapi.yaml#/components/parameters/ApplicationId"
+put:
+  tags: [ Applications ]
+  operationId: updateApplicationStatus
+  summary: Reject an application
+  description: |
+    Only `REJECTED` may be set directly: it interrupts the selection at any stage and notifies
+    the candidate by email. Other statuses are changed by the system and by the interview feedback.
+
+    **Roles:** `HR`, `TEAM_LEAD` of the team.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../../openapi.yaml#/components/schemas/ApplicationStatusRequest"
+  responses:
+    '200':
+      description: The rejected application.
+      content:
+        application/json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Application"
+    '400':
+      $ref: "../../openapi.yaml#/components/responses/BadRequest"
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"
+    '404':
+      $ref: "../../openapi.yaml#/components/responses/NotFound"
+    '409':
+      description: The application is already rejected or has an offer.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Problem"

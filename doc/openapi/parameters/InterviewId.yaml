@@ -1,0 +1,8 @@
+name: interviewId
+in: path
+required: true
+description: Identifier of the interview.
+schema:
+  type: integer
+  format: int64
+  minimum: 1

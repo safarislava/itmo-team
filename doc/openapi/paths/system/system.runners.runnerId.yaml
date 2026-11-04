@@ -1,0 +1,19 @@
+parameters:
+  - $ref: "../../openapi.yaml#/components/parameters/RunnerId"
+delete:
+  tags: [ System ]
+  operationId: deleteRunner
+  summary: Remove a Runner Server from the pool
+  description: |
+    Submissions running on the server are re-queued. Past results keep no reference to it.
+
+    **Roles:** `ADMIN`.
+  responses:
+    '204':
+      description: The server was removed.
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"
+    '404':
+      $ref: "../../openapi.yaml#/components/responses/NotFound"

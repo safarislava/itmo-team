@@ -1,0 +1,11 @@
+# TODO: who and when changes status?
+type: string
+description: |
+  Stage of the selection process.
+  - `NEW` — submitted, the contest has not been started yet.
+  - `CONTEST` — the candidate is solving the selection contest.
+  - `REVIEW` — the contest is over, the application is screened by HRs.
+  - `INTERVIEW` — a live-coding interview is scheduled or held.
+  - `OFFER` — the team lead decided to hire the candidate.
+  - `REJECTED` — the application was rejected at any stage or the vacancy was closed.
+enum: [ NEW, CONTEST, REVIEW, INTERVIEW, OFFER, REJECTED ]

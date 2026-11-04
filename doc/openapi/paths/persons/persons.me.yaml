@@ -1,0 +1,41 @@
+get:
+  tags: [ Persons ]
+  operationId: getCurrentPerson
+  summary: Get the profile of the current user
+  responses:
+    '200':
+      description: The current user.
+      content:
+        application/json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Person"
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+put:
+  tags: [ Persons ]
+  operationId: updateCurrentPerson
+  summary: Edit the profile of the current user
+  description: Allows a developer to link the GitHub account used for metrics.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../../openapi.yaml#/components/schemas/ProfileRequest"
+  responses:
+    '200':
+      description: The updated profile.
+      content:
+        application/json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Person"
+    '400':
+      $ref: "../../openapi.yaml#/components/responses/BadRequest"
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '409':
+      description: The GitHub account is already linked to another user.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Problem"

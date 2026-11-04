@@ -1,0 +1,3 @@
+type: string
+description: Verdict of testing a solution.
+enum: [ OK, WRONG_ANSWER, TIME_LIMIT, MEMORY_LIMIT, RUNTIME_ERROR, COMPILATION_ERROR ]

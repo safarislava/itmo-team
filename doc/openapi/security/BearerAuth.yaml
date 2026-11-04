@@ -1,0 +1,5 @@
+type: http
+scheme: bearer
+bearerFormat: JWT
+description: |
+  Access token passed as `Authorization: Bearer <token>`. Access token is valid for 10 minutes, refresh - for 2 weeks.

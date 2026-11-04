@@ -1,0 +1,43 @@
+get:
+  tags: [ System ]
+  operationId: getSystemSettings
+  summary: Get the global settings
+  description: "**Roles:** `ADMIN`."
+  responses:
+    '200':
+      description: The global settings.
+      content:
+        application/json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/SystemSettings"
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"
+put:
+  tags: [ System ]
+  operationId: updateSystemSettings
+  summary: Change the global settings
+  description: |
+    The new values apply to subsequent requests without a restart.
+
+    **Roles:** `ADMIN`.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../../openapi.yaml#/components/schemas/SystemSettings"
+  responses:
+    '200':
+      description: The updated settings.
+      content:
+        application/json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/SystemSettings"
+    '400':
+      $ref: "../../openapi.yaml#/components/responses/BadRequest"
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"

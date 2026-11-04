@@ -1,0 +1,61 @@
+type: object
+description: Aggregated hiring metrics for the selected period.
+required: [ from, to, openVacancies, closedVacancies, applications, averageApplicationsPerVacancy, interviewsScheduled, interviewsCompleted, offers ]
+properties:
+  from:
+    type: string
+    format: date-time
+  to:
+    type: string
+    format: date-time
+  openVacancies:
+    type: integer
+    format: int32
+    minimum: 0
+    description: Vacancies in the status `OPEN` at the end of the period.
+  closedVacancies:
+    type: integer
+    format: int32
+    minimum: 0
+    description: Vacancies closed within the period.
+  applications:
+    type: object
+    description: Applications submitted within the period.
+    required: [ total, byStatus ]
+    properties:
+      total:
+        type: integer
+        format: int32
+        minimum: 0
+      byStatus:
+        type: object
+        description: Number of applications per current status, keys are `ApplicationStatus` values.
+        propertyNames:
+          $ref: "../../openapi.yaml#/components/schemas/ApplicationStatus"
+        additionalProperties:
+          type: integer
+          format: int32
+          minimum: 0
+        examples:
+          - NEW: 12
+            CONTEST: 30
+            REVIEW: 8
+            INTERVIEW: 4
+            OFFER: 1
+            REJECTED: 25
+  averageApplicationsPerVacancy:
+    type: number
+    format: double
+    minimum: 0
+  interviewsScheduled:
+    type: integer
+    format: int32
+    minimum: 0
+  interviewsCompleted:
+    type: integer
+    format: int32
+    minimum: 0
+  offers:
+    type: integer
+    format: int32
+    minimum: 0

@@ -1,0 +1,8 @@
+type: string
+description: |
+  Lifecycle of a vacancy.
+  - `DRAFT` — created, visible only to the company, contests may be attached.
+  - `OPEN` — published in the catalogue, accepts applications.
+  - `CLOSED` — no longer accepts applications.
+  - `ARCHIVE` — closed more than 6 months ago, set automatically every day at 00:00.
+enum: [ DRAFT, OPEN, CLOSED, ARCHIVE ]

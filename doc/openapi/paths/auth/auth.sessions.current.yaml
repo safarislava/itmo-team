@@ -1,0 +1,19 @@
+delete:
+  tags: [ Auth ]
+  operationId: deleteSession
+  summary: Sign out
+  description: Ends the current session, revokes its refresh token and clears the cookie.
+  responses:
+    '204':
+      description: The user was signed out.
+      headers:
+        Set-Cookie:
+          description: Expires the `refreshToken` cookie.
+          schema:
+            type: string
+          examples:
+            expired:
+              summary: The cookie is expired immediately
+              serializedValue: refreshToken=; Path=/api/auth; Max-Age=0; HttpOnly; Secure; SameSite=Strict
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"

@@ -1,0 +1,79 @@
+parameters:
+  - $ref: "../../openapi.yaml#/components/parameters/PersonId"
+get:
+  tags: [ Persons ]
+  operationId: getPerson
+  summary: Get a user
+  description: |
+    Internal users see the users of the own company and the candidates who applied to its vacancies.
+
+    **Roles:** `HR`, `TEAM_LEAD`, `MANAGER`, `ADMIN`.
+  responses:
+    '200':
+      description: The user.
+      content:
+        application/json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Person"
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"
+    '404':
+      $ref: "../../openapi.yaml#/components/responses/NotFound"
+put:
+  tags: [ Persons ]
+  operationId: updatePerson
+  summary: Edit an internal user
+  description: |
+    Changes the attributes and the role of a user.
+
+    **Roles:** `HR`, `ADMIN`.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../../openapi.yaml#/components/schemas/PersonUpdateRequest"
+  responses:
+    '200':
+      description: The updated user.
+      content:
+        application/json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Person"
+    '400':
+      $ref: "../../openapi.yaml#/components/responses/BadRequest"
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"
+    '404':
+      $ref: "../../openapi.yaml#/components/responses/NotFound"
+    '409':
+      $ref: "../../openapi.yaml#/components/responses/Conflict"
+delete:
+  tags: [ Persons ]
+  operationId: deletePerson
+  summary: Delete a user
+  description: |
+    Deletes the account together with its applications, interviews as a candidate, submissions
+    and activity reports. Team leads leading a team and authors of tasks or assessments can not
+    be deleted.
+
+    **Roles:** `HR`, `ADMIN`.
+  responses:
+    '204':
+      description: The user was deleted.
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"
+    '404':
+      $ref: "../../openapi.yaml#/components/responses/NotFound"
+    '409':
+      description: The user is referenced by a team, a task, an assessment or an interview as a team lead.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Problem"

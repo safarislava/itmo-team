@@ -1,0 +1,95 @@
+get:
+  tags: [ Applications ]
+  operationId: listApplications
+  summary: List applications
+  description: |
+    A candidate sees the own applications, internal users see the applications
+    to vacancies of the own company.
+
+    **Roles:** `CANDIDATE`, `HR`, `TEAM_LEAD`, `MANAGER`, `ADMIN`.
+  parameters:
+    - $ref: "../../openapi.yaml#/components/parameters/PageNumber"
+    - $ref: "../../openapi.yaml#/components/parameters/PageSize"
+    - name: sort
+      in: query
+      description: Column to sort by.
+      schema:
+        type: string
+        default: id
+        enum: [ id, status, vacancy.title, candidate.name ]
+    - $ref: "../../openapi.yaml#/components/parameters/SortOrder"
+    - name: vacancyId
+      in: query
+      schema:
+        type: integer
+        format: int64
+    - name: teamId
+      in: query
+      description: Only applications to vacancies of this team.
+      schema:
+        type: integer
+        format: int64
+    - name: candidateId
+      in: query
+      description: Ignored for candidates.
+      schema:
+        type: integer
+        format: int64
+    - name: status
+      in: query
+      schema:
+        $ref: "../../openapi.yaml#/components/schemas/ApplicationStatus"
+  responses:
+    '200':
+      description: A page of applications.
+      content:
+        application/json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/ApplicationPage"
+    '400':
+      $ref: "../../openapi.yaml#/components/responses/BadRequest"
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"
+post:
+  tags: [ Applications ]
+  operationId: createApplication
+  summary: Apply to a vacancy
+  description: |
+    Saves the form and the application of the current candidate.
+    The candidate becomes a participant of the contests attached to the vacancy and gets
+    a single access to them.
+
+    **Roles:** `CANDIDATE`.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../../openapi.yaml#/components/schemas/ApplicationRequest"
+  responses:
+    '201':
+      description: The application was created with the status `NEW`.
+      content:
+        application/json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Application"
+    '400':
+      $ref: "../../openapi.yaml#/components/responses/BadRequest"
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"
+    '404':
+      description: The vacancy or the resume does not exist.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Problem"
+    '409':
+      description: The vacancy is not open or the candidate has already applied to it.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Problem"

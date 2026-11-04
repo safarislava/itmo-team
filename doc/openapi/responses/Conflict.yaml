@@ -1,0 +1,15 @@
+summary: Conflict
+description: The operation conflicts with the current state of the object or with a uniqueness constraint.
+content:
+  application/problem+json:
+    schema:
+      $ref: "../openapi.yaml#/components/schemas/Problem"
+    examples:
+      duplicateApplication:
+        summary: The candidate has already applied
+        dataValue:
+          type: about:blank
+          title: Conflict
+          status: 409
+          detail: Candidate has already applied to vacancy 42
+          instance: /api/applications

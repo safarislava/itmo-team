@@ -1,0 +1,12 @@
+type: object
+description: Short representation of a vacancy embedded into other objects.
+required: [ id, title, status ]
+properties:
+  id:
+    type: integer
+    format: int64
+    minimum: 1
+  title:
+    type: string
+  status:
+    $ref: "../../openapi.yaml#/components/schemas/VacancyStatus"

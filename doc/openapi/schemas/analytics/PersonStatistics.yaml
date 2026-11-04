@@ -1,0 +1,11 @@
+description: GitHub activity of one employee for the period.
+allOf:
+  - $ref: "../../openapi.yaml#/components/schemas/ProductivityStatistics"
+  - type: object
+    required: [ person, totals ]
+    properties:
+      person:
+        $ref: "../../openapi.yaml#/components/schemas/PersonSummary"
+      totals:
+        description: Sums over the whole period.
+        $ref: "../../openapi.yaml#/components/schemas/ActivityMetrics"

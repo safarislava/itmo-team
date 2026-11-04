@@ -1,0 +1,15 @@
+type: object
+required: [ applicationId, scheduledStart, scheduledEnd ]
+properties:
+  applicationId:
+    type: integer
+    format: int64
+    description: Identifier of an application to a vacancy of the team of the current team lead.
+  scheduledStart:
+    type: string
+    format: date-time
+    description: Must be in the future.
+  scheduledEnd:
+    type: string
+    format: date-time
+    description: Must be later than `scheduledStart`.

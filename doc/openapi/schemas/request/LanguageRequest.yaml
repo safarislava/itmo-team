@@ -1,0 +1,12 @@
+type: object
+required: [ name, version ]
+properties:
+  name:
+    type: string
+    minLength: 1
+    maxLength: 50
+  version:
+    type: string
+    minLength: 1
+    maxLength: 20
+    description: The pair of name and version must be unique.

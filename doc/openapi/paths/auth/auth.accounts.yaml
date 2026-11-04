@@ -1,0 +1,33 @@
+post:
+  tags: [ Auth ]
+  operationId: createAccount
+  summary: Register a candidate
+  description: |
+    Creates an account with the role `CANDIDATE` and signs the candidate in.
+
+    **Public.**
+  security: [ ]
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../../openapi.yaml#/components/schemas/RegisterRequest"
+  responses:
+    '201':
+      description: The candidate was registered and signed in.
+      headers:
+        Set-Cookie:
+          $ref: "../../openapi.yaml#/components/headers/SetRefreshCookie"
+      content:
+        application/json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/TokenResponse"
+    '400':
+      $ref: "../../openapi.yaml#/components/responses/BadRequest"
+    '409':
+      description: A user with this email already exists.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Problem"

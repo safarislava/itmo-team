@@ -1,0 +1,32 @@
+post:
+  tags: [ Auth ]
+  operationId: createSession
+  summary: Sign in
+  description: |
+    Starts a session: issues an access token in the body and a refresh token of the session
+    in an `HttpOnly` cookie.
+  security: [ ]
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../../openapi.yaml#/components/schemas/LoginRequest"
+  responses:
+    '201':
+      description: The user was signed in.
+      headers:
+        Set-Cookie:
+          $ref: "../../openapi.yaml#/components/headers/SetRefreshCookie"
+      content:
+        application/json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/TokenResponse"
+    '400':
+      $ref: "../../openapi.yaml#/components/responses/BadRequest"
+    '401':
+      description: The email or the password is wrong.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Problem"

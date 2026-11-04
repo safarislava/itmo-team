@@ -1,0 +1,15 @@
+summary: Content too large
+description: The uploaded file or source code exceeds the configured size limit.
+content:
+  application/problem+json:
+    schema:
+      $ref: "../openapi.yaml#/components/schemas/Problem"
+    examples:
+      resumeTooLarge:
+        summary: The resume exceeds the size limit
+        dataValue:
+          type: about:blank
+          title: Content Too Large
+          status: 413
+          detail: Resume must not exceed 5 MB
+          instance: /api/resumes

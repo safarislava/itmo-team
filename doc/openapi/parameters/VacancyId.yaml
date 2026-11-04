@@ -1,0 +1,8 @@
+name: vacancyId
+in: path
+required: true
+description: Identifier of the vacancy.
+schema:
+  type: integer
+  format: int64
+  minimum: 1

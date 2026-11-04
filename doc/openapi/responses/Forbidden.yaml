@@ -1,0 +1,15 @@
+summary: Forbidden
+description: The role of the user or the ownership of the object does not allow the operation.
+content:
+  application/problem+json:
+    schema:
+      $ref: "../openapi.yaml#/components/schemas/Problem"
+    examples:
+      notTeamLead:
+        summary: The user is not a team lead of the team
+        dataValue:
+          type: about:blank
+          title: Forbidden
+          status: 403
+          detail: Only a team lead of the team may edit its vacancies
+          instance: /api/vacancies/42

@@ -1,0 +1,15 @@
+summary: Unauthorized
+description: The access token is missing, malformed or expired.
+content:
+  application/problem+json:
+    schema:
+      $ref: "../openapi.yaml#/components/schemas/Problem"
+    examples:
+      tokenExpired:
+        summary: The access token has expired
+        dataValue:
+          type: about:blank
+          title: Unauthorized
+          status: 401
+          detail: Access token has expired
+          instance: /api/applications

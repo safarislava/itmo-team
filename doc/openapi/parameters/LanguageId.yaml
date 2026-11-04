@@ -1,0 +1,8 @@
+name: languageId
+in: path
+required: true
+description: Identifier of the programming language.
+schema:
+  type: integer
+  format: int32
+  minimum: 1

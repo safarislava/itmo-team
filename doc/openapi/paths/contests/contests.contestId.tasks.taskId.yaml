@@ -1,0 +1,43 @@
+parameters:
+  - $ref: "../../openapi.yaml#/components/parameters/ContestId"
+  - $ref: "../../openapi.yaml#/components/parameters/TaskId"
+put:
+  tags: [ Contests ]
+  operationId: addTaskToContest
+  summary: Add a task to a contest
+  description: "**Roles:** `TEAM_LEAD`."
+  responses:
+    '204':
+      description: The task is a part of the contest.
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"
+    '404':
+      $ref: "../../openapi.yaml#/components/responses/NotFound"
+    '409':
+      description: The contest has already started.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Problem"
+delete:
+  tags: [ Contests ]
+  operationId: removeTaskFromContest
+  summary: Remove a task from a contest
+  description: "**Roles:** `TEAM_LEAD`."
+  responses:
+    '204':
+      description: The task is no longer a part of the contest.
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"
+    '404':
+      $ref: "../../openapi.yaml#/components/responses/NotFound"
+    '409':
+      description: The contest has already started.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Problem"

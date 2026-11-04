@@ -1,0 +1,20 @@
+type: object
+description: Counters of the GitHub activity.
+required: [ countOpenedPr, countClosedPr, countReviewedPr, countCommits ]
+properties:
+  countOpenedPr:
+    type: integer
+    format: int32
+    minimum: 0
+  countClosedPr:
+    type: integer
+    format: int32
+    minimum: 0
+  countReviewedPr:
+    type: integer
+    format: int32
+    minimum: 0
+  countCommits:
+    type: integer
+    format: int32
+    minimum: 0

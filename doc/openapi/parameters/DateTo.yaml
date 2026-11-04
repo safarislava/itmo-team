@@ -1,0 +1,6 @@
+name: to
+in: query
+description: Exclusive end of the time interval.
+schema:
+  type: string
+  format: date-time

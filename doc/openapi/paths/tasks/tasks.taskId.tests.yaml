@@ -1,0 +1,90 @@
+parameters:
+  - $ref: "../../openapi.yaml#/components/parameters/TaskId"
+get:
+  tags: [ Tasks ]
+  operationId: listTests
+  summary: List tests of a task
+  description: |
+    Candidates get only the tests that are not hidden, i.e. the examples of the statement.
+
+    **Roles:** `CANDIDATE` (participant of a running contest with the task), `TEAM_LEAD`, `ADMIN`.
+  responses:
+    '200':
+      description: Tests of the task.
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "../../openapi.yaml#/components/schemas/Test"
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"
+    '404':
+      $ref: "../../openapi.yaml#/components/responses/NotFound"
+post:
+  tags: [ Tasks ]
+  operationId: createTest
+  summary: Add a test to a task
+  description: "**Roles:** `TEAM_LEAD` (author), `ADMIN`."
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../../openapi.yaml#/components/schemas/TestRequest"
+  responses:
+    '201':
+      description: The test was created.
+      content:
+        application/json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Test"
+    '400':
+      $ref: "../../openapi.yaml#/components/responses/BadRequest"
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"
+    '404':
+      $ref: "../../openapi.yaml#/components/responses/NotFound"
+put:
+  tags: [ Tasks ]
+  operationId: replaceTests
+  summary: Replace the tests of a task with an archive
+  description: |
+    Deletes the existing tests of the task and creates new ones from a ZIP archive of file pairs
+    `<name>.in` and `<name>.out`. All created tests are hidden.
+
+    **Roles:** `TEAM_LEAD` (author), `ADMIN`.
+  requestBody:
+    required: true
+    content:
+      application/zip:
+        schema:
+          type: string
+          contentMediaType: application/zip
+  responses:
+    '200':
+      description: The new tests of the task, in the order of file names.
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "../../openapi.yaml#/components/schemas/Test"
+    '400':
+      description: The archive is malformed or a file has no pair.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Problem"
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"
+    '404':
+      $ref: "../../openapi.yaml#/components/responses/NotFound"
+    '413':
+      $ref: "../../openapi.yaml#/components/responses/PayloadTooLarge"

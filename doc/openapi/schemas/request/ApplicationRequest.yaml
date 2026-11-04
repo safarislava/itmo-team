@@ -1,0 +1,17 @@
+type: object
+required: [ vacancyId, resumeId, form, personalDataConsent ]
+properties:
+  vacancyId:
+    type: integer
+    format: int64
+    description: Identifier of an `OPEN` vacancy the candidate has not applied to yet.
+  resumeId:
+    type: integer
+    format: int64
+    description: Identifier of a resume previously uploaded by the candidate via `/api/resumes`.
+  form:
+    $ref: "../../openapi.yaml#/components/schemas/FormRequest"
+  personalDataConsent:
+    type: boolean
+    const: true
+    description: Explicit consent to the processing of personal data (152-FZ).

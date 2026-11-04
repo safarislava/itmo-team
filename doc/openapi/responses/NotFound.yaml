@@ -1,0 +1,15 @@
+summary: Not found
+description: The object does not exist or is not visible to the user.
+content:
+  application/problem+json:
+    schema:
+      $ref: "../openapi.yaml#/components/schemas/Problem"
+    examples:
+      vacancyNotFound:
+        summary: The vacancy does not exist
+        dataValue:
+          type: about:blank
+          title: Not Found
+          status: 404
+          detail: Vacancy with id 42 was not found
+          instance: /api/vacancies/42

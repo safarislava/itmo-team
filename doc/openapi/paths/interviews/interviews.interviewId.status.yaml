@@ -1,0 +1,41 @@
+parameters:
+  - $ref: "../../openapi.yaml#/components/parameters/InterviewId"
+put:
+  tags: [ Interviews ]
+  operationId: updateInterviewStatus
+  summary: Finish or cancel an interview
+  description: |
+    Only a `SCHEDULED` interview may change its status.
+    - `COMPLETED` closes the room, stops the recording and saves it for 1 month. The feedback
+      is then left at `/api/interviews/{interviewId}/feedback`.
+    - `CANCELLED` frees the time slot and notifies the candidate. A new interview may be
+      scheduled for the application.
+
+    **Roles:** `TEAM_LEAD` of the interview.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../../openapi.yaml#/components/schemas/InterviewStatusRequest"
+  responses:
+    '200':
+      description: The interview with the new status.
+      content:
+        application/json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Interview"
+    '400':
+      $ref: "../../openapi.yaml#/components/responses/BadRequest"
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"
+    '404':
+      $ref: "../../openapi.yaml#/components/responses/NotFound"
+    '409':
+      description: The interview is not scheduled.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Problem"

@@ -1,0 +1,63 @@
+parameters:
+  - $ref: "../../openapi.yaml#/components/parameters/TaskId"
+get:
+  tags: [ Tasks ]
+  operationId: getTask
+  summary: Get a task
+  description: "**Roles:** `CANDIDATE` (participant of a running contest with the task), `TEAM_LEAD`, `ADMIN`."
+  responses:
+    '200':
+      description: The task.
+      content:
+        application/json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Task"
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"
+    '404':
+      $ref: "../../openapi.yaml#/components/responses/NotFound"
+put:
+  tags: [ Tasks ]
+  operationId: updateTask
+  summary: Edit a task
+  description: "**Roles:** `TEAM_LEAD` (author), `ADMIN`."
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../../openapi.yaml#/components/schemas/TaskRequest"
+  responses:
+    '200':
+      description: The updated task.
+      content:
+        application/json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Task"
+    '400':
+      $ref: "../../openapi.yaml#/components/responses/BadRequest"
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"
+    '404':
+      $ref: "../../openapi.yaml#/components/responses/NotFound"
+delete:
+  tags: [ Tasks ]
+  operationId: deleteTask
+  summary: Delete a task
+  description: |
+    Deletes the task with its tests and submissions and removes it from all contests.
+
+    **Roles:** `TEAM_LEAD` (author), `ADMIN`.
+  responses:
+    '204':
+      description: The task was deleted.
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"
+    '404':
+      $ref: "../../openapi.yaml#/components/responses/NotFound"

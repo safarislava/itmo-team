@@ -1,0 +1,12 @@
+type: object
+description: Attributes of the own profile a user may change.
+required: [ name ]
+properties:
+  name:
+    type: string
+    minLength: 1
+    maxLength: 100
+  githubId:
+    type: [ integer, "null" ]
+    format: int64
+    description: Identifier of the GitHub account, must be unique among all users.

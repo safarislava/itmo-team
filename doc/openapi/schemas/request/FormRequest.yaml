@@ -1,0 +1,28 @@
+type: object
+description: Each text field, if present, must contain at least one non-whitespace character.
+properties:
+  university:
+    type: [ string, "null" ]
+    minLength: 1
+    maxLength: 255
+  motivation:
+    type: [ string, "null" ]
+    minLength: 1
+  petProjects:
+    type: [ string, "null" ]
+    minLength: 1
+  jobExp:
+    type: [ string, "null" ]
+    minLength: 1
+  workFormat:
+    oneOf:
+      - $ref: "../../openapi.yaml#/components/schemas/WorkFormat"
+      - type: "null"
+  skillIds:
+    type: array
+    description: Identifiers of existing skills from the dictionary.
+    uniqueItems: true
+    default: [ ]
+    items:
+      type: integer
+      format: int64

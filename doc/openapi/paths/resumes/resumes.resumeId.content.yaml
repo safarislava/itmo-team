@@ -1,0 +1,40 @@
+parameters:
+  - $ref: "../../openapi.yaml#/components/parameters/ResumeId"
+get:
+  tags: [ Applications ]
+  operationId: downloadResume
+  summary: Download a resume
+  description: |
+    A candidate may download only the own resumes, internal users only the resumes attached
+    to applications to vacancies of the own company.
+
+    **Roles:** `CANDIDATE`, `HR`, `TEAM_LEAD`, `ADMIN`.
+  responses:
+    '200':
+      description: Content of the resume file.
+      headers:
+        Content-Disposition:
+          $ref: "../../openapi.yaml#/components/headers/ContentDisposition"
+      content:
+        application/pdf:
+          schema:
+            type: string
+            contentMediaType: application/pdf
+        image/png:
+          schema:
+            type: string
+            contentMediaType: image/png
+        image/jpeg:
+          schema:
+            type: string
+            contentMediaType: image/jpeg
+        application/vnd.openxmlformats-officedocument.wordprocessingml.document:
+          schema:
+            type: string
+            contentMediaType: application/vnd.openxmlformats-officedocument.wordprocessingml.document
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"
+    '404':
+      $ref: "../../openapi.yaml#/components/responses/NotFound"

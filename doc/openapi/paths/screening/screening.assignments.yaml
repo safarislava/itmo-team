@@ -1,0 +1,26 @@
+# TODO: think about how to distribute applications between HRs correctly
+post:
+  tags: [ Screening ]
+  operationId: takeNextApplication
+  summary: Take the next application for screening
+  description: |
+    Assigns the next application in the status `REVIEW` of the own company to the current HR
+    and returns it. Applications are distributed evenly among
+    online HRs and prioritised: first those assessed once by another HR, then by the
+    contest results. Applications already assessed by the current HR are skipped.
+    An assigned application stays reserved for 30 minutes.
+
+    **Roles:** `HR`.
+  responses:
+    '200':
+      description: The application assigned to the HR.
+      content:
+        application/json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Application"
+    '204':
+      description: The screening queue is empty.
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"

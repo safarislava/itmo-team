@@ -1,0 +1,43 @@
+parameters:
+  - $ref: "../../openapi.yaml#/components/parameters/TaskId"
+  - $ref: "../../openapi.yaml#/components/parameters/TestId"
+put:
+  tags: [ Tasks ]
+  operationId: updateTest
+  summary: Edit a test
+  description: "**Roles:** `TEAM_LEAD` (author), `ADMIN`."
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../../openapi.yaml#/components/schemas/TestRequest"
+  responses:
+    '200':
+      description: The updated test.
+      content:
+        application/json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Test"
+    '400':
+      $ref: "../../openapi.yaml#/components/responses/BadRequest"
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"
+    '404':
+      $ref: "../../openapi.yaml#/components/responses/NotFound"
+delete:
+  tags: [ Tasks ]
+  operationId: deleteTest
+  summary: Delete a test
+  description: "**Roles:** `TEAM_LEAD` (author), `ADMIN`."
+  responses:
+    '204':
+      description: The test was deleted.
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"
+    '404':
+      $ref: "../../openapi.yaml#/components/responses/NotFound"

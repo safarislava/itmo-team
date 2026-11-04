@@ -1,0 +1,36 @@
+# TODO: where to keep global system settings? Maybe table in database?
+# And how to change and apply them without full system reload?
+type: object
+description: Global settings of the platform.
+required: [ maxTimeLimit, maxMemoryLimit, maxResumeSize, maxSourceCodeSize, maxAttemptsPerTask ]
+properties:
+  maxTimeLimit:
+    type: integer
+    format: int32
+    minimum: 1
+    description: Upper bound of the time limit of a task, in milliseconds.
+    examples: [ 10000 ]
+  maxMemoryLimit:
+    type: integer
+    format: int32
+    minimum: 1
+    description: Upper bound of the memory limit of a task, in kilobytes.
+    examples: [ 524288 ]
+  maxResumeSize:
+    type: integer
+    format: int64
+    minimum: 1
+    description: Maximum size of an uploaded resume, in bytes.
+    examples: [ 5242880 ]
+  maxSourceCodeSize:
+    type: integer
+    format: int64
+    minimum: 1
+    description: Maximum size of submitted source code, in bytes.
+    examples: [ 2097152 ]
+  maxAttemptsPerTask:
+    type: integer
+    format: int32
+    minimum: 1
+    description: Number of submissions allowed per task within a contest.
+    examples: [ 3 ]

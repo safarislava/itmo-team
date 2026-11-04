@@ -1,0 +1,61 @@
+parameters:
+  - $ref: "../../openapi.yaml#/components/parameters/ApplicationId"
+get:
+  tags: [ Screening ]
+  operationId: listApplicationResponses
+  summary: List HR assessments of an application
+  description: "**Roles:** `HR`, `TEAM_LEAD`, `ADMIN`."
+  responses:
+    '200':
+      description: Assessments of the application.
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "../../openapi.yaml#/components/schemas/ApplicationResponse"
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"
+    '404':
+      $ref: "../../openapi.yaml#/components/responses/NotFound"
+post:
+  tags: [ Screening ]
+  operationId: createApplicationResponse
+  summary: Assess an application
+  description: |
+    Saves the metrics set by the current HR and recalculates the averaged score.
+    After the first assessment the application returns to the screening queue for a second HR,
+    after the second one it leaves the queue.
+
+    **Roles:** `HR`.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../../openapi.yaml#/components/schemas/ScoreMetrics"
+  responses:
+    '201':
+      description: The assessment was saved.
+      content:
+        application/json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/ApplicationResponse"
+    '400':
+      $ref: "../../openapi.yaml#/components/responses/BadRequest"
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"
+    '404':
+      $ref: "../../openapi.yaml#/components/responses/NotFound"
+    '409':
+      description: |
+        The HR has already assessed the application, it was already assessed twice or
+        it is not in the status `REVIEW`.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Problem"

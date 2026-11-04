@@ -1,0 +1,51 @@
+get:
+  tags: [ System ]
+  operationId: listRunners
+  summary: List Runner Servers
+  description: "**Roles:** `ADMIN`."
+  responses:
+    '200':
+      description: Runner Servers of the pool.
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "../../openapi.yaml#/components/schemas/RunnerServer"
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"
+post:
+  tags: [ System ]
+  operationId: createRunner
+  summary: Add a Runner Server to the pool
+  description: |
+    The backend starts dispatching submissions to the server without a restart.
+
+    **Roles:** `ADMIN`.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../../openapi.yaml#/components/schemas/RunnerServerRequest"
+  responses:
+    '201':
+      description: The server was added.
+      content:
+        application/json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/RunnerServer"
+    '400':
+      $ref: "../../openapi.yaml#/components/responses/BadRequest"
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"
+    '409':
+      description: A server with this address is already in the pool.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Problem"

@@ -1,0 +1,42 @@
+# TODO: how to store and get logs? Database, log files or something another?
+get:
+  tags: [ System ]
+  operationId: listLogs
+  summary: List system logs
+  description: |
+    Log records of the backend and the Runner Servers.
+
+    **Roles:** `ADMIN`.
+  parameters:
+    - $ref: "../../openapi.yaml#/components/parameters/PageNumber"
+    - $ref: "../../openapi.yaml#/components/parameters/PageSize"
+    - $ref: "../../openapi.yaml#/components/parameters/DateFrom"
+    - $ref: "../../openapi.yaml#/components/parameters/DateTo"
+    - name: level
+      in: query
+      description: Only records of this or a higher level.
+      schema:
+        $ref: "../../openapi.yaml#/components/schemas/LogLevel"
+    - name: component
+      in: query
+      description: Exact match on the component.
+      schema:
+        type: string
+    - name: search
+      in: query
+      description: Case-insensitive substring of the message.
+      schema:
+        type: string
+  responses:
+    '200':
+      description: A page of log records, the latest first.
+      content:
+        application/json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/LogEntryPage"
+    '400':
+      $ref: "../../openapi.yaml#/components/responses/BadRequest"
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"

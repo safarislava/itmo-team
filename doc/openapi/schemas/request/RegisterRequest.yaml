@@ -1,0 +1,19 @@
+type: object
+description: Self-registration of a candidate. Internal users are created by HR or administrators.
+required: [ name, email, password ]
+properties:
+  name:
+    type: string
+    minLength: 1
+    maxLength: 100
+    description: Full name. Must contain at least one non-whitespace character.
+  email:
+    type: string
+    format: email
+    maxLength: 255
+    description: Must be unique among all users.
+  password:
+    type: string
+    format: password
+    minLength: 8
+    maxLength: 72

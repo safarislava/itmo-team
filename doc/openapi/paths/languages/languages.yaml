@@ -1,0 +1,49 @@
+get:
+  tags: [ Dictionaries ]
+  operationId: listLanguages
+  summary: List programming languages
+  description: Languages available for submitting solutions.
+  responses:
+    '200':
+      description: Languages, sorted by name and version.
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "../../openapi.yaml#/components/schemas/Language"
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+post:
+  tags: [ Dictionaries ]
+  operationId: createLanguage
+  summary: Add a programming language
+  description: |
+    The language must also be supported by the Runner Servers.
+
+    **Roles:** `ADMIN`.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../../openapi.yaml#/components/schemas/LanguageRequest"
+  responses:
+    '201':
+      description: The language was created.
+      content:
+        application/json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Language"
+    '400':
+      $ref: "../../openapi.yaml#/components/responses/BadRequest"
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"
+    '409':
+      description: The language with this name and version already exists.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Problem"

@@ -1,0 +1,22 @@
+type: object
+required: [ name, kind, status, latency, checkedAt ]
+properties:
+  name:
+    type: string
+    examples: [ runner-10.0.0.12 ]
+  kind:
+    type: string
+    enum: [ BACKEND, DATABASE, STORAGE, RUNNER, MAIL, EXTERNAL_API ]
+  status:
+    $ref: "../../openapi.yaml#/components/schemas/HealthStatus"
+  latency:
+    type: [ integer, "null" ]
+    format: int32
+    minimum: 0
+    description: Response time of the health probe, in milliseconds. `null` if the component is unreachable.
+  checkedAt:
+    type: string
+    format: date-time
+  details:
+    type: [ string, "null" ]
+    description: Reason of the degradation or failure.

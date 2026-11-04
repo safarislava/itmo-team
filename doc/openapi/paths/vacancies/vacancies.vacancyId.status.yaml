@@ -1,0 +1,43 @@
+parameters:
+  - $ref: "../../openapi.yaml#/components/parameters/VacancyId"
+put:
+  tags: [ Vacancies ]
+  operationId: updateVacancyStatus
+  summary: Publish or close a vacancy
+  description: |
+    Allowed transitions:
+    - `DRAFT` → `OPEN` publishes the vacancy, so it appears in the catalogue and accepts
+      applications. At least one contest must be attached.
+    - `OPEN` → `CLOSED` stops accepting applications and rejects all applications except those
+      with an offer. Rejected candidates are notified by email.
+
+    `ARCHIVE` is set automatically and cannot be requested.
+
+    **Roles:** `TEAM_LEAD` of the team, `HR` (only `CLOSED`).
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../../openapi.yaml#/components/schemas/VacancyStatusRequest"
+  responses:
+    '200':
+      description: The vacancy with the new status and the applications rejected because of the closing.
+      content:
+        application/json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/VacancyStatusResult"
+    '400':
+      $ref: "../../openapi.yaml#/components/responses/BadRequest"
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"
+    '404':
+      $ref: "../../openapi.yaml#/components/responses/NotFound"
+    '409':
+      description: The transition is not allowed or the vacancy has no contest attached.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Problem"

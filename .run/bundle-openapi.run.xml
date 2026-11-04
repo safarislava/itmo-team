@@ -1,0 +1,17 @@
+<component name="ProjectRunConfigurationManager">
+    <configuration default="false" name="Bundle OpenAPI" type="ShConfigurationType">
+        <option name="SCRIPT_TEXT" value="npx --yes -p @redocly/cli@2.74.0 -c &quot;redocly lint doc/openapi/openapi.yaml &amp;&amp; redocly bundle doc/openapi/openapi.yaml -o build/openapi/openapi.yaml &amp;&amp; redocly build-docs build/openapi/openapi.yaml -o build/openapi/index.html&quot;"/>
+        <option name="INDEPENDENT_SCRIPT_PATH" value="true"/>
+        <option name="SCRIPT_PATH" value=""/>
+        <option name="SCRIPT_OPTIONS" value=""/>
+        <option name="INDEPENDENT_SCRIPT_WORKING_DIRECTORY" value="true"/>
+        <option name="SCRIPT_WORKING_DIRECTORY" value="$PROJECT_DIR$"/>
+        <option name="INDEPENDENT_INTERPRETER_PATH" value="true"/>
+        <option name="INTERPRETER_PATH" value=""/>
+        <option name="INTERPRETER_OPTIONS" value=""/>
+        <option name="EXECUTE_IN_TERMINAL" value="true"/>
+        <option name="EXECUTE_SCRIPT_FILE" value="false"/>
+        <envs/>
+        <method v="2"/>
+    </configuration>
+</component>

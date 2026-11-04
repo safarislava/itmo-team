@@ -1,0 +1,53 @@
+parameters:
+  - $ref: "../../openapi.yaml#/components/parameters/TeamId"
+  - $ref: "../../openapi.yaml#/components/parameters/PersonId"
+put:
+  tags: [ Teams ]
+  operationId: addTeamMember
+  summary: Add an employee to a team
+  description: |
+    If the employee was a member of another team, they are moved to this one.
+
+    **Roles:** `HR`, `ADMIN`.
+  responses:
+    '200':
+      description: The employee, now a member of the team.
+      content:
+        application/json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Person"
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"
+    '404':
+      $ref: "../../openapi.yaml#/components/responses/NotFound"
+    '409':
+      description: The person is a candidate, belongs to another company or leads another team.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Problem"
+delete:
+  tags: [ Teams ]
+  operationId: removeTeamMember
+  summary: Remove an employee from a team
+  description: |
+    The employee stays in the company without a team. The team lead can not be removed.
+
+    **Roles:** `HR`, `ADMIN`.
+  responses:
+    '204':
+      description: The employee was removed from the team.
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"
+    '404':
+      $ref: "../../openapi.yaml#/components/responses/NotFound"
+    '409':
+      description: The person is the team lead of the team.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Problem"

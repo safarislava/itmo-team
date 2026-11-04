@@ -1,0 +1,30 @@
+parameters:
+  - $ref: "../../openapi.yaml#/components/parameters/TeamId"
+get:
+  tags: [ Teams ]
+  operationId: listTeamMembers
+  summary: List members of a team
+  description: |
+    Users of the team.
+
+    **Roles:** `HR`, `TEAM_LEAD`, `MANAGER`, `ADMIN`.
+  parameters:
+    - name: role
+      in: query
+      schema:
+        $ref: "../../openapi.yaml#/components/schemas/Role"
+  responses:
+    '200':
+      description: Members of the team, sorted by name.
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "../../openapi.yaml#/components/schemas/Person"
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"
+    '404':
+      $ref: "../../openapi.yaml#/components/responses/NotFound"

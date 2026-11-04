@@ -1,0 +1,39 @@
+parameters:
+  - $ref: "../../openapi.yaml#/components/parameters/ApplicationId"
+put:
+  tags: [ Applications ]
+  operationId: hireCandidate
+  summary: Enrol a candidate into the team
+  description: |
+    Turns the candidate of an application with an offer into a `DEVELOPER` of the company and
+    adds them to the team of the vacancy. The new employee and the team lead are notified
+    by email, the collection of productivity metrics starts.
+
+    **Roles:** `HR`.
+  requestBody:
+    required: false
+    content:
+      application/json:
+        schema:
+          $ref: "../../openapi.yaml#/components/schemas/EmploymentRequest"
+  responses:
+    '201':
+      description: The new employee.
+      content:
+        application/json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Person"
+    '400':
+      $ref: "../../openapi.yaml#/components/responses/BadRequest"
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"
+    '404':
+      $ref: "../../openapi.yaml#/components/responses/NotFound"
+    '409':
+      description: The application has no offer, the candidate is already employed or the vacancy is not open.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Problem"

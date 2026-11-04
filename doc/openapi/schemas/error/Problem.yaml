@@ -1,0 +1,26 @@
+type: object
+description: Problem details as defined by [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457).
+required: [ title, status ]
+properties:
+  type:
+    type: string
+    format: uri-reference
+    description: |
+      URI identifying the problem type. `about:blank` means the problem has no semantics
+      beyond those of the HTTP status code.
+  title:
+    type: string
+  status:
+    type: integer
+    format: int32
+  detail:
+    type: string
+    description: Human-readable explanation of the error.
+  instance:
+    type: string
+    format: uri-reference
+  errors:
+    type: array
+    description: Present for validation failures.
+    items:
+      $ref: "../../openapi.yaml#/components/schemas/FieldError"

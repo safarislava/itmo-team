@@ -1,0 +1,9 @@
+allOf:
+  - $ref: "../../openapi.yaml#/components/schemas/PageMetadata"
+  - type: object
+    required: [ content ]
+    properties:
+      content:
+        type: array
+        items:
+          $ref: "../../openapi.yaml#/components/schemas/Company"

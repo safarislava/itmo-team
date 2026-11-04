@@ -1,0 +1,8 @@
+name: applicationId
+in: path
+required: true
+description: Identifier of the application.
+schema:
+  type: integer
+  format: int64
+  minimum: 1

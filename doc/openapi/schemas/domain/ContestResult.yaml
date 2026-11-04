@@ -1,0 +1,36 @@
+type: object
+description: Results of one participant of a contest.
+required: [ participant, solvedCount, tasks ]
+properties:
+  participant:
+    $ref: "../../openapi.yaml#/components/schemas/PersonSummary"
+  solvedCount:
+    type: integer
+    format: int32
+    minimum: 0
+    description: Number of tasks with at least one `OK` verdict.
+  tasks:
+    type: array
+    items:
+      type: object
+      required: [ taskId, taskName, attempts, bestVerdict, bestExecutionTime ]
+      properties:
+        taskId:
+          type: integer
+          format: int64
+          minimum: 1
+        taskName:
+          type: string
+        attempts:
+          type: integer
+          format: int32
+          minimum: 0
+        bestVerdict:
+          description: The best verdict among the attempts, `null` if there are none checked yet.
+          oneOf:
+            - $ref: "../../openapi.yaml#/components/schemas/Verdict"
+            - type: "null"
+        bestExecutionTime:
+          type: [ integer, "null" ]
+          format: int32
+          description: Execution time of the best attempt, in milliseconds.

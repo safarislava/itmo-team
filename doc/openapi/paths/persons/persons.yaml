@@ -1,0 +1,85 @@
+get:
+  tags: [ Persons ]
+  operationId: listPersons
+  summary: List users
+  description: |
+    HR sees the users of the own company, an administrator sees all users.
+
+    **Roles:** `HR`, `ADMIN`.
+  parameters:
+    - $ref: "../../openapi.yaml#/components/parameters/PageNumber"
+    - $ref: "../../openapi.yaml#/components/parameters/PageSize"
+    - name: sort
+      in: query
+      description: Column to sort by.
+      schema:
+        type: string
+        default: id
+        enum: [ id, name, email, role ]
+    - $ref: "../../openapi.yaml#/components/parameters/SortOrder"
+    - name: search
+      in: query
+      description: Case-insensitive substring of the name or the email.
+      schema:
+        type: string
+    - name: role
+      in: query
+      schema:
+        $ref: "../../openapi.yaml#/components/schemas/Role"
+    - name: companyId
+      in: query
+      description: Exact match on the company. Ignored for HR.
+      schema:
+        type: integer
+        format: int64
+    - name: teamId
+      in: query
+      schema:
+        type: integer
+        format: int64
+  responses:
+    '200':
+      description: A page of users.
+      content:
+        application/json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/PersonPage"
+    '400':
+      $ref: "../../openapi.yaml#/components/responses/BadRequest"
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"
+post:
+  tags: [ Persons ]
+  operationId: createPerson
+  summary: Create an internal user
+  description: |
+    Creates an account of an internal user and emails a temporary password.
+
+    **Roles:** `HR`, `ADMIN`.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../../openapi.yaml#/components/schemas/PersonCreateRequest"
+  responses:
+    '201':
+      description: The user was created.
+      content:
+        application/json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Person"
+    '400':
+      $ref: "../../openapi.yaml#/components/responses/BadRequest"
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"
+    '409':
+      description: A user with this email already exists.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Problem"

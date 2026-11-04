@@ -1,0 +1,16 @@
+type: object
+required: [ name, teamleadId ]
+properties:
+  name:
+    type: string
+    minLength: 1
+    maxLength: 100
+    description: Must be unique within the company.
+  teamleadId:
+    type: integer
+    format: int64
+    description: Identifier of a person with the role `TEAM_LEAD` who does not lead another team.
+  companyId:
+    type: [ integer, "null" ]
+    format: int64
+    description: Required for administrators, otherwise the company of the current user is used.

@@ -1,0 +1,15 @@
+type: object
+required: [ verdict, executionTime, memoryUsed ]
+properties:
+  verdict:
+    $ref: "../../openapi.yaml#/components/schemas/Verdict"
+  executionTime:
+    type: [ integer, "null" ]
+    format: int32
+    minimum: 0
+    description: Maximum CPU time over all tests, in milliseconds. `null` on compilation errors.
+  memoryUsed:
+    type: [ integer, "null" ]
+    format: int32
+    minimum: 0
+    description: Peak memory over all tests, in kilobytes. `null` on compilation errors.

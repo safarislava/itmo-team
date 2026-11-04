@@ -1,0 +1,29 @@
+# TODO: SRS says company must have legal name, contacts and requisites
+type: object
+description: Registration of a company together with the account of its first employee.
+required: [ name, representative ]
+properties:
+  name:
+    type: string
+    minLength: 1
+    maxLength: 255
+    description: Must be unique among all companies.
+  representative:
+    type: object
+    description: |
+      Responsible employee. An account is created in the new company and
+      the access credentials are sent to the email.
+    required: [ name, email, role ]
+    properties:
+      name:
+        type: string
+        minLength: 1
+        maxLength: 100
+      email:
+        type: string
+        format: email
+        maxLength: 255
+      role:
+        type: string
+        enum: [ HR, TEAM_LEAD, MANAGER ]
+        default: HR

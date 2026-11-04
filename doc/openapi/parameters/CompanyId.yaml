@@ -1,0 +1,8 @@
+name: companyId
+in: path
+required: true
+description: Identifier of the company.
+schema:
+  type: integer
+  format: int64
+  minimum: 1

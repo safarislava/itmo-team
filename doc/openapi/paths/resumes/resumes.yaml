@@ -1,0 +1,47 @@
+# TODO: resume doesn't have owner id, so it can only be identified if it is sent with application.
+post:
+  tags: [ Applications ]
+  operationId: uploadResume
+  summary: Upload a resume
+  description: |
+    Stores a resume file of the current candidate. The returned identifier is then passed
+    to `/api/applications`. Supported formats are PDF, PNG, JPG, JPEG and DOCX up to 5 MB.
+
+    **Roles:** `CANDIDATE`.
+  requestBody:
+    required: true
+    content:
+      multipart/form-data:
+        schema:
+          type: object
+          required: [ file ]
+          properties:
+            file:
+              type: string
+              contentMediaType: application/octet-stream
+        encoding:
+          file:
+            contentType: >-
+              application/pdf, image/png, image/jpeg,
+              application/vnd.openxmlformats-officedocument.wordprocessingml.document
+  responses:
+    '201':
+      description: The resume was stored.
+      content:
+        application/json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Resume"
+    '400':
+      $ref: "../../openapi.yaml#/components/responses/BadRequest"
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"
+    '413':
+      $ref: "../../openapi.yaml#/components/responses/PayloadTooLarge"
+    '415':
+      description: The format of the file is not supported.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Problem"

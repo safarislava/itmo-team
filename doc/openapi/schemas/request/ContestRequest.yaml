@@ -1,0 +1,11 @@
+type: object
+required: [ scheduledTime, duration ]
+properties:
+  scheduledTime:
+    type: string
+    format: date-time
+  duration:
+    type: string
+    format: duration
+    description: Must be positive.
+    examples: [ PT3H ]

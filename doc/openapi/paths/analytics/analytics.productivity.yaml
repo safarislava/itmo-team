@@ -1,0 +1,67 @@
+get:
+  tags: [ Analytics ]
+  operationId: getProductivityStatistics
+  summary: Get productivity metrics
+  description: |
+    Time series of the GitHub activity summed over a team, for charts. Without `teamId`
+    the whole company is used. The activity of one employee is available at
+    `/api/analytics/persons/{personId}/statistics`.
+
+    The representation is chosen by the `Accept` header: `application/json` returns
+    the metrics, `application/pdf` a report with charts and tables, `text/csv` the raw values.
+
+    **Roles:** `TEAM_LEAD`, `MANAGER`, `ADMIN`.
+  parameters:
+    - name: from
+      in: query
+      required: true
+      description: Inclusive start of the time interval.
+      schema:
+        type: string
+        format: date-time
+    - name: to
+      in: query
+      required: true
+      description: Exclusive end of the time interval.
+      schema:
+        type: string
+        format: date-time
+    - name: granularity
+      in: query
+      schema:
+        $ref: "../../openapi.yaml#/components/schemas/Granularity"
+    - name: teamId
+      in: query
+      schema:
+        type: integer
+        format: int64
+  responses:
+    '200':
+      description: Productivity metrics.
+      headers:
+        Content-Disposition:
+          $ref: "../../openapi.yaml#/components/headers/ContentDisposition"
+          description: File name of the report, only for `application/pdf` and `text/csv`.
+      content:
+        application/json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/ProductivityStatistics"
+        application/pdf:
+          schema:
+            type: string
+            contentMediaType: application/pdf
+        text/csv:
+          schema:
+            type: string
+    '400':
+      $ref: "../../openapi.yaml#/components/responses/BadRequest"
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"
+    '406':
+      description: The `Accept` header asks for an unsupported representation.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Problem"

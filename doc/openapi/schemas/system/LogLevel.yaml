@@ -1,0 +1,2 @@
+type: string
+enum: [ TRACE, DEBUG, INFO, WARN, ERROR ]

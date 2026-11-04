@@ -1,0 +1,7 @@
+type: string
+description: |
+  - `QUEUED` — waiting for a free Runner Server.
+  - `RUNNING` — being tested.
+  - `FINISHED` — tested, the verdict is `OK`.
+  - `FAILED` — tested, the verdict is anything but `OK`.
+enum: [ QUEUED, RUNNING, FINISHED, FAILED ]

@@ -1,0 +1,33 @@
+parameters:
+  - $ref: "../../openapi.yaml#/components/parameters/InterviewId"
+post:
+  tags: [ Interviews ]
+  operationId: joinInterview
+  summary: Connect to the live-coding room
+  description: |
+    Checks that the current time is within the scheduled window and issues
+    credentials for the WebSocket and WebRTC connections of the room.
+    The recording starts once both participants are connected.
+
+    **Roles:** `CANDIDATE` and `TEAM_LEAD` participating in the interview.
+  responses:
+    '201':
+      description: Credentials of the live-coding session.
+      content:
+        application/json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/LiveSession"
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"
+    '404':
+      $ref: "../../openapi.yaml#/components/responses/NotFound"
+    '409':
+      description: |
+        The interview is not scheduled or the current time is outside its window.
+        `detail` contains the start time.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Problem"

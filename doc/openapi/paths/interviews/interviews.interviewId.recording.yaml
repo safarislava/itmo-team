@@ -1,0 +1,30 @@
+parameters:
+  - $ref: "../../openapi.yaml#/components/parameters/InterviewId"
+get:
+  tags: [ Interviews ]
+  operationId: getInterviewRecording
+  summary: Watch the recording of an interview
+  description: |
+    Redirects to a short-lived link to the video in the object storage.
+    Recordings are removed 1 month after the interview.
+
+    **Roles:** `HR`, `TEAM_LEAD`, `ADMIN`.
+  responses:
+    '302':
+      description: Redirect to the recording.
+      headers:
+        Location:
+          description: Pre-signed URL of the video, valid for 1 hour.
+          schema:
+            type: string
+            format: uri
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"
+    '404':
+      description: The interview does not exist or its recording is not available.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Problem"

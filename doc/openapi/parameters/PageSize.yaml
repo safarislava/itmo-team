@@ -1,0 +1,9 @@
+name: size
+in: query
+description: Number of objects on a page.
+schema:
+  type: integer
+  format: int32
+  minimum: 1
+  maximum: 100
+  default: 20

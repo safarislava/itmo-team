@@ -1,0 +1,88 @@
+# TODO: how to store weights for each team, maybe one more table in database?
+# Or just send them as parameters in QUERY method? But it will be inconvenient to always change them
+parameters:
+  - $ref: "../../openapi.yaml#/components/parameters/VacancyId"
+get:
+  tags: [ Screening ]
+  operationId: getVacancyLeaderboard
+  summary: Rank candidates of a vacancy
+  description: |
+    Applications with at least one HR assessment ranked by the recommended score, which is the
+    weighted sum of the averaged metrics. The weights form the formula
+    configured by the team lead, all of them default to `1`.
+
+    **Roles:** `HR`, `TEAM_LEAD`.
+  parameters:
+    - $ref: "../../openapi.yaml#/components/parameters/PageNumber"
+    - $ref: "../../openapi.yaml#/components/parameters/PageSize"
+    - name: motivationWeight
+      in: query
+      schema:
+        type: number
+        format: double
+        default: 1
+    - name: softSkillsWeight
+      in: query
+      schema:
+        type: number
+        format: double
+        default: 1
+    - name: petProjectsWeight
+      in: query
+      schema:
+        type: number
+        format: double
+        default: 1
+    - name: jobExpWeight
+      in: query
+      schema:
+        type: number
+        format: double
+        default: 1
+    - name: hardSkillsWeight
+      in: query
+      schema:
+        type: number
+        format: double
+        default: 1
+    - name: workFormatWeight
+      in: query
+      schema:
+        type: number
+        format: double
+        default: 1
+    - name: minScore
+      in: query
+      description: Only applications with at least this recommended score.
+      schema:
+        type: number
+        format: double
+    - name: status
+      in: query
+      schema:
+        $ref: "../../openapi.yaml#/components/schemas/ApplicationStatus"
+    - name: skillIds
+      in: query
+      description: Only candidates who listed **all** of these skills in the form.
+      style: form
+      explode: true
+      schema:
+        type: array
+        items:
+          type: integer
+          format: int64
+  responses:
+    '200':
+      description: A page of applications sorted by the score in descending order.
+      content:
+        application/json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/LeaderboardPage"
+    '400':
+      $ref: "../../openapi.yaml#/components/responses/BadRequest"
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"
+    '404':
+      $ref: "../../openapi.yaml#/components/responses/NotFound"

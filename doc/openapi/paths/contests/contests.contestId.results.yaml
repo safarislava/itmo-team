@@ -1,0 +1,32 @@
+parameters:
+  - $ref: "../../openapi.yaml#/components/parameters/ContestId"
+get:
+  tags: [ Contests ]
+  operationId: getContestResults
+  summary: Get results of a contest
+  description: |
+    Summary of the best attempts of each participant, used during screening.
+
+    **Roles:** `HR`, `TEAM_LEAD`, `ADMIN`.
+  parameters:
+    - name: participantId
+      in: query
+      description: Only the results of this participant.
+      schema:
+        type: integer
+        format: int64
+  responses:
+    '200':
+      description: Results sorted by the number of solved tasks in descending order.
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "../../openapi.yaml#/components/schemas/ContestResult"
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"
+    '404':
+      $ref: "../../openapi.yaml#/components/responses/NotFound"

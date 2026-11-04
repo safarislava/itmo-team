@@ -1,0 +1,80 @@
+parameters:
+  - $ref: "../../openapi.yaml#/components/parameters/VacancyId"
+get:
+  tags: [ Vacancies ]
+  operationId: getVacancy
+  summary: Get a vacancy
+  description: |
+    Vacancies other than `OPEN` are visible only to internal users of the company.
+
+    **Public.**
+  security:
+    - { }
+    - BearerAuth: [ ]
+  responses:
+    '200':
+      description: The vacancy.
+      content:
+        application/json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Vacancy"
+    '404':
+      $ref: "../../openapi.yaml#/components/responses/NotFound"
+put:
+  tags: [ Vacancies ]
+  operationId: updateVacancy
+  summary: Edit a vacancy
+  description: |
+    Only `DRAFT` and `OPEN` vacancies may be edited.
+
+    **Roles:** `TEAM_LEAD` of the team.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../../openapi.yaml#/components/schemas/VacancyRequest"
+  responses:
+    '200':
+      description: The updated vacancy.
+      content:
+        application/json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Vacancy"
+    '400':
+      $ref: "../../openapi.yaml#/components/responses/BadRequest"
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"
+    '404':
+      $ref: "../../openapi.yaml#/components/responses/NotFound"
+    '409':
+      description: The vacancy is closed or archived.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Problem"
+delete:
+  tags: [ Vacancies ]
+  operationId: deleteVacancy
+  summary: Delete a draft vacancy
+  description: |
+    Only `DRAFT` vacancies may be deleted, others are closed instead.
+
+    **Roles:** `TEAM_LEAD` of the team.
+  responses:
+    '204':
+      description: The vacancy was deleted.
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"
+    '404':
+      $ref: "../../openapi.yaml#/components/responses/NotFound"
+    '409':
+      description: The vacancy is not a draft.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Problem"

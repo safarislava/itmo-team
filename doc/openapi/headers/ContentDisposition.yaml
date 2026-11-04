@@ -1,0 +1,7 @@
+description: Original name of the downloaded file.
+schema:
+  type: string
+examples:
+  resume:
+    summary: A resume in PDF
+    serializedValue: attachment; filename="resume.pdf"

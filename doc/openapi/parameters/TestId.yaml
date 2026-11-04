@@ -1,0 +1,8 @@
+name: testId
+in: path
+required: true
+description: Identifier of the test.
+schema:
+  type: integer
+  format: int64
+  minimum: 1

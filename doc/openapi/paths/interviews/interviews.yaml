@@ -1,0 +1,92 @@
+get:
+  tags: [ Interviews ]
+  operationId: listInterviews
+  summary: List interviews
+  description: |
+    A candidate sees the own interviews, a team lead sees the own schedule,
+    HR and managers see the interviews of the company.
+
+    **Roles:** `CANDIDATE`, `HR`, `TEAM_LEAD`, `MANAGER`, `ADMIN`.
+  parameters:
+    - $ref: "../../openapi.yaml#/components/parameters/PageNumber"
+    - $ref: "../../openapi.yaml#/components/parameters/PageSize"
+    - $ref: "../../openapi.yaml#/components/parameters/DateFrom"
+    - $ref: "../../openapi.yaml#/components/parameters/DateTo"
+    - name: status
+      in: query
+      schema:
+        $ref: "../../openapi.yaml#/components/schemas/InterviewStatus"
+    - name: applicationId
+      in: query
+      schema:
+        type: integer
+        format: int64
+    - name: vacancyId
+      in: query
+      schema:
+        type: integer
+        format: int64
+  responses:
+    '200':
+      description: A page of interviews sorted by the scheduled start.
+      content:
+        application/json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/InterviewPage"
+    '400':
+      $ref: "../../openapi.yaml#/components/responses/BadRequest"
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"
+post:
+  tags: [ Interviews ]
+  operationId: scheduleInterview
+  summary: Schedule a live-coding interview
+  description: |
+    Reserves a time slot of the current team lead, moves the application to `INTERVIEW`
+    and emails the candidate an invitation link.
+
+    **Roles:** `TEAM_LEAD` of the team of the vacancy.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../../openapi.yaml#/components/schemas/InterviewRequest"
+  responses:
+    '201':
+      description: The interview was scheduled.
+      content:
+        application/json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Interview"
+    '400':
+      $ref: "../../openapi.yaml#/components/responses/BadRequest"
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"
+    '404':
+      description: The application does not exist.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Problem"
+    '409':
+      description: |
+        The slot overlaps another scheduled interview of the team lead
+        or the application has not passed the screening.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Problem"
+          examples:
+            overlappingSlot:
+              summary: The team lead already has an interview at this time
+              dataValue:
+                type: about:blank
+                title: Conflict
+                status: 409
+                detail: У тимлида есть собеседование в интервал 2026-11-10T10:00:00Z - 2026-11-10T11:00:00Z
+                instance: /api/interviews

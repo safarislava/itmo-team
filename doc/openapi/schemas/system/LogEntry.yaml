@@ -1,0 +1,17 @@
+type: object
+required: [ timestamp, level, component, message ]
+properties:
+  timestamp:
+    type: string
+    format: date-time
+  level:
+    $ref: "../../openapi.yaml#/components/schemas/LogLevel"
+  component:
+    type: string
+    description: Component that produced the record.
+    examples: [ backend ]
+  message:
+    type: string
+  details:
+    type: [ string, "null" ]
+    description: Stack trace or other context of the record.

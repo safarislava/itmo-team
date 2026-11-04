@@ -1,0 +1,24 @@
+type: object
+description: Application ranked by the recommended score.
+required: [ applicationId, candidate, resumeId, formId, status, score ]
+properties:
+  applicationId:
+    type: integer
+    format: int64
+    minimum: 1
+  candidate:
+    $ref: "../../openapi.yaml#/components/schemas/PersonSummary"
+  resumeId:
+    type: integer
+    format: int64
+    minimum: 1
+  formId:
+    type: integer
+    format: int64
+    minimum: 1
+  status:
+    $ref: "../../openapi.yaml#/components/schemas/ApplicationStatus"
+  score:
+    type: number
+    format: double
+    description: Weighted sum of the averaged HR metrics.

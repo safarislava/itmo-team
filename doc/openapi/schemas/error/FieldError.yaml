@@ -1,0 +1,9 @@
+type: object
+required: [ field, message ]
+properties:
+  field:
+    type: string
+    description: Name of the rejected request field or parameter.
+  message:
+    type: string
+    description: Human-readable reason.

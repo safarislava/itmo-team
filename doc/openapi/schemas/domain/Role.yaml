@@ -1,0 +1,10 @@
+type: string
+description: |
+  Role of a user.
+  - `CANDIDATE` — job seeker, signs up on their own.
+  - `HR` — screens applications and manages accounts of the company.
+  - `TEAM_LEAD` — leads a team, opens vacancies, conducts interviews, maintains the task library.
+  - `DEVELOPER` — employee of a company whose activity is tracked.
+  - `MANAGER` — monitors hiring and productivity metrics.
+  - `ADMIN` — system administrator.
+enum: [ CANDIDATE, HR, TEAM_LEAD, DEVELOPER, MANAGER, ADMIN ]

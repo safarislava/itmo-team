@@ -1,0 +1,68 @@
+parameters:
+  - $ref: "../../openapi.yaml#/components/parameters/TeamId"
+get:
+  tags: [ Teams ]
+  operationId: getTeam
+  summary: Get a team
+  description: "**Roles:** `HR`, `TEAM_LEAD`, `DEVELOPER`, `MANAGER`, `ADMIN`."
+  responses:
+    '200':
+      description: The team.
+      content:
+        application/json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Team"
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"
+    '404':
+      $ref: "../../openapi.yaml#/components/responses/NotFound"
+put:
+  tags: [ Teams ]
+  operationId: updateTeam
+  summary: Rename a team or change its team lead
+  description: |
+    `companyId` of the request is ignored, a team can not be moved to another company.
+
+    **Roles:** `HR`, `ADMIN`.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../../openapi.yaml#/components/schemas/TeamRequest"
+  responses:
+    '200':
+      description: The updated team.
+      content:
+        application/json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Team"
+    '400':
+      $ref: "../../openapi.yaml#/components/responses/BadRequest"
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"
+    '404':
+      $ref: "../../openapi.yaml#/components/responses/NotFound"
+    '409':
+      $ref: "../../openapi.yaml#/components/responses/Conflict"
+delete:
+  tags: [ Teams ]
+  operationId: deleteTeam
+  summary: Delete a team
+  description: |
+    Deletes the team together with its vacancies. Members stay in the company without a team.
+
+    **Roles:** `HR`, `ADMIN`.
+  responses:
+    '204':
+      description: The team was deleted.
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"
+    '404':
+      $ref: "../../openapi.yaml#/components/responses/NotFound"

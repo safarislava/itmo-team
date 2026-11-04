@@ -1,0 +1,8 @@
+name: skillId
+in: path
+required: true
+description: Identifier of the skill.
+schema:
+  type: integer
+  format: int64
+  minimum: 1

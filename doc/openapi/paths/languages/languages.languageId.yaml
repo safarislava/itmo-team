@@ -1,0 +1,54 @@
+parameters:
+  - $ref: "../../openapi.yaml#/components/parameters/LanguageId"
+put:
+  tags: [ Dictionaries ]
+  operationId: updateLanguage
+  summary: Edit a programming language
+  description: "**Roles:** `ADMIN`."
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../../openapi.yaml#/components/schemas/LanguageRequest"
+  responses:
+    '200':
+      description: The updated language.
+      content:
+        application/json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Language"
+    '400':
+      $ref: "../../openapi.yaml#/components/responses/BadRequest"
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"
+    '404':
+      $ref: "../../openapi.yaml#/components/responses/NotFound"
+    '409':
+      description: The language with this name and version already exists.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Problem"
+delete:
+  tags: [ Dictionaries ]
+  operationId: deleteLanguage
+  summary: Delete a programming language
+  description: "**Roles:** `ADMIN`."
+  responses:
+    '204':
+      description: The language was deleted.
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"
+    '404':
+      $ref: "../../openapi.yaml#/components/responses/NotFound"
+    '409':
+      description: Submissions in this language exist.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Problem"

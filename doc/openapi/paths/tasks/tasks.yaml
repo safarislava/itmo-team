@@ -1,0 +1,66 @@
+get:
+  tags: [ Tasks ]
+  operationId: listTasks
+  summary: List tasks of the library
+  description: "**Roles:** `TEAM_LEAD`, `ADMIN`."
+  parameters:
+    - $ref: "../../openapi.yaml#/components/parameters/PageNumber"
+    - $ref: "../../openapi.yaml#/components/parameters/PageSize"
+    - name: sort
+      in: query
+      description: Column to sort by.
+      schema:
+        type: string
+        default: id
+        enum: [ id, name, timeLimit, memoryLimit ]
+    - $ref: "../../openapi.yaml#/components/parameters/SortOrder"
+    - name: search
+      in: query
+      description: Case-insensitive substring of the name.
+      schema:
+        type: string
+    - name: authorId
+      in: query
+      schema:
+        type: integer
+        format: int64
+  responses:
+    '200':
+      description: A page of tasks.
+      content:
+        application/json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/TaskPage"
+    '400':
+      $ref: "../../openapi.yaml#/components/responses/BadRequest"
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"
+post:
+  tags: [ Tasks ]
+  operationId: createTask
+  summary: Add a task to the library
+  description: |
+    The current user becomes the author. Tests are added afterwards.
+
+    **Roles:** `TEAM_LEAD`, `ADMIN`.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../../openapi.yaml#/components/schemas/TaskRequest"
+  responses:
+    '201':
+      description: The task was created.
+      content:
+        application/json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Task"
+    '400':
+      $ref: "../../openapi.yaml#/components/responses/BadRequest"
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"

@@ -1,0 +1,3 @@
+type: string
+description: Length of one point of a time series.
+enum: [ DAY, WEEK, MONTH ]

@@ -1,0 +1,18 @@
+summary: Bad request
+description: The request is malformed or failed validation.
+content:
+  application/problem+json:
+    schema:
+      $ref: "../openapi.yaml#/components/schemas/Problem"
+    examples:
+      validationFailed:
+        summary: A field of the body failed validation
+        dataValue:
+          type: about:blank
+          title: Bad Request
+          status: 400
+          detail: Request contains invalid data
+          instance: /api/tasks
+          errors:
+            - field: timeLimit
+              message: Must be greater than 0

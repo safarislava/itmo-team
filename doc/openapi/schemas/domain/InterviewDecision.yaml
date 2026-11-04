@@ -1,0 +1,8 @@
+type: string
+description: |
+  Decision of the team lead on the candidate.
+  - `HIRE` — the application moves to `OFFER`, HR is notified to make an offer.
+  - `NO_HIRE` — the application moves to `REJECTED`, the candidate is notified.
+  - `NEXT_STAGE` — the decision is postponed, the application stays in `INTERVIEW`
+    and another interview may be scheduled.
+enum: [ HIRE, NO_HIRE, NEXT_STAGE ]

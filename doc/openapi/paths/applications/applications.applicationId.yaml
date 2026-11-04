@@ -1,0 +1,25 @@
+parameters:
+  - $ref: "../../openapi.yaml#/components/parameters/ApplicationId"
+get:
+  tags: [ Applications ]
+  operationId: getApplication
+  summary: Get an application
+  description: |
+    Details of an application with the form and the averaged HR metrics.
+    The interviews of the application are listed at `/api/interviews?applicationId=`,
+    the submissions at `/api/submissions?senderId=`.
+
+    **Roles:** `CANDIDATE` (own), `HR`, `TEAM_LEAD`, `MANAGER`, `ADMIN`.
+  responses:
+    '200':
+      description: The application.
+      content:
+        application/json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Application"
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"
+    '404':
+      $ref: "../../openapi.yaml#/components/responses/NotFound"

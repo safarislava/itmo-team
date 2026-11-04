@@ -1,0 +1,20 @@
+get:
+  tags: [ System ]
+  operationId: getSystemHealth
+  summary: Get the health of the platform components
+  description: |
+    Current availability of the backend, the database, the object storage, every Runner Server,
+    the mail service and external APIs.
+
+    **Roles:** `ADMIN`.
+  responses:
+    '200':
+      description: Health of the components.
+      content:
+        application/json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/SystemHealth"
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"

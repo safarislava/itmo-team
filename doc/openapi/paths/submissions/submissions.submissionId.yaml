@@ -1,0 +1,23 @@
+parameters:
+  - $ref: "../../openapi.yaml#/components/parameters/SubmissionId"
+get:
+  tags: [ Submissions ]
+  operationId: getSubmission
+  summary: Get a submission
+  description: |
+    Status and verdict of a submission with the time and memory used.
+
+    **Roles:** `CANDIDATE` (own), `HR`, `TEAM_LEAD`, `ADMIN`.
+  responses:
+    '200':
+      description: The submission.
+      content:
+        application/json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Submission"
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"
+    '404':
+      $ref: "../../openapi.yaml#/components/responses/NotFound"

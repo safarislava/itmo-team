@@ -1,0 +1,13 @@
+type: object
+required: [ review, score, decision ]
+properties:
+  review:
+    type: string
+    minLength: 1
+  score:
+    type: integer
+    format: int32
+    minimum: 1
+    maximum: 10
+  decision:
+    $ref: "../../openapi.yaml#/components/schemas/InterviewDecision"

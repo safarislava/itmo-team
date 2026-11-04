@@ -1,0 +1,25 @@
+parameters:
+  - $ref: "../../openapi.yaml#/components/parameters/VacancyId"
+get:
+  tags: [ Vacancies, Contests ]
+  operationId: listVacancyContests
+  summary: List selection contests of a vacancy
+  description: |
+    A candidate sees the contests only after applying to the vacancy.
+
+    **Roles:** any.
+  responses:
+    '200':
+      description: Contests of the vacancy, sorted by the start time.
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "../../openapi.yaml#/components/schemas/Contest"
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"
+    '404':
+      $ref: "../../openapi.yaml#/components/responses/NotFound"

@@ -1,0 +1,49 @@
+# TODO: coder_report.coder_id can be null in database?
+parameters:
+  - $ref: "../../openapi.yaml#/components/parameters/PersonId"
+get:
+  tags: [ Analytics ]
+  operationId: getPersonStatistics
+  summary: Get activity statistics of an employee
+  description: |
+    GitHub activity of one employee for the period: the totals and a time series for charts.
+    Built from the daily reports collected at 00:00.
+
+    A developer sees only the own statistics, a team lead those of the own team members,
+    a manager those of the company employees.
+
+    **Roles:** `DEVELOPER`, `TEAM_LEAD`, `MANAGER`, `ADMIN`.
+  parameters:
+    - name: from
+      in: query
+      required: true
+      description: Inclusive start of the time interval.
+      schema:
+        type: string
+        format: date-time
+    - name: to
+      in: query
+      required: true
+      description: Exclusive end of the time interval.
+      schema:
+        type: string
+        format: date-time
+    - name: granularity
+      in: query
+      schema:
+        $ref: "../../openapi.yaml#/components/schemas/Granularity"
+  responses:
+    '200':
+      description: Activity statistics of the employee.
+      content:
+        application/json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/PersonStatistics"
+    '400':
+      $ref: "../../openapi.yaml#/components/responses/BadRequest"
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"
+    '404':
+      $ref: "../../openapi.yaml#/components/responses/NotFound"

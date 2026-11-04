@@ -1,0 +1,73 @@
+parameters:
+  - $ref: "../../openapi.yaml#/components/parameters/CompanyId"
+get:
+  tags: [ Companies ]
+  operationId: getCompany
+  summary: Get a company
+  description: |
+    Internal users may get only the own company.
+
+    **Roles:** `HR`, `TEAM_LEAD`, `DEVELOPER`, `MANAGER`, `ADMIN`.
+  responses:
+    '200':
+      description: The company.
+      content:
+        application/json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Company"
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"
+    '404':
+      $ref: "../../openapi.yaml#/components/responses/NotFound"
+put:
+  tags: [ Companies ]
+  operationId: updateCompany
+  summary: Rename a company
+  description: "**Roles:** `ADMIN`."
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../../openapi.yaml#/components/schemas/CompanyRequest"
+  responses:
+    '200':
+      description: The updated company.
+      content:
+        application/json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Company"
+    '400':
+      $ref: "../../openapi.yaml#/components/responses/BadRequest"
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"
+    '404':
+      $ref: "../../openapi.yaml#/components/responses/NotFound"
+    '409':
+      description: A company with this name already exists.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Problem"
+delete:
+  tags: [ Companies ]
+  operationId: deleteCompany
+  summary: Delete a company
+  description: |
+    Deletes the company with its teams and vacancies. Employees stay on the platform
+    without a company.
+
+    **Roles:** `ADMIN`.
+  responses:
+    '204':
+      description: The company was deleted.
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"
+    '404':
+      $ref: "../../openapi.yaml#/components/responses/NotFound"

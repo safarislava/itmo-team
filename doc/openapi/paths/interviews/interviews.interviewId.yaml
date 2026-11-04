@@ -1,0 +1,23 @@
+parameters:
+  - $ref: "../../openapi.yaml#/components/parameters/InterviewId"
+get:
+  tags: [ Interviews ]
+  operationId: getInterview
+  summary: Get an interview
+  description: |
+    The feedback is hidden from the candidate.
+
+    **Roles:** `CANDIDATE` (own), `HR`, `TEAM_LEAD`, `MANAGER`, `ADMIN`.
+  responses:
+    '200':
+      description: The interview.
+      content:
+        application/json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Interview"
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"
+    '404':
+      $ref: "../../openapi.yaml#/components/responses/NotFound"

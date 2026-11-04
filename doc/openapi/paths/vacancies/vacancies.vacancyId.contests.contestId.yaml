@@ -1,0 +1,46 @@
+parameters:
+  - $ref: "../../openapi.yaml#/components/parameters/VacancyId"
+  - $ref: "../../openapi.yaml#/components/parameters/ContestId"
+put:
+  tags: [ Vacancies, Contests ]
+  operationId: attachContestToVacancy
+  summary: Attach a contest to a vacancy
+  description: |
+    Candidates applying to the vacancy become participants of the contest.
+
+    **Roles:** `TEAM_LEAD` of the team.
+  responses:
+    '204':
+      description: The contest is attached to the vacancy.
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"
+    '404':
+      $ref: "../../openapi.yaml#/components/responses/NotFound"
+    '409':
+      description: The vacancy is closed or archived.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Problem"
+delete:
+  tags: [ Vacancies, Contests ]
+  operationId: detachContestFromVacancy
+  summary: Detach a contest from a vacancy
+  description: "**Roles:** `TEAM_LEAD` of the team."
+  responses:
+    '204':
+      description: The contest is no longer attached to the vacancy.
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"
+    '404':
+      $ref: "../../openapi.yaml#/components/responses/NotFound"
+    '409':
+      description: The contest has already started.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Problem"

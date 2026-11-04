@@ -1,0 +1,8 @@
+name: taskId
+in: path
+required: true
+description: Identifier of the task.
+schema:
+  type: integer
+  format: int64
+  minimum: 1

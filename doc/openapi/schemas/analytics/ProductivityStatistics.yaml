@@ -1,0 +1,18 @@
+type: object
+description: Time series of the GitHub activity of a team or an employee.
+required: [ granularity, points ]
+properties:
+  granularity:
+    $ref: "../../openapi.yaml#/components/schemas/Granularity"
+  points:
+    type: array
+    description: Sorted by `periodStart`, periods without reports have zero values.
+    items:
+      allOf:
+        - type: object
+          required: [ periodStart ]
+          properties:
+            periodStart:
+              type: string
+              format: date
+        - $ref: "../../openapi.yaml#/components/schemas/ActivityMetrics"

@@ -1,0 +1,20 @@
+type: object
+required: [ contestId, taskId, languageId, sourceCode ]
+properties:
+  contestId:
+    type: integer
+    format: int64
+    description: Identifier of a running contest the current candidate participates in.
+  taskId:
+    type: integer
+    format: int64
+    description: Identifier of a task of the contest.
+  languageId:
+    type: integer
+    format: int32
+    description: Identifier of a supported programming language.
+  sourceCode:
+    type: string
+    minLength: 1
+    maxLength: 2097152
+    description: Source code, at most 2 MB. Saved as a snapshot.

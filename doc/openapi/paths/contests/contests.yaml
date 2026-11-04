@@ -1,0 +1,59 @@
+get:
+  tags: [ Contests ]
+  operationId: listContests
+  summary: List contests
+  description: |
+    A candidate sees only the contests they participate in, internal users see the contests
+    created in the own company.
+
+    **Roles:** `CANDIDATE`, `HR`, `TEAM_LEAD`, `ADMIN`.
+  parameters:
+    - $ref: "../../openapi.yaml#/components/parameters/PageNumber"
+    - $ref: "../../openapi.yaml#/components/parameters/PageSize"
+    - $ref: "../../openapi.yaml#/components/parameters/DateFrom"
+    - $ref: "../../openapi.yaml#/components/parameters/DateTo"
+    - name: vacancyId
+      in: query
+      schema:
+        type: integer
+        format: int64
+  responses:
+    '200':
+      description: A page of contests sorted by the start time.
+      content:
+        application/json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/ContestPage"
+    '400':
+      $ref: "../../openapi.yaml#/components/responses/BadRequest"
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"
+post:
+  tags: [ Contests ]
+  operationId: createContest
+  summary: Create a contest
+  description: |
+    Tasks are added with `/api/contests/{contestId}/tasks/{taskId}`.
+
+    **Roles:** `TEAM_LEAD`.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../../openapi.yaml#/components/schemas/ContestRequest"
+  responses:
+    '201':
+      description: The contest was created.
+      content:
+        application/json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/Contest"
+    '400':
+      $ref: "../../openapi.yaml#/components/responses/BadRequest"
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"
