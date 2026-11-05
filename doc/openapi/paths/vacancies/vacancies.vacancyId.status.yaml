@@ -13,7 +13,12 @@ put:
 
     `ARCHIVE` is set automatically and cannot be requested.
 
-    **Roles:** `TEAM_LEAD` of the team, `HR` (only `CLOSED`).
+    A team lead of the team of the vacancy may publish and close it.
+
+    An HR of the company may only close it.
+  security:
+    - BearerAuth: [ TEAM_LEAD ]
+    - BearerAuth: [ HR ]
   requestBody:
     required: true
     content:

@@ -2,7 +2,8 @@ get:
   tags: [ System ]
   operationId: listRunners
   summary: List Runner Servers
-  description: "**Roles:** `ADMIN`."
+  security:
+    - BearerAuth: [ ADMIN ]
   responses:
     '200':
       description: Runner Servers of the pool.
@@ -22,8 +23,8 @@ post:
   summary: Add a Runner Server to the pool
   description: |
     The backend starts dispatching submissions to the server without a restart.
-
-    **Roles:** `ADMIN`.
+  security:
+    - BearerAuth: [ ADMIN ]
   requestBody:
     required: true
     content:

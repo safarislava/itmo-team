@@ -5,8 +5,11 @@ get:
   description: |
     History of submissions with their statuses. A candidate sees only
     the own submissions.
-
-    **Roles:** `CANDIDATE`, `HR`, `TEAM_LEAD`, `ADMIN`.
+  security:
+    - BearerAuth: [ CANDIDATE ]
+    - BearerAuth: [ HR ]
+    - BearerAuth: [ TEAM_LEAD ]
+    - BearerAuth: [ ADMIN ]
   parameters:
     - $ref: "../../openapi.yaml#/components/parameters/PageNumber"
     - $ref: "../../openapi.yaml#/components/parameters/PageSize"
@@ -52,7 +55,9 @@ post:
     submission into the testing queue with the status `QUEUED`.
     The status is then polled at `/api/submissions/{submissionId}`.
 
-    **Roles:** `CANDIDATE` (participant of the contest).
+    A candidate must be a participant of the contest with the task.
+  security:
+    - BearerAuth: [ CANDIDATE ]
   requestBody:
     required: true
     content:

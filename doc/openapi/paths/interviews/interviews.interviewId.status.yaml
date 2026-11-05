@@ -11,7 +11,9 @@ put:
     - `CANCELLED` frees the time slot and notifies the candidate. A new interview may be
       scheduled for the application.
 
-    **Roles:** `TEAM_LEAD` of the interview.
+    Only the team lead who conducts the interview may change its status.
+  security:
+    - BearerAuth: [ TEAM_LEAD ]
   requestBody:
     required: true
     content:

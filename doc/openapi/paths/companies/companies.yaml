@@ -2,7 +2,8 @@ get:
   tags: [ Companies ]
   operationId: listCompanies
   summary: List companies
-  description: "**Roles:** `ADMIN`."
+  security:
+    - BearerAuth: [ ADMIN ]
   parameters:
     - $ref: "../../openapi.yaml#/components/parameters/PageNumber"
     - $ref: "../../openapi.yaml#/components/parameters/PageSize"
@@ -39,8 +40,8 @@ post:
   description: |
     Creates a company and the account of its first employee, who receives the access
     credentials by email.
-
-    **Roles:** `ADMIN`.
+  security:
+    - BearerAuth: [ ADMIN ]
   requestBody:
     required: true
     content:

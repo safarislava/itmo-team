@@ -5,8 +5,8 @@ get:
   description: |
     Current availability of the backend, the database, the object storage, every Runner Server,
     the mail service and external APIs.
-
-    **Roles:** `ADMIN`.
+  security:
+    - BearerAuth: [ ADMIN ]
   responses:
     '200':
       description: Health of the components.

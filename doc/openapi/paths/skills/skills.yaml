@@ -4,8 +4,6 @@ get:
   summary: List skills
   description: |
     Dictionary of skills used in vacancies and forms.
-
-    **Public.**
   security: [ ]
   parameters:
     - name: search
@@ -26,7 +24,8 @@ post:
   tags: [ Dictionaries ]
   operationId: createSkill
   summary: Add a skill to the dictionary
-  description: "**Roles:** `ADMIN`."
+  security:
+    - BearerAuth: [ ADMIN ]
   requestBody:
     required: true
     content:

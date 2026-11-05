@@ -9,8 +9,8 @@ post:
     online HRs and prioritised: first those assessed once by another HR, then by the
     contest results. Applications already assessed by the current HR are skipped.
     An assigned application stays reserved for 30 minutes.
-
-    **Roles:** `HR`.
+  security:
+    - BearerAuth: [ HR ]
   responses:
     '200':
       description: The application assigned to the HR.

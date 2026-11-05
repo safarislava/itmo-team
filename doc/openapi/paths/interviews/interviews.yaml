@@ -5,8 +5,12 @@ get:
   description: |
     A candidate sees the own interviews, a team lead sees the own schedule,
     HR and managers see the interviews of the company.
-
-    **Roles:** `CANDIDATE`, `HR`, `TEAM_LEAD`, `MANAGER`, `ADMIN`.
+  security:
+    - BearerAuth: [ CANDIDATE ]
+    - BearerAuth: [ HR ]
+    - BearerAuth: [ TEAM_LEAD ]
+    - BearerAuth: [ MANAGER ]
+    - BearerAuth: [ ADMIN ]
   parameters:
     - $ref: "../../openapi.yaml#/components/parameters/PageNumber"
     - $ref: "../../openapi.yaml#/components/parameters/PageSize"
@@ -47,7 +51,9 @@ post:
     Reserves a time slot of the current team lead, moves the application to `INTERVIEW`
     and emails the candidate an invitation link.
 
-    **Roles:** `TEAM_LEAD` of the team of the vacancy.
+    A team lead may schedule interviews only for applications to vacancies of the own team.
+  security:
+    - BearerAuth: [ TEAM_LEAD ]
   requestBody:
     required: true
     content:

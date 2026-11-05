@@ -6,9 +6,9 @@ put:
   operationId: updateApplicationResponse
   summary: Correct an HR assessment
   description: |
-    The averaged score is recalculated.
-
-    **Roles:** `HR` (author of the assessment).
+    Author of the assessment updates score of metrics. The averaged score is recalculated.
+  security:
+    - BearerAuth: [ HR ]
   requestBody:
     required: true
     content:
@@ -35,9 +35,10 @@ delete:
   operationId: deleteApplicationResponse
   summary: Withdraw an HR assessment
   description: |
-    The averaged score is recalculated, the application returns to the screening queue.
-
-    **Roles:** `HR` (author of the assessment), `ADMIN`.
+    The score of metrics is deleted. The averaged score is recalculated. The application returns to the screening queue. 
+  security:
+    - BearerAuth: [ HR ]
+    - BearerAuth: [ ADMIN ]
   responses:
     '204':
       description: The assessment was deleted.

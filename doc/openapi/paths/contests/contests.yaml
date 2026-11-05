@@ -5,8 +5,11 @@ get:
   description: |
     A candidate sees only the contests they participate in, internal users see the contests
     created in the own company.
-
-    **Roles:** `CANDIDATE`, `HR`, `TEAM_LEAD`, `ADMIN`.
+  security:
+    - BearerAuth: [ CANDIDATE ]
+    - BearerAuth: [ HR ]
+    - BearerAuth: [ TEAM_LEAD ]
+    - BearerAuth: [ ADMIN ]
   parameters:
     - $ref: "../../openapi.yaml#/components/parameters/PageNumber"
     - $ref: "../../openapi.yaml#/components/parameters/PageSize"
@@ -36,8 +39,8 @@ post:
   summary: Create a contest
   description: |
     Tasks are added with `/api/contests/{contestId}/tasks/{taskId}`.
-
-    **Roles:** `TEAM_LEAD`.
+  security:
+    - BearerAuth: [ TEAM_LEAD ]
   requestBody:
     required: true
     content:

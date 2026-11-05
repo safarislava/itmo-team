@@ -4,7 +4,13 @@ get:
   tags: [ Contests ]
   operationId: getContest
   summary: Get a contest
-  description: "**Roles:** `CANDIDATE` (participant), `HR`, `TEAM_LEAD`, `ADMIN`."
+  description: |
+    A candidate must be a participant of the contest.
+  security:
+    - BearerAuth: [ CANDIDATE ]
+    - BearerAuth: [ HR ]
+    - BearerAuth: [ TEAM_LEAD ]
+    - BearerAuth: [ ADMIN ]
   responses:
     '200':
       description: The contest.
@@ -24,8 +30,8 @@ put:
   summary: Reschedule a contest
   description: |
     A contest may be rescheduled only before it starts.
-
-    **Roles:** `TEAM_LEAD`.
+  security:
+    - BearerAuth: [ TEAM_LEAD ]
   requestBody:
     required: true
     content:
@@ -59,8 +65,8 @@ delete:
   summary: Delete a contest
   description: |
     Deletes the contest with all its submissions. Tasks remain in the library.
-
-    **Roles:** `TEAM_LEAD`.
+  security:
+    - BearerAuth: [ TEAM_LEAD ]
   responses:
     '204':
       description: The contest was deleted.

@@ -2,7 +2,9 @@ get:
   tags: [ Tasks ]
   operationId: listTasks
   summary: List tasks of the library
-  description: "**Roles:** `TEAM_LEAD`, `ADMIN`."
+  security:
+    - BearerAuth: [ TEAM_LEAD ]
+    - BearerAuth: [ ADMIN ]
   parameters:
     - $ref: "../../openapi.yaml#/components/parameters/PageNumber"
     - $ref: "../../openapi.yaml#/components/parameters/PageSize"
@@ -43,8 +45,9 @@ post:
   summary: Add a task to the library
   description: |
     The current user becomes the author. Tests are added afterwards.
-
-    **Roles:** `TEAM_LEAD`, `ADMIN`.
+  security:
+    - BearerAuth: [ TEAM_LEAD ]
+    - BearerAuth: [ ADMIN ]
   requestBody:
     required: true
     content:

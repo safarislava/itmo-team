@@ -4,8 +4,6 @@ post:
   summary: Register a candidate
   description: |
     Creates an account with the role `CANDIDATE` and signs the candidate in.
-
-    **Public.**
   security: [ ]
   requestBody:
     required: true

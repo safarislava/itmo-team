@@ -8,7 +8,10 @@ put:
     Only `REJECTED` may be set directly: it interrupts the selection at any stage and notifies
     the candidate by email. Other statuses are changed by the system and by the interview feedback.
 
-    **Roles:** `HR`, `TEAM_LEAD` of the team.
+    A team lead may reject only applications to vacancies of the own team.
+  security:
+    - BearerAuth: [ HR ]
+    - BearerAuth: [ TEAM_LEAD ]
   requestBody:
     required: true
     content:

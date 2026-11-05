@@ -7,8 +7,9 @@ put:
   summary: Add an employee to a team
   description: |
     If the employee was a member of another team, they are moved to this one.
-
-    **Roles:** `HR`, `ADMIN`.
+  security:
+    - BearerAuth: [ HR ]
+    - BearerAuth: [ ADMIN ]
   responses:
     '200':
       description: The employee, now a member of the team.
@@ -34,8 +35,9 @@ delete:
   summary: Remove an employee from a team
   description: |
     The employee stays in the company without a team. The team lead can not be removed.
-
-    **Roles:** `HR`, `ADMIN`.
+  security:
+    - BearerAuth: [ HR ]
+    - BearerAuth: [ ADMIN ]
   responses:
     '204':
       description: The employee was removed from the team.

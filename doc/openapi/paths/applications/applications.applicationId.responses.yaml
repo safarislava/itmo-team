@@ -4,7 +4,10 @@ get:
   tags: [ Screening ]
   operationId: listApplicationResponses
   summary: List HR assessments of an application
-  description: "**Roles:** `HR`, `TEAM_LEAD`, `ADMIN`."
+  security:
+    - BearerAuth: [ HR ]
+    - BearerAuth: [ TEAM_LEAD ]
+    - BearerAuth: [ ADMIN ]
   responses:
     '200':
       description: Assessments of the application.
@@ -28,8 +31,8 @@ post:
     Saves the metrics set by the current HR and recalculates the averaged score.
     After the first assessment the application returns to the screening queue for a second HR,
     after the second one it leaves the queue.
-
-    **Roles:** `HR`.
+  security:
+    - BearerAuth: [ HR ]
   requestBody:
     required: true
     content:

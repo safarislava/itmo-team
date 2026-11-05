@@ -7,8 +7,6 @@ post:
   description: |
     Issues a new pair of tokens for the session the refresh token belongs to. The refresh token is taken from the
     `refreshToken` cookie or, if absent, from the `Refresh` header. The used refresh token is revoked.
-
-    **Public.**
   security: [ ]
   parameters:
     - name: refreshToken

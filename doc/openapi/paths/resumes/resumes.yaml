@@ -6,8 +6,8 @@ post:
   description: |
     Stores a resume file of the current candidate. The returned identifier is then passed
     to `/api/applications`. Supported formats are PDF, PNG, JPG, JPEG and DOCX up to 5 MB.
-
-    **Roles:** `CANDIDATE`.
+  security:
+    - BearerAuth: [ CANDIDATE ]
   requestBody:
     required: true
     content:

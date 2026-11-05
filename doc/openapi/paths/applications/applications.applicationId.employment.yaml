@@ -8,8 +8,8 @@ put:
     Turns the candidate of an application with an offer into a `DEVELOPER` of the company and
     adds them to the team of the vacancy. The new employee and the team lead are notified
     by email, the collection of productivity metrics starts.
-
-    **Roles:** `HR`.
+  security:
+    - BearerAuth: [ HR ]
   requestBody:
     required: false
     content:

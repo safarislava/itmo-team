@@ -4,7 +4,8 @@ put:
   tags: [ Dictionaries ]
   operationId: updateSkill
   summary: Edit a skill
-  description: "**Roles:** `ADMIN`."
+  security:
+    - BearerAuth: [ ADMIN ]
   requestBody:
     required: true
     content:
@@ -32,8 +33,8 @@ delete:
   summary: Delete a skill
   description: |
     The skill is also removed from all vacancies and forms that reference it.
-
-    **Roles:** `ADMIN`.
+  security:
+    - BearerAuth: [ ADMIN ]
   responses:
     '204':
       description: The skill was deleted.

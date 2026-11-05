@@ -9,7 +9,10 @@ post:
     credentials for the WebSocket and WebRTC connections of the room.
     The recording starts once both participants are connected.
 
-    **Roles:** `CANDIDATE` and `TEAM_LEAD` participating in the interview.
+    Only the candidate and the team lead of the interview may connect.
+  security:
+    - BearerAuth: [ CANDIDATE ]
+    - BearerAuth: [ TEAM_LEAD ]
   responses:
     '201':
       description: Credentials of the live-coding session.

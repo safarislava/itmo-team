@@ -4,8 +4,12 @@ get:
   summary: List teams
   description: |
     Internal users see the teams of the own company.
-
-    **Roles:** `HR`, `TEAM_LEAD`, `DEVELOPER`, `MANAGER`, `ADMIN`.
+  security:
+    - BearerAuth: [ HR ]
+    - BearerAuth: [ TEAM_LEAD ]
+    - BearerAuth: [ DEVELOPER ]
+    - BearerAuth: [ MANAGER ]
+    - BearerAuth: [ ADMIN ]
   parameters:
     - $ref: "../../openapi.yaml#/components/parameters/PageNumber"
     - $ref: "../../openapi.yaml#/components/parameters/PageSize"
@@ -42,8 +46,9 @@ post:
   summary: Create a team
   description: |
     The team lead becomes a member of the team.
-
-    **Roles:** `HR`, `ADMIN`.
+  security:
+    - BearerAuth: [ HR ]
+    - BearerAuth: [ ADMIN ]
   requestBody:
     required: true
     content:

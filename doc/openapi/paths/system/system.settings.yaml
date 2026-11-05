@@ -2,7 +2,8 @@ get:
   tags: [ System ]
   operationId: getSystemSettings
   summary: Get the global settings
-  description: "**Roles:** `ADMIN`."
+  security:
+    - BearerAuth: [ ADMIN ]
   responses:
     '200':
       description: The global settings.
@@ -20,8 +21,8 @@ put:
   summary: Change the global settings
   description: |
     The new values apply to subsequent requests without a restart.
-
-    **Roles:** `ADMIN`.
+  security:
+    - BearerAuth: [ ADMIN ]
   requestBody:
     required: true
     content:

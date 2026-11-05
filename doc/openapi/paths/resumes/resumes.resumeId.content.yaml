@@ -7,8 +7,11 @@ get:
   description: |
     A candidate may download only the own resumes, internal users only the resumes attached
     to applications to vacancies of the own company.
-
-    **Roles:** `CANDIDATE`, `HR`, `TEAM_LEAD`, `ADMIN`.
+  security:
+    - BearerAuth: [ CANDIDATE ]
+    - BearerAuth: [ HR ]
+    - BearerAuth: [ TEAM_LEAD ]
+    - BearerAuth: [ ADMIN ]
   responses:
     '200':
       description: Content of the resume file.

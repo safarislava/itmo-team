@@ -10,8 +10,9 @@ get:
     Applications with at least one HR assessment ranked by the recommended score, which is the
     weighted sum of the averaged metrics. The weights form the formula
     configured by the team lead, all of them default to `1`.
-
-    **Roles:** `HR`, `TEAM_LEAD`.
+  security:
+    - BearerAuth: [ HR ]
+    - BearerAuth: [ TEAM_LEAD ]
   parameters:
     - $ref: "../../openapi.yaml#/components/parameters/PageNumber"
     - $ref: "../../openapi.yaml#/components/parameters/PageSize"

@@ -2,7 +2,7 @@ delete:
   tags: [ Auth ]
   operationId: deleteSession
   summary: Sign out
-  description: Ends the current session, revokes its refresh token and clears the cookie.
+  description: Ends the current session by revoking its refresh token and clearing the cookie.
   responses:
     '204':
       description: The user was signed out.

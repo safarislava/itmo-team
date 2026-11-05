@@ -6,8 +6,11 @@ get:
   summary: List members of a team
   description: |
     Users of the team.
-
-    **Roles:** `HR`, `TEAM_LEAD`, `MANAGER`, `ADMIN`.
+  security:
+    - BearerAuth: [ HR ]
+    - BearerAuth: [ TEAM_LEAD ]
+    - BearerAuth: [ MANAGER ]
+    - BearerAuth: [ ADMIN ]
   parameters:
     - name: role
       in: query

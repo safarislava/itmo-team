@@ -7,7 +7,11 @@ get:
   description: |
     Candidates get only the tests that are not hidden, i.e. the examples of the statement.
 
-    **Roles:** `CANDIDATE` (participant of a running contest with the task), `TEAM_LEAD`, `ADMIN`.
+    A candidate must be a participant of a running contest with the task.
+  security:
+    - BearerAuth: [ CANDIDATE ]
+    - BearerAuth: [ TEAM_LEAD ]
+    - BearerAuth: [ ADMIN ]
   responses:
     '200':
       description: Tests of the task.
@@ -27,7 +31,11 @@ post:
   tags: [ Tasks ]
   operationId: createTest
   summary: Add a test to a task
-  description: "**Roles:** `TEAM_LEAD` (author), `ADMIN`."
+  description: |
+    A team lead may add tests to only the tasks they authored, an administrator any task.
+  security:
+    - BearerAuth: [ TEAM_LEAD ]
+    - BearerAuth: [ ADMIN ]
   requestBody:
     required: true
     content:
@@ -57,7 +65,11 @@ put:
     Deletes the existing tests of the task and creates new ones from a ZIP archive of file pairs
     `<name>.in` and `<name>.out`. All created tests are hidden.
 
-    **Roles:** `TEAM_LEAD` (author), `ADMIN`.
+    A team lead may replace the tests of only the tasks they authored, an administrator any
+    task.
+  security:
+    - BearerAuth: [ TEAM_LEAD ]
+    - BearerAuth: [ ADMIN ]
   requestBody:
     required: true
     content:

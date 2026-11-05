@@ -5,7 +5,8 @@ put:
   tags: [ Contests ]
   operationId: addTaskToContest
   summary: Add a task to a contest
-  description: "**Roles:** `TEAM_LEAD`."
+  security:
+    - BearerAuth: [ TEAM_LEAD ]
   responses:
     '204':
       description: The task is a part of the contest.
@@ -25,7 +26,8 @@ delete:
   tags: [ Contests ]
   operationId: removeTaskFromContest
   summary: Remove a task from a contest
-  description: "**Roles:** `TEAM_LEAD`."
+  security:
+    - BearerAuth: [ TEAM_LEAD ]
   responses:
     '204':
       description: The task is no longer a part of the contest.

@@ -6,8 +6,11 @@ get:
   summary: Get a user
   description: |
     Internal users see the users of the own company and the candidates who applied to its vacancies.
-
-    **Roles:** `HR`, `TEAM_LEAD`, `MANAGER`, `ADMIN`.
+  security:
+    - BearerAuth: [ HR ]
+    - BearerAuth: [ TEAM_LEAD ]
+    - BearerAuth: [ MANAGER ]
+    - BearerAuth: [ ADMIN ]
   responses:
     '200':
       description: The user.
@@ -27,8 +30,9 @@ put:
   summary: Edit an internal user
   description: |
     Changes the attributes and the role of a user.
-
-    **Roles:** `HR`, `ADMIN`.
+  security:
+    - BearerAuth: [ HR ]
+    - BearerAuth: [ ADMIN ]
   requestBody:
     required: true
     content:
@@ -60,8 +64,9 @@ delete:
     Deletes the account together with its applications, interviews as a candidate, submissions
     and activity reports. Team leads leading a team and authors of tasks or assessments can not
     be deleted.
-
-    **Roles:** `HR`, `ADMIN`.
+  security:
+    - BearerAuth: [ HR ]
+    - BearerAuth: [ ADMIN ]
   responses:
     '204':
       description: The user was deleted.

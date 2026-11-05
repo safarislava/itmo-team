@@ -6,8 +6,6 @@ get:
   summary: List selection contests of a vacancy
   description: |
     A candidate sees the contests only after applying to the vacancy.
-
-    **Roles:** any.
   responses:
     '200':
       description: Contests of the vacancy, sorted by the start time.

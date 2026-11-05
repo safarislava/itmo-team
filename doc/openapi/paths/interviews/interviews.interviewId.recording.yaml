@@ -7,8 +7,10 @@ get:
   description: |
     Redirects to a short-lived link to the video in the object storage.
     Recordings are removed 1 month after the interview.
-
-    **Roles:** `HR`, `TEAM_LEAD`, `ADMIN`.
+  security:
+    - BearerAuth: [ HR ]
+    - BearerAuth: [ TEAM_LEAD ]
+    - BearerAuth: [ ADMIN ]
   responses:
     '302':
       description: Redirect to the recording.

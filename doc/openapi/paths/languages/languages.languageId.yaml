@@ -4,7 +4,8 @@ put:
   tags: [ Dictionaries ]
   operationId: updateLanguage
   summary: Edit a programming language
-  description: "**Roles:** `ADMIN`."
+  security:
+    - BearerAuth: [ ADMIN ]
   requestBody:
     required: true
     content:
@@ -36,7 +37,8 @@ delete:
   tags: [ Dictionaries ]
   operationId: deleteLanguage
   summary: Delete a programming language
-  description: "**Roles:** `ADMIN`."
+  security:
+    - BearerAuth: [ ADMIN ]
   responses:
     '204':
       description: The language was deleted.

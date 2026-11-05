@@ -7,8 +7,9 @@ get:
 
     The representation is chosen by the `Accept` header: `application/json` returns
     the metrics, `application/pdf` a report with charts and tables, `text/csv` the raw values.
-
-    **Roles:** `MANAGER`, `ADMIN`.
+  security:
+    - BearerAuth: [ MANAGER ]
+    - BearerAuth: [ ADMIN ]
   parameters:
     - name: from
       in: query

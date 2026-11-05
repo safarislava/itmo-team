@@ -11,8 +11,11 @@ get:
 
     A developer sees only the own statistics, a team lead those of the own team members,
     a manager those of the company employees.
-
-    **Roles:** `DEVELOPER`, `TEAM_LEAD`, `MANAGER`, `ADMIN`.
+  security:
+    - BearerAuth: [ DEVELOPER ]
+    - BearerAuth: [ TEAM_LEAD ]
+    - BearerAuth: [ MANAGER ]
+    - BearerAuth: [ ADMIN ]
   parameters:
     - name: from
       in: query

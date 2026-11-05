@@ -3,3 +3,6 @@ scheme: bearer
 bearerFormat: JWT
 description: |
   Access token passed as `Authorization: Bearer <token>`. Access token is valid for 10 minutes, refresh - for 2 weeks.
+
+  The values of a security requirement are the roles of the user allowed to call the endpoint. 
+  Requirements are alternatives, so any of the listed roles is enough. An empty list allows any authenticated user.

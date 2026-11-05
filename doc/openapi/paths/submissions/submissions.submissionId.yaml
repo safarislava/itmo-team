@@ -7,7 +7,12 @@ get:
   description: |
     Status and verdict of a submission with the time and memory used.
 
-    **Roles:** `CANDIDATE` (own), `HR`, `TEAM_LEAD`, `ADMIN`.
+    A candidate may view only the own submissions.
+  security:
+    - BearerAuth: [ CANDIDATE ]
+    - BearerAuth: [ HR ]
+    - BearerAuth: [ TEAM_LEAD ]
+    - BearerAuth: [ ADMIN ]
   responses:
     '200':
       description: The submission.

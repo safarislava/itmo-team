@@ -3,8 +3,7 @@ post:
   operationId: createSession
   summary: Sign in
   description: |
-    Starts a session: issues an access token in the body and a refresh token of the session
-    in an `HttpOnly` cookie.
+    Starts a session by issuing an access token in the body and a refresh token of the session in an `HttpOnly` cookie.
   security: [ ]
   requestBody:
     required: true

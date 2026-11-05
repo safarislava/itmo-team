@@ -4,7 +4,12 @@ get:
   tags: [ Tasks ]
   operationId: getTask
   summary: Get a task
-  description: "**Roles:** `CANDIDATE` (participant of a running contest with the task), `TEAM_LEAD`, `ADMIN`."
+  description: |
+    A candidate must be a participant of a running contest with the task.
+  security:
+    - BearerAuth: [ CANDIDATE ]
+    - BearerAuth: [ TEAM_LEAD ]
+    - BearerAuth: [ ADMIN ]
   responses:
     '200':
       description: The task.
@@ -22,7 +27,11 @@ put:
   tags: [ Tasks ]
   operationId: updateTask
   summary: Edit a task
-  description: "**Roles:** `TEAM_LEAD` (author), `ADMIN`."
+  description: |
+    A team lead may edit only the tasks they authored, an administrator any task.
+  security:
+    - BearerAuth: [ TEAM_LEAD ]
+    - BearerAuth: [ ADMIN ]
   requestBody:
     required: true
     content:
@@ -51,7 +60,10 @@ delete:
   description: |
     Deletes the task with its tests and submissions and removes it from all contests.
 
-    **Roles:** `TEAM_LEAD` (author), `ADMIN`.
+    A team lead may delete only the tasks they authored, an administrator any task.
+  security:
+    - BearerAuth: [ TEAM_LEAD ]
+    - BearerAuth: [ ADMIN ]
   responses:
     '204':
       description: The task was deleted.

@@ -6,8 +6,6 @@ get:
   summary: Get a vacancy
   description: |
     Vacancies other than `OPEN` are visible only to internal users of the company.
-
-    **Public.**
   security:
     - { }
     - BearerAuth: [ ]
@@ -27,7 +25,9 @@ put:
   description: |
     Only `DRAFT` and `OPEN` vacancies may be edited.
 
-    **Roles:** `TEAM_LEAD` of the team.
+    Only a team lead of the team of the vacancy may edit it.
+  security:
+    - BearerAuth: [ TEAM_LEAD ]
   requestBody:
     required: true
     content:
@@ -62,7 +62,9 @@ delete:
   description: |
     Only `DRAFT` vacancies may be deleted, others are closed instead.
 
-    **Roles:** `TEAM_LEAD` of the team.
+    Only a team lead of the team of the vacancy may delete it.
+  security:
+    - BearerAuth: [ TEAM_LEAD ]
   responses:
     '204':
       description: The vacancy was deleted.

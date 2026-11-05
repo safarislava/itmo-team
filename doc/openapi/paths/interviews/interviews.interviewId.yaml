@@ -7,7 +7,13 @@ get:
   description: |
     The feedback is hidden from the candidate.
 
-    **Roles:** `CANDIDATE` (own), `HR`, `TEAM_LEAD`, `MANAGER`, `ADMIN`.
+    A candidate may view only the own interviews.
+  security:
+    - BearerAuth: [ CANDIDATE ]
+    - BearerAuth: [ HR ]
+    - BearerAuth: [ TEAM_LEAD ]
+    - BearerAuth: [ MANAGER ]
+    - BearerAuth: [ ADMIN ]
   responses:
     '200':
       description: The interview.

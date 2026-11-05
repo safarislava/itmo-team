@@ -5,8 +5,12 @@ get:
   description: |
     A candidate sees the own applications, internal users see the applications
     to vacancies of the own company.
-
-    **Roles:** `CANDIDATE`, `HR`, `TEAM_LEAD`, `MANAGER`, `ADMIN`.
+  security:
+    - BearerAuth: [ CANDIDATE ]
+    - BearerAuth: [ HR ]
+    - BearerAuth: [ TEAM_LEAD ]
+    - BearerAuth: [ MANAGER ]
+    - BearerAuth: [ ADMIN ]
   parameters:
     - $ref: "../../openapi.yaml#/components/parameters/PageNumber"
     - $ref: "../../openapi.yaml#/components/parameters/PageSize"
@@ -60,8 +64,8 @@ post:
     Saves the form and the application of the current candidate.
     The candidate becomes a participant of the contests attached to the vacancy and gets
     a single access to them.
-
-    **Roles:** `CANDIDATE`.
+  security:
+    - BearerAuth: [ CANDIDATE ]
   requestBody:
     required: true
     content:

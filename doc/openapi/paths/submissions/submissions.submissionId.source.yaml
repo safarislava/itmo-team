@@ -7,7 +7,12 @@ get:
   description: |
     Snapshot of the code taken at the moment of submitting.
 
-    **Roles:** `CANDIDATE` (own), `HR`, `TEAM_LEAD`, `ADMIN`.
+    A candidate may view only the own submissions.
+  security:
+    - BearerAuth: [ CANDIDATE ]
+    - BearerAuth: [ HR ]
+    - BearerAuth: [ TEAM_LEAD ]
+    - BearerAuth: [ ADMIN ]
   responses:
     '200':
       description: The source code.

@@ -6,8 +6,12 @@ get:
   summary: Get a company
   description: |
     Internal users may get only the own company.
-
-    **Roles:** `HR`, `TEAM_LEAD`, `DEVELOPER`, `MANAGER`, `ADMIN`.
+  security:
+    - BearerAuth: [ HR ]
+    - BearerAuth: [ TEAM_LEAD ]
+    - BearerAuth: [ DEVELOPER ]
+    - BearerAuth: [ MANAGER ]
+    - BearerAuth: [ ADMIN ]
   responses:
     '200':
       description: The company.
@@ -25,7 +29,8 @@ put:
   tags: [ Companies ]
   operationId: updateCompany
   summary: Rename a company
-  description: "**Roles:** `ADMIN`."
+  security:
+    - BearerAuth: [ ADMIN ]
   requestBody:
     required: true
     content:
@@ -60,8 +65,8 @@ delete:
   description: |
     Deletes the company with its teams and vacancies. Employees stay on the platform
     without a company.
-
-    **Roles:** `ADMIN`.
+  security:
+    - BearerAuth: [ ADMIN ]
   responses:
     '204':
       description: The company was deleted.

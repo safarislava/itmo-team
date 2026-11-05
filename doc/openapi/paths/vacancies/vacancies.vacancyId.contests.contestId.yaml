@@ -8,7 +8,9 @@ put:
   description: |
     Candidates applying to the vacancy become participants of the contest.
 
-    **Roles:** `TEAM_LEAD` of the team.
+    Only a team lead of the team of the vacancy may attach contests.
+  security:
+    - BearerAuth: [ TEAM_LEAD ]
   responses:
     '204':
       description: The contest is attached to the vacancy.
@@ -28,7 +30,10 @@ delete:
   tags: [ Vacancies, Contests ]
   operationId: detachContestFromVacancy
   summary: Detach a contest from a vacancy
-  description: "**Roles:** `TEAM_LEAD` of the team."
+  description: |
+    Only a team lead of the team of the vacancy may detach contests.
+  security:
+    - BearerAuth: [ TEAM_LEAD ]
   responses:
     '204':
       description: The contest is no longer attached to the vacancy.

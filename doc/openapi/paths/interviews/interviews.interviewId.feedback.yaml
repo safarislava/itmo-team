@@ -4,7 +4,11 @@ get:
   tags: [ Interviews ]
   operationId: getInterviewFeedback
   summary: Get the feedback of an interview
-  description: "**Roles:** `HR`, `TEAM_LEAD`, `MANAGER`, `ADMIN`."
+  security:
+    - BearerAuth: [ HR ]
+    - BearerAuth: [ TEAM_LEAD ]
+    - BearerAuth: [ MANAGER ]
+    - BearerAuth: [ ADMIN ]
   responses:
     '200':
       description: The feedback.
@@ -31,7 +35,9 @@ put:
     decision on the candidate. The application moves according to the decision,
     HR is notified. A repeated call replaces the feedback while the application is not hired.
 
-    **Roles:** `TEAM_LEAD` of the interview.
+    Only the team lead who conducts the interview may leave the feedback.
+  security:
+    - BearerAuth: [ TEAM_LEAD ]
   requestBody:
     required: true
     content:

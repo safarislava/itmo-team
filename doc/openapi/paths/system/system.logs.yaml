@@ -5,8 +5,8 @@ get:
   summary: List system logs
   description: |
     Log records of the backend and the Runner Servers.
-
-    **Roles:** `ADMIN`.
+  security:
+    - BearerAuth: [ ADMIN ]
   parameters:
     - $ref: "../../openapi.yaml#/components/parameters/PageNumber"
     - $ref: "../../openapi.yaml#/components/parameters/PageSize"

@@ -20,8 +20,8 @@ post:
   summary: Add a programming language
   description: |
     The language must also be supported by the Runner Servers.
-
-    **Roles:** `ADMIN`.
+  security:
+    - BearerAuth: [ ADMIN ]
   requestBody:
     required: true
     content:

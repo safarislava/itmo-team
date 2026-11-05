@@ -5,7 +5,11 @@ put:
   tags: [ Tasks ]
   operationId: updateTest
   summary: Edit a test
-  description: "**Roles:** `TEAM_LEAD` (author), `ADMIN`."
+  description: |
+    A team lead may edit the tests of only the tasks they authored, an administrator any task.
+  security:
+    - BearerAuth: [ TEAM_LEAD ]
+    - BearerAuth: [ ADMIN ]
   requestBody:
     required: true
     content:
@@ -31,7 +35,11 @@ delete:
   tags: [ Tasks ]
   operationId: deleteTest
   summary: Delete a test
-  description: "**Roles:** `TEAM_LEAD` (author), `ADMIN`."
+  description: |
+    A team lead may delete the tests of only the tasks they authored, an administrator any task.
+  security:
+    - BearerAuth: [ TEAM_LEAD ]
+    - BearerAuth: [ ADMIN ]
   responses:
     '204':
       description: The test was deleted.

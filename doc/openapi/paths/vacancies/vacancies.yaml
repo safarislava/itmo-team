@@ -6,8 +6,6 @@ get:
   description: |
     Catalogue of vacancies. Anonymous users, candidates and developers
     see only `OPEN` vacancies, other internal users also see the remaining vacancies of the own company.
-
-    **Public.**
   security:
     - { }
     - BearerAuth: [ ]
@@ -87,8 +85,8 @@ post:
     Creates a `DRAFT` vacancy in the team of the current team lead.
     After attaching contests it is published by setting the status `OPEN`
     at `/api/vacancies/{vacancyId}/status`.
-
-    **Roles:** `TEAM_LEAD`.
+  security:
+    - BearerAuth: [ TEAM_LEAD ]
   requestBody:
     required: true
     content:

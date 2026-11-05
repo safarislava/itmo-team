@@ -6,8 +6,8 @@ delete:
   summary: Remove a Runner Server from the pool
   description: |
     Submissions running on the server are re-queued. Past results keep no reference to it.
-
-    **Roles:** `ADMIN`.
+  security:
+    - BearerAuth: [ ADMIN ]
   responses:
     '204':
       description: The server was removed.

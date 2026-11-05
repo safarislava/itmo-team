@@ -4,8 +4,9 @@ get:
   summary: List users
   description: |
     HR sees the users of the own company, an administrator sees all users.
-
-    **Roles:** `HR`, `ADMIN`.
+  security:
+    - BearerAuth: [ HR ]
+    - BearerAuth: [ ADMIN ]
   parameters:
     - $ref: "../../openapi.yaml#/components/parameters/PageNumber"
     - $ref: "../../openapi.yaml#/components/parameters/PageSize"
@@ -56,8 +57,9 @@ post:
   summary: Create an internal user
   description: |
     Creates an account of an internal user and emails a temporary password.
-
-    **Roles:** `HR`, `ADMIN`.
+  security:
+    - BearerAuth: [ HR ]
+    - BearerAuth: [ ADMIN ]
   requestBody:
     required: true
     content:

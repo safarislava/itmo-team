@@ -8,7 +8,12 @@ get:
     Statements of the tasks. Candidates see them only while the contest runs.
     Examples are available at `/api/tasks/{taskId}/tests`.
 
-    **Roles:** `CANDIDATE` (participant), `HR`, `TEAM_LEAD`, `ADMIN`.
+    A candidate must be a participant of the contest.
+  security:
+    - BearerAuth: [ CANDIDATE ]
+    - BearerAuth: [ HR ]
+    - BearerAuth: [ TEAM_LEAD ]
+    - BearerAuth: [ ADMIN ]
   responses:
     '200':
       description: Tasks of the contest.

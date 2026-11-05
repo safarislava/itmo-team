@@ -12,9 +12,9 @@ info:
     - All request and response bodies are represented as JSON (`application/json`).
     - Errors are reported as problem details (`application/problem+json`).
     - Collections are paginated, `page` is zero-based.
-    - Every endpoint requires an access token (`Authorization: Bearer <token>`) unless it
-      is marked as public.
+    - Most of the endpoints require an access token (`Authorization: Bearer <token>`).
     - Access tokens are kept in an `HttpOnly` cookie.
+    - Roles allowed to call an endpoint are listed in its security requirements.
 
 servers:
   - url: https://itmorethan.team

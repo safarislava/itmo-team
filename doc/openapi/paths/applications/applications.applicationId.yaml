@@ -9,7 +9,13 @@ get:
     The interviews of the application are listed at `/api/interviews?applicationId=`,
     the submissions at `/api/submissions?senderId=`.
 
-    **Roles:** `CANDIDATE` (own), `HR`, `TEAM_LEAD`, `MANAGER`, `ADMIN`.
+    A candidate may view only the own applications.
+  security:
+    - BearerAuth: [ CANDIDATE ]
+    - BearerAuth: [ HR ]
+    - BearerAuth: [ TEAM_LEAD ]
+    - BearerAuth: [ MANAGER ]
+    - BearerAuth: [ ADMIN ]
   responses:
     '200':
       description: The application.
