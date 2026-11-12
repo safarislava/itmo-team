@@ -26,5 +26,13 @@ class VacancyEntity(
     var salary: Int?,
     var skillIds: List<UUID>,
     var createdAt: Instant,
-    var closedAt: Instant?
+    var closedAt: Instant?,
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "vacancy_contest",
+        joinColumns = [JoinColumn(name = "vacancy_id")],
+        inverseJoinColumns = [JoinColumn(name = "contest_id")]
+    )
+    var contests: MutableList<ContestEntity> = mutableListOf()
 ) : BasicEntity()

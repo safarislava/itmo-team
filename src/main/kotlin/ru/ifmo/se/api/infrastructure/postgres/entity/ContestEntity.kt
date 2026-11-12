@@ -1,9 +1,6 @@
 package ru.ifmo.se.api.infrastructure.postgres.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import java.time.Duration
 import java.time.Instant
 import java.util.UUID
@@ -16,5 +13,24 @@ class ContestEntity(
     override var id: UUID,
 
     var scheduledTime: Instant,
-    var duration: Duration
+    var duration: Duration,
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "contest_task",
+        joinColumns = [JoinColumn(name = "contest_id")],
+        inverseJoinColumns = [JoinColumn(name = "task_id")]
+    )
+    var tasks: MutableList<TaskEntity> = mutableListOf(),
+
+    @ManyToMany(mappedBy = "contests", fetch = FetchType.LAZY)
+    var vacancies: MutableList<VacancyEntity> = mutableListOf(),
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "contest_participant",
+        joinColumns = [JoinColumn(name = "contest_id")],
+        inverseJoinColumns = [JoinColumn(name = "person_id")]
+    )
+    var participants: MutableList<PersonEntity> = mutableListOf()
 ) : BasicEntity()
