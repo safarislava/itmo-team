@@ -7,7 +7,7 @@ import java.util.UUID
 @Table(name = "person")
 class PersonEntity(
     @Id
-    @Column(name = "person_id", nullable = false, updatable = false)
+    @Column(name = "person_id")
     override var id: UUID,
 
     var name: String,
