@@ -15,7 +15,7 @@ class PersonEntity(
     var passwordHash: String,
 
     @Enumerated(EnumType.STRING)
-    var role: PersonRoleEntity,
+    var role: PersonRole,
 
     var companyId: UUID?,
     var teamId: UUID?,

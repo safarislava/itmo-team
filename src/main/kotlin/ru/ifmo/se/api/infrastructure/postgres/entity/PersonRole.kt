@@ -1,6 +1,6 @@
 package ru.ifmo.se.api.infrastructure.postgres.entity
 
-enum class PersonRoleEntity {
+enum class PersonRole {
     CANDIDATE,
     HR,
     TEAM_LEAD,
