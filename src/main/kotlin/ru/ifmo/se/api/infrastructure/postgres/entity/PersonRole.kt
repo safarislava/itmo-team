@@ -6,5 +6,5 @@ enum class PersonRole {
     TEAM_LEAD,
     DEVELOPER,
     MANAGER,
-    ADMIN
+    ADMIN,
 }

@@ -4,5 +4,5 @@ enum class SubmissionStatus {
     QUEUED,
     RUNNING,
     FINISHED,
-    FAILED
+    FAILED,
 }

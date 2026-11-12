@@ -12,7 +12,6 @@ class LanguageEntity(
     @Id
     @Column(name = "language_id")
     override var id: UUID,
-
     var name: String,
-    var version: String
+    var version: String,
 ) : BasicEntity()

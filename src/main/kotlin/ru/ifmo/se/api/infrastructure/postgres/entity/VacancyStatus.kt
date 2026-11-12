@@ -4,5 +4,5 @@ enum class VacancyStatus {
     DRAFT,
     OPEN,
     CLOSED,
-    ARCHIVE
+    ARCHIVE,
 }

@@ -16,13 +16,10 @@ class TeamEntity(
     @Id
     @Column(name = "team_id")
     override var id: UUID,
-
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "teamlead_id")
     var teamlead: PersonEntity,
-
     var name: String,
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id")
     var company: CompanyEntity,

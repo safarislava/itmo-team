@@ -6,5 +6,5 @@ enum class ApplicationStatus {
     CONTEST,
     INTERVIEW,
     OFFER,
-    REJECTED
+    REJECTED,
 }

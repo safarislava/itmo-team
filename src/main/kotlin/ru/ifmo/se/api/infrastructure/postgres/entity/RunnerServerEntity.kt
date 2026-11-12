@@ -14,8 +14,7 @@ class RunnerServerEntity(
     @Id
     @Column(name = "runner_server_id")
     override var id: UUID,
-
     @JdbcTypeCode(SqlTypes.INET)
     @Column(name = "ip", columnDefinition = "inet")
-    var ip: String
+    var ip: String,
 ) : BasicEntity()

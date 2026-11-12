@@ -1,6 +1,11 @@
 package ru.ifmo.se.api.infrastructure.postgres.entity
 
-import jakarta.persistence.*
+import jakarta.persistence.Entity
+import jakarta.persistence.FetchType
+import jakarta.persistence.Id
+import jakarta.persistence.JoinColumn
+import jakarta.persistence.OneToOne
+import jakarta.persistence.Table
 import org.hibernate.proxy.HibernateProxy
 
 @Entity
@@ -10,13 +15,12 @@ class ApplicationScoreEntity(
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "application_id")
     var application: ApplicationEntity,
-
     var motivation: Short,
     var softSkills: Short,
     var petProjects: Short,
     var jobExp: Short,
     var hardSkills: Short,
-    var workFormat: Short
+    var workFormat: Short,
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

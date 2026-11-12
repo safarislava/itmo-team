@@ -15,10 +15,8 @@ class CompanyEntity(
     @Id
     @Column(name = "company_id")
     override var id: UUID,
-
     var name: String,
     var creationDate: LocalDate,
-
     @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
-    var teams: MutableList<TeamEntity> = mutableListOf()
+    var teams: MutableList<TeamEntity> = mutableListOf(),
 ) : BasicEntity()
