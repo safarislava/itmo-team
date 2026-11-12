@@ -17,7 +17,7 @@ class PersonEntity(
     @Enumerated(EnumType.STRING)
     var role: PersonRoleEntity,
 
-    var companyId: UUID? = null,
-    var teamId: UUID? = null,
-    var githubId: Long? = null
+    var companyId: UUID?,
+    var teamId: UUID?,
+    var githubId: Long?
 ) : BasicEntity()
