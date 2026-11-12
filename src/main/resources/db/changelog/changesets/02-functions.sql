@@ -10,10 +10,10 @@ END $$;
 
 CREATE OR REPLACE FUNCTION
     close_vacancy_with_rejections(
-       p_vacancy_id BIGINT
+       p_vacancy_id UUID
     )
 RETURNS TABLE (
-       rejected_application_id BIGINT
+       rejected_application_id UUID
     )
 AS $$
 BEGIN
@@ -33,7 +33,7 @@ $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION
     get_candidate_leaderboard(
-        p_vacancy_id BIGINT,
+        p_vacancy_id UUID,
         p_motivation_weight FLOAT,
         p_soft_skills_weight FLOAT,
         p_pet_projects_weight FLOAT,
@@ -42,12 +42,12 @@ CREATE OR REPLACE FUNCTION
         p_work_format_weight FLOAT
     )
 RETURNS TABLE (
-    application_id BIGINT,
-    candidate_id BIGINT,
+    application_id UUID,
+    candidate_id UUID,
     name VARCHAR,
-    vacancy_id BIGINT,
-    resume_id BIGINT,
-    form_id BIGINT,
+    vacancy_id UUID,
+    resume_id UUID,
+    form_id UUID,
     status VARCHAR(20),
     score FLOAT
 ) AS $$
@@ -72,15 +72,15 @@ $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE PROCEDURE
     schedule_interview(
-    p_application_id BIGINT,
+    p_application_id UUID,
     p_scheduled_start TIMESTAMPTZ,
     p_scheduled_end TIMESTAMPTZ
 )
 AS $$
 DECLARE
-    v_candidate_id BIGINT;
-    v_vacancy_id BIGINT;
-    v_teamlead_id BIGINT;
+    v_candidate_id UUID;
+    v_vacancy_id UUID;
+    v_teamlead_id UUID;
 BEGIN
     SELECT a.candidate_id, a.vacancy_id, t.teamlead_id
     INTO v_candidate_id, v_vacancy_id, v_teamlead_id
@@ -175,7 +175,7 @@ EXECUTE FUNCTION check_candidate_id();
 
 CREATE OR REPLACE FUNCTION
     refresh_application_score_for(
-        p_application_id BIGINT
+        p_application_id UUID
     )
 RETURNS VOID
 AS $$
