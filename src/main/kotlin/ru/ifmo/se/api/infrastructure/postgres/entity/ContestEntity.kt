@@ -11,26 +11,22 @@ class ContestEntity(
     @Id
     @Column(name = "contest_id")
     override var id: UUID,
-
     var scheduledTime: Instant,
     var duration: Duration,
-
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
         name = "contest_task",
         joinColumns = [JoinColumn(name = "contest_id")],
-        inverseJoinColumns = [JoinColumn(name = "task_id")]
+        inverseJoinColumns = [JoinColumn(name = "task_id")],
     )
     var tasks: MutableList<TaskEntity> = mutableListOf(),
-
     @ManyToMany(mappedBy = "contests", fetch = FetchType.LAZY)
     var vacancies: MutableList<VacancyEntity> = mutableListOf(),
-
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
         name = "contest_participant",
         joinColumns = [JoinColumn(name = "contest_id")],
-        inverseJoinColumns = [JoinColumn(name = "person_id")]
+        inverseJoinColumns = [JoinColumn(name = "person_id")],
     )
-    var participants: MutableList<PersonEntity> = mutableListOf()
+    var participants: MutableList<PersonEntity> = mutableListOf(),
 ) : BasicEntity()

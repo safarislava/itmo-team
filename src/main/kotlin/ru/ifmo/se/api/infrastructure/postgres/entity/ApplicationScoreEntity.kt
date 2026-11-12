@@ -10,13 +10,12 @@ class ApplicationScoreEntity(
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "application_id")
     var application: ApplicationEntity,
-
     var motivation: Short,
     var softSkills: Short,
     var petProjects: Short,
     var jobExp: Short,
     var hardSkills: Short,
-    var workFormat: Short
+    var workFormat: Short,
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

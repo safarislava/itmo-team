@@ -10,15 +10,12 @@ class CoderReportEntity(
     @Id
     @Column(name = "report_id")
     override var id: UUID,
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "coder_id")
     var coder: PersonEntity?,
-
     var countOpenedPr: Int,
     var countClosedPr: Int,
     var countReviewedPr: Int,
     var countCommits: Int,
-
-    var reportDate: Instant
+    var reportDate: Instant,
 ) : BasicEntity()

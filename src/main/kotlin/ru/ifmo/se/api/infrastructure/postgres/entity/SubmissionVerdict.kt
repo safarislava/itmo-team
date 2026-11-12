@@ -6,5 +6,5 @@ enum class SubmissionVerdict {
     TIME_LIMIT,
     MEMORY_LIMIT,
     RUNTIME_ERROR,
-    COMPILATION_ERROR
+    COMPILATION_ERROR,
 }

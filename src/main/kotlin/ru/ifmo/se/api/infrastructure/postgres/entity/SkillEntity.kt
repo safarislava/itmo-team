@@ -12,7 +12,6 @@ class SkillEntity(
     @Id
     @Column(name = "skill_id")
     override var id: UUID,
-
     var name: String,
-    var description: String?
+    var description: String?,
 ) : BasicEntity()
