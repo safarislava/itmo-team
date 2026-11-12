@@ -8,6 +8,8 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.JoinTable
 import jakarta.persistence.ManyToMany
 import jakarta.persistence.Table
+import org.hibernate.annotations.JdbcTypeCode
+import org.hibernate.type.SqlTypes
 import java.time.Duration
 import java.time.Instant
 import java.util.UUID
@@ -19,6 +21,7 @@ class ContestEntity(
     @Column(name = "contest_id")
     override var id: UUID,
     var scheduledTime: Instant,
+    @JdbcTypeCode(SqlTypes.INTERVAL_SECOND)
     var duration: Duration,
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
