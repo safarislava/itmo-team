@@ -10,6 +10,7 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import org.hibernate.proxy.HibernateProxy
+import ru.ifmo.se.api.domain.model.SubmissionVerdict
 
 @Entity
 @Table(name = "submission_response")

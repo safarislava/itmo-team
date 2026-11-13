@@ -9,6 +9,7 @@ import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
+import ru.ifmo.se.api.domain.model.SubmissionStatus
 import java.time.Instant
 import java.util.UUID
 

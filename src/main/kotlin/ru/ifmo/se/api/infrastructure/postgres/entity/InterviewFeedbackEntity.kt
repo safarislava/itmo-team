@@ -9,6 +9,7 @@ import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
+import ru.ifmo.se.api.domain.model.InterviewDecision
 import java.util.UUID
 
 @Entity

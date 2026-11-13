@@ -1,4 +1,4 @@
-package ru.ifmo.se.api.infrastructure.postgres.entity
+package ru.ifmo.se.api.domain.model
 
 enum class ApplicationStatus {
     NEW,
