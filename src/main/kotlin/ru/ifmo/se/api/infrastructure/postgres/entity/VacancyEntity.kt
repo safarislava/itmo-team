@@ -11,6 +11,7 @@ import jakarta.persistence.JoinTable
 import jakarta.persistence.ManyToMany
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
+import ru.ifmo.se.api.domain.model.VacancyStatus
 import java.time.Instant
 import java.util.UUID
 
