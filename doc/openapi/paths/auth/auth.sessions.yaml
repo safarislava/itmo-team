@@ -3,7 +3,7 @@ post:
   operationId: createSession
   summary: Sign in
   description: |
-    Starts a session by issuing an access token in the body and a refresh token of the session in an `HttpOnly` cookie.
+    Starts a session by issuing an access token and a refresh token of the session in `HttpOnly` cookies.
   security: [ ]
   requestBody:
     required: true
@@ -20,7 +20,7 @@ post:
       content:
         application/json:
           schema:
-            $ref: "../../openapi.yaml#/components/schemas/TokenResponse"
+            $ref: "../../openapi.yaml#/components/schemas/Person"
     '400':
       $ref: "../../openapi.yaml#/components/responses/BadRequest"
     '401':

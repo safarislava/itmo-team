@@ -1,0 +1,8 @@
+description: |
+  Sets the access token that is valid for 10 minutes as an `HttpOnly` cookie for `/`.
+schema:
+  type: string
+examples:
+  issued:
+    summary: A new access token
+    serializedValue: accessToken=eyJhbGciOiJIUzI1NiJ9...; Path=/; Max-Age=600; HttpOnly; Secure; SameSite=Strict

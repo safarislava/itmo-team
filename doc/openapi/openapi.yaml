@@ -12,8 +12,7 @@ info:
     - All request and response bodies are represented as JSON (`application/json`).
     - Errors are reported as problem details (`application/problem+json`).
     - Collections are paginated, `page` is zero-based.
-    - Most of the endpoints require an access token (`Authorization: Bearer <token>`).
-    - Access tokens are kept in an `HttpOnly` cookie.
+    - Authentication tokens (`accessToken` and `refreshToken`) are kept in `HttpOnly` cookies.
     - Roles allowed to call an endpoint are listed in its security requirements.
 
 servers:
@@ -371,6 +370,9 @@ components:
       $ref: "./parameters/RunnerId.yaml"
 
   headers:
+    SetAccessCookie:
+      $ref: "./headers/SetAccessCookie.yaml"
+
     SetRefreshCookie:
       $ref: "./headers/SetRefreshCookie.yaml"
 
@@ -567,9 +569,6 @@ components:
 
     RunnerServerRequest:
       $ref: "./schemas/request/RunnerServerRequest.yaml"
-
-    TokenResponse:
-      $ref: "./schemas/response/TokenResponse.yaml"
 
     VacancyStatusResult:
       $ref: "./schemas/response/VacancyStatusResult.yaml"
