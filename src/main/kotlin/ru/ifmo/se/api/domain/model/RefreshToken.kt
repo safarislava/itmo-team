@@ -13,4 +13,14 @@ class RefreshToken(
     fun isExpired(now: Instant = Instant.now()): Boolean = now.isAfter(expiresAt)
 
     fun isValid(now: Instant = Instant.now()): Boolean = !revoked && !isExpired(now)
+
+    fun revoke(): RefreshToken =
+        RefreshToken(
+            id = id,
+            personId = personId,
+            tokenHash = tokenHash,
+            expiresAt = expiresAt,
+            createdAt = createdAt,
+            revoked = true,
+        )
 }

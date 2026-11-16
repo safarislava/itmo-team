@@ -20,7 +20,7 @@ post:
       content:
         application/json:
           schema:
-            $ref: "../../openapi.yaml#/components/schemas/TokenResponse"
+            $ref: "../../openapi.yaml#/components/schemas/Person"
     '400':
       $ref: "../../openapi.yaml#/components/responses/BadRequest"
     '409':

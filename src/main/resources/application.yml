@@ -19,3 +19,11 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
+security:
+  jwt:
+    secret: "very-secret-token-must-be-at-least-32-bytes-long"
+  access-token:
+    expiration-seconds: 600
+  refresh-token:
+    expiration-seconds: 1209600
