@@ -1,15 +1,14 @@
 package ru.ifmo.se.api.infrastructure.postgres.repository.adapter.mapper
 
-import org.mapstruct.Mapper
+import org.springframework.stereotype.Component
 import ru.ifmo.se.api.domain.model.CompanyId
 import ru.ifmo.se.api.domain.model.Person
 import ru.ifmo.se.api.domain.model.PersonId
 import ru.ifmo.se.api.domain.model.TeamId
 import ru.ifmo.se.api.infrastructure.postgres.entity.PersonEntity
-import java.util.UUID
 
-@Mapper(componentModel = "spring")
-interface PersonEntityMapper {
+@Component
+class PersonEntityMapper {
     fun toDomain(entity: PersonEntity): Person =
         Person(
             id = PersonId(entity.id),
@@ -22,17 +21,15 @@ interface PersonEntityMapper {
             githubId = entity.githubId,
         )
 
-    fun toEntity(domain: Person): PersonEntity
-
-    fun toPersonId(value: UUID): PersonId = PersonId(value)
-
-    fun fromPersonId(id: PersonId): UUID = id.value
-
-    fun toCompanyId(value: UUID?): CompanyId? = value?.let { CompanyId(it) }
-
-    fun fromCompanyId(id: CompanyId?): UUID? = id?.value
-
-    fun toTeamId(value: UUID?): TeamId? = value?.let { TeamId(it) }
-
-    fun fromTeamId(id: TeamId?): UUID? = id?.value
+    fun toEntity(domain: Person): PersonEntity =
+        PersonEntity(
+            id = domain.id.value,
+            name = domain.name,
+            email = domain.email,
+            passwordHash = domain.passwordHash,
+            role = domain.role,
+            companyId = domain.companyId?.value,
+            teamId = domain.teamId?.value,
+            githubId = domain.githubId,
+        )
 }
