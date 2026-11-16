@@ -16,8 +16,8 @@ import ru.ifmo.se.api.domain.model.SortDirection
 import ru.ifmo.se.api.domain.model.TeamId
 import ru.ifmo.se.api.domain.repository.PersonRepository
 import ru.ifmo.se.api.infrastructure.postgres.entity.PersonEntity
-import ru.ifmo.se.api.infrastructure.postgres.repository.JpaPersonRepository
 import ru.ifmo.se.api.infrastructure.postgres.mapper.PersonEntityMapper
+import ru.ifmo.se.api.infrastructure.postgres.repository.JpaPersonRepository
 import java.util.UUID
 
 @Repository
