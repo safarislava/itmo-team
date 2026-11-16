@@ -45,8 +45,6 @@ class PersonRepositoryImpl(
 
     override fun existsByEmail(email: String): Boolean = repo.existsByEmail(email)
 
-    override fun findByGithubId(githubId: Long): Person? = repo.findByGithubId(githubId).map(mapper::toDomain).orElse(null)
-
     override fun findAllByTeamId(teamId: TeamId): List<Person> = repo.findAllByTeamId(teamId.value).map(mapper::toDomain)
 
     override fun findAllByCompanyId(companyId: CompanyId): List<Person> = repo.findAllByCompanyId(companyId.value).map(mapper::toDomain)
