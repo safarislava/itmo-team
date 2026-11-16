@@ -8,5 +8,6 @@
     <include file="db/changelog/changesets/01-create-schema.sql"/>
     <include file="db/changelog/changesets/02-functions.sql"/>
     <include file="db/changelog/changesets/03-indexes.sql"/>
+    <include file="db/changelog/changesets/04-refresh-token.sql"/>
 
 </databaseChangeLog>
