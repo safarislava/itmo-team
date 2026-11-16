@@ -1,4 +1,4 @@
-package ru.ifmo.se.api.infrastructure.postgres.repository.adapter.mapper
+package ru.ifmo.se.api.infrastructure.postgres.mapper
 
 import org.springframework.stereotype.Component
 import ru.ifmo.se.api.domain.model.CompanyId
