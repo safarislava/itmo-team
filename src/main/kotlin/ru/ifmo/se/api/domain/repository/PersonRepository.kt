@@ -21,8 +21,6 @@ interface PersonRepository {
 
     fun existsByEmail(email: String): Boolean
 
-    fun findByGithubId(githubId: Long): Person?
-
     fun findAllByTeamId(teamId: TeamId): List<Person>
 
     fun findAllByCompanyId(companyId: CompanyId): List<Person>

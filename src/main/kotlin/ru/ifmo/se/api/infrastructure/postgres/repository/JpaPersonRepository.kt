@@ -13,8 +13,6 @@ interface JpaPersonRepository :
 
     fun existsByEmail(email: String): Boolean
 
-    fun findByGithubId(githubId: Long): Optional<PersonEntity>
-
     fun findAllByTeamId(teamId: UUID): List<PersonEntity>
 
     fun findAllByCompanyId(companyId: UUID): List<PersonEntity>

@@ -16,8 +16,8 @@ import ru.ifmo.se.api.domain.model.SortDirection
 import ru.ifmo.se.api.domain.model.TeamId
 import ru.ifmo.se.api.domain.repository.PersonRepository
 import ru.ifmo.se.api.infrastructure.postgres.entity.PersonEntity
+import ru.ifmo.se.api.infrastructure.postgres.mapper.PersonEntityMapper
 import ru.ifmo.se.api.infrastructure.postgres.repository.JpaPersonRepository
-import ru.ifmo.se.api.infrastructure.postgres.repository.adapter.mapper.PersonEntityMapper
 import java.util.UUID
 
 @Repository
@@ -44,8 +44,6 @@ class PersonRepositoryImpl(
     override fun findByEmail(email: String): Person? = repo.findByEmail(email).map(mapper::toDomain).orElse(null)
 
     override fun existsByEmail(email: String): Boolean = repo.existsByEmail(email)
-
-    override fun findByGithubId(githubId: Long): Person? = repo.findByGithubId(githubId).map(mapper::toDomain).orElse(null)
 
     override fun findAllByTeamId(teamId: TeamId): List<Person> = repo.findAllByTeamId(teamId.value).map(mapper::toDomain)
 
