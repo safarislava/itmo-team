@@ -8,23 +8,12 @@ import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.core.AuthenticationException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
-import ru.ifmo.se.api.domain.exception.EmailAlreadyExistsException
 import ru.ifmo.se.api.domain.exception.InvalidCredentialsException
 import ru.ifmo.se.api.domain.exception.InvalidRefreshTokenException
 import java.net.URI
 
 @RestControllerAdvice
 class AuthExceptionHandler {
-    @ExceptionHandler(EmailAlreadyExistsException::class)
-    fun handleEmailAlreadyExists(ex: EmailAlreadyExistsException): ResponseEntity<ProblemDetail> {
-        val problem =
-            ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.message ?: "A user with this email already exists.").apply {
-                type = URI.create("about:blank")
-                title = "Conflict"
-            }
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(problem)
-    }
-
     @ExceptionHandler(InvalidCredentialsException::class, BadCredentialsException::class)
     fun handleInvalidCredentials(ex: Exception): ResponseEntity<ProblemDetail> {
         val problem =
