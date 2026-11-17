@@ -11,8 +11,6 @@ interface JpaPersonRepository :
     JpaSpecificationExecutor<PersonEntity> {
     fun findByEmail(email: String): Optional<PersonEntity>
 
-    fun existsByEmail(email: String): Boolean
-
     fun findAllByTeamId(teamId: UUID): List<PersonEntity>
 
     fun findAllByCompanyId(companyId: UUID): List<PersonEntity>

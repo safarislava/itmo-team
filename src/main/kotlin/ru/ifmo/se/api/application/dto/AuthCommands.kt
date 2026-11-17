@@ -5,3 +5,8 @@ data class RegisterCommand(
     val email: String,
     val password: String,
 )
+
+data class LoginCommand(
+    val email: String,
+    val password: String,
+)

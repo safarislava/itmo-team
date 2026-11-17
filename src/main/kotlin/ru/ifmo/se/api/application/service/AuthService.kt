@@ -10,7 +10,6 @@ import ru.ifmo.se.api.application.port.out.PasswordHasher
 import ru.ifmo.se.api.application.port.out.RefreshTokenGenerator
 import ru.ifmo.se.api.application.port.out.RefreshTokenPolicy
 import ru.ifmo.se.api.application.port.out.TokenHasher
-import ru.ifmo.se.api.domain.exception.EmailAlreadyExistsException
 import ru.ifmo.se.api.domain.exception.InvalidCredentialsException
 import ru.ifmo.se.api.domain.exception.InvalidRefreshTokenException
 import ru.ifmo.se.api.domain.model.Person
@@ -34,10 +33,6 @@ class AuthService(
 ) {
     @Transactional
     fun register(command: RegisterCommand): AuthResult {
-        if (personRepository.existsByEmail(command.email)) {
-            throw EmailAlreadyExistsException()
-        }
-
         val person =
             Person(
                 id = PersonId.generate(),
