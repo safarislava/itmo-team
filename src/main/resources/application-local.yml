@@ -4,6 +4,18 @@ spring:
     username: postgres
     password: postgres
 
+  mail:
+    host: localhost
+    port: 587
+    username: admin
+    password: admin
+    properties:
+      mail:
+        smtp:
+          auth: false
+          starttls:
+            enable: false
+
 app:
   datasource:
     replica:
