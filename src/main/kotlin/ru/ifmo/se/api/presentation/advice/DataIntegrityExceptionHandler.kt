@@ -54,6 +54,10 @@ class DataIntegrityExceptionHandler {
         private val CONFLICT_RULES =
             listOf(
                 ConflictRule(
+                    keywords = listOf("company_name_key", "uq_company_name"),
+                    detail = "A company with this name already exists.",
+                ),
+                ConflictRule(
                     keywords = listOf("email"),
                     detail = "A user with this email already exists.",
                 ),

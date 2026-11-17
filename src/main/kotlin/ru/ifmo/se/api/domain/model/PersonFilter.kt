@@ -6,22 +6,3 @@ data class PersonFilter(
     val companyId: CompanyId? = null,
     val teamId: TeamId? = null,
 )
-
-data class PageQuery(
-    val pageNumber: Int,
-    val pageSize: Int,
-    val sortBy: String = "id",
-    val sortOrder: SortDirection,
-)
-
-enum class SortDirection {
-    ASC,
-    DESC,
-}
-
-data class PageResult<T>(
-    val items: List<T>,
-    val totalElements: Long,
-    val pageNumber: Int,
-    val totalPages: Int,
-)

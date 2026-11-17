@@ -13,4 +13,11 @@ class CompanyEntityMapper {
             name = entity.name,
             creationDate = entity.creationDate,
         )
+
+    fun toEntity(company: Company): CompanyEntity =
+        CompanyEntity(
+            id = company.id.value,
+            name = company.name,
+            creationDate = company.creationDate,
+        )
 }
