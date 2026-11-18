@@ -15,6 +15,8 @@ class FormEntity(
     @Id
     @Column(name = "form_id")
     override var id: UUID,
+    @Column(name = "candidate_id")
+    var candidateId: UUID,
     var university: String?,
     var motivation: String?,
     var petProjects: String?,

@@ -12,6 +12,8 @@ class ResumeEntity(
     @Id
     @Column(name = "resume_id")
     override var id: UUID,
+    @Column(name = "candidate_id")
+    var candidateId: UUID,
     var s3key: String,
     var filename: String,
 ) : BasicEntity()

@@ -22,3 +22,13 @@ app:
       url: jdbc:postgresql://localhost:5432/dev
       username: postgres
       password: postgres
+
+storage:
+  s3:
+    bucket: itmo-resumes
+    endpoint: http://localhost:9000
+    region: us-east-1
+    access-key: minioadmin
+    secret-key: minioadmin
+    path-style-access-enabled: true
+
