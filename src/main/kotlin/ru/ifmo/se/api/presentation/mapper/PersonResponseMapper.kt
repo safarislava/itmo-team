@@ -5,6 +5,7 @@ import ru.ifmo.se.api.domain.model.Person
 import ru.ifmo.se.api.domain.repository.CompanyRepository
 import ru.ifmo.se.api.domain.repository.TeamRepository
 import ru.ifmo.se.api.presentation.dto.response.PersonResponse
+import ru.ifmo.se.api.presentation.dto.response.PersonSummaryResponse
 
 @Component
 class PersonResponseMapper(
@@ -34,4 +35,11 @@ class PersonResponseMapper(
             githubId = person.githubId,
         )
     }
+
+    fun toSummaryResponse(person: Person): ru.ifmo.se.api.presentation.dto.response.PersonSummaryResponse =
+        PersonSummaryResponse(
+            id = person.id.value,
+            name = person.name,
+            role = person.role,
+        )
 }
