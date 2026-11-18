@@ -3,7 +3,6 @@ package ru.ifmo.se.api.infrastructure.postgres.repository
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
-import ru.ifmo.se.api.infrastructure.postgres.entity.ApplicationEntity
 import ru.ifmo.se.api.infrastructure.postgres.entity.ApplicationResponseEntity
 import java.time.Instant
 import java.util.UUID
@@ -15,7 +14,7 @@ interface JpaApplicationResponseRepository : JpaRepository<ApplicationResponseEn
 
     @Query(
         """
-        SELECT a FROM ApplicationEntity a
+        SELECT a.id FROM ApplicationEntity a
         WHERE a.status = ru.ifmo.se.api.domain.model.ApplicationStatus.REVIEW
           AND a.vacancy.team.company.id = :companyId
           AND NOT EXISTS (
@@ -41,5 +40,5 @@ interface JpaApplicationResponseRepository : JpaRepository<ApplicationResponseEn
         hrId: UUID,
         now: Instant,
         pageable: Pageable,
-    ): List<ApplicationEntity>
+    ): List<UUID>
 }
