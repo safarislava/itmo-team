@@ -1,0 +1,20 @@
+# Git attributes configuration
+# Exclude images, PDFs, and Draw.io files from statistics (GitHub Linguist and Git diff statistics)
+
+# Documents
+*.pdf binary linguist-detectable=false linguist-documentation=true
+
+# Images
+*.png binary linguist-detectable=false
+*.jpg binary linguist-detectable=false
+*.jpeg binary linguist-detectable=false
+*.gif binary linguist-detectable=false
+*.ico binary linguist-detectable=false
+*.webp binary linguist-detectable=false
+*.bmp binary linguist-detectable=false
+*.tiff binary linguist-detectable=false
+*.tif binary linguist-detectable=false
+*.svg -diff linguist-detectable=false
+
+# Draw.io diagram files
+*.drawio.xml linguist-detectable=false
