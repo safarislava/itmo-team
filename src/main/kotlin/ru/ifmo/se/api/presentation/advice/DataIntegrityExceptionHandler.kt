@@ -86,6 +86,10 @@ class DataIntegrityExceptionHandler {
                     detail = "The user is referenced by an interview as a team lead.",
                 ),
                 ConflictRule(
+                    keywords = listOf("uq_application_response_app_hr", "application_response_app_hr"),
+                    detail = "The HR has already assessed this application.",
+                ),
+                ConflictRule(
                     keywords = listOf("application_response_hr", "hr_id"),
                     detail = "The user is referenced by an application response as an HR.",
                 ),
