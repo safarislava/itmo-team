@@ -9,11 +9,15 @@ import software.amazon.awssdk.services.s3.model.DeleteObjectRequest
 import software.amazon.awssdk.services.s3.model.GetObjectRequest
 import software.amazon.awssdk.services.s3.model.NoSuchKeyException
 import software.amazon.awssdk.services.s3.model.PutObjectRequest
+import software.amazon.awssdk.services.s3.presigner.S3Presigner
+import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest
+import java.time.Duration
 import java.util.UUID
 
 @Service
 class S3FileStorage(
     private val s3Client: S3Client,
+    private val s3Presigner: S3Presigner,
     @Value("\${storage.s3.bucket}")
     private val bucket: String,
 ) : FileStorage {
@@ -57,5 +61,26 @@ class S3FileStorage(
                 .build()
 
         s3Client.deleteObject(request)
+    }
+
+    override fun getPresignedUrl(
+        s3key: String,
+        duration: Duration,
+    ): String {
+        val getObjectRequest =
+            GetObjectRequest
+                .builder()
+                .bucket(bucket)
+                .key(s3key)
+                .build()
+
+        val presignRequest =
+            GetObjectPresignRequest
+                .builder()
+                .signatureDuration(duration)
+                .getObjectRequest(getObjectRequest)
+                .build()
+
+        return s3Presigner.presignGetObject(presignRequest).url().toString()
     }
 }

@@ -5,4 +5,10 @@ interface EmailService {
         toEmail: String,
         temporaryPassword: String,
     )
+
+    fun sendInterviewInvitation(
+        toEmail: String,
+        interviewId: java.util.UUID,
+        scheduledStart: java.time.Instant,
+    )
 }
