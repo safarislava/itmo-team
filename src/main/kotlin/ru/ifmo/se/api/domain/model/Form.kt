@@ -4,6 +4,7 @@ import java.util.UUID
 
 data class Form(
     val id: FormId,
+    val candidateId: PersonId,
     val university: String?,
     val motivation: String?,
     val petProjects: String?,
