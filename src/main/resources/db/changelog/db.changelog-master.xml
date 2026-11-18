@@ -10,5 +10,6 @@
     <include file="db/changelog/changesets/03-indexes.sql"/>
     <include file="db/changelog/changesets/04-refresh-token.sql"/>
     <include file="db/changelog/changesets/05-add-candidate-to-resume-and-form.sql"/>
+    <include file="db/changelog/changesets/06-application-reservation.sql"/>
 
 </databaseChangeLog>
