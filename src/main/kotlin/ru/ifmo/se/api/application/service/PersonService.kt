@@ -7,6 +7,7 @@ import ru.ifmo.se.api.application.dto.ChangePasswordCommand
 import ru.ifmo.se.api.application.dto.CreatePersonCommand
 import ru.ifmo.se.api.application.dto.UpdatePersonCommand
 import ru.ifmo.se.api.application.dto.UpdateProfileCommand
+import ru.ifmo.se.api.application.policy.PersonPolicy
 import ru.ifmo.se.api.application.port.out.EmailService
 import ru.ifmo.se.api.application.port.out.PasswordHasher
 import ru.ifmo.se.api.domain.exception.InvalidCurrentPasswordException
@@ -34,6 +35,7 @@ class PersonService(
     private val refreshTokenRepository: RefreshTokenRepository,
     private val passwordHasher: PasswordHasher,
     private val emailService: EmailService,
+    private val personPolicy: PersonPolicy,
 ) {
     private val random = SecureRandom()
     private val passwordChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*"
@@ -44,18 +46,13 @@ class PersonService(
         page: PageQuery,
     ): PageResult<Person> {
         val effectiveFilter =
-            if (caller.role == PersonRole.HR) {
-                val companyId =
-                    caller.companyId ?: return PageResult(
-                        items = emptyList(),
-                        totalElements = 0,
-                        pageNumber = page.pageNumber,
-                        totalPages = 0,
-                    )
-                filter.copy(companyId = companyId)
-            } else {
-                filter
-            }
+            personPolicy.applyFilterScope(caller, filter)
+                ?: return PageResult(
+                    items = emptyList(),
+                    totalElements = 0,
+                    pageNumber = page.pageNumber,
+                    totalPages = 0,
+                )
 
         return personRepository.findByFilter(effectiveFilter, page)
     }
@@ -65,20 +62,8 @@ class PersonService(
         targetPersonId: PersonId,
     ): Person {
         val target = personRepository.findById(targetPersonId) ?: throw PersonNotFoundException()
-
-        if (caller.role == PersonRole.ADMIN) {
-            return target
-        }
-
-        if (caller.role == PersonRole.HR || caller.role == PersonRole.TEAM_LEAD || caller.role == PersonRole.MANAGER) {
-            val callerCompanyId = caller.companyId
-            if (callerCompanyId != null && target.companyId == callerCompanyId) {
-                return target
-            }
-            throw AccessDeniedException("Access is denied. User does not have access to view this person.")
-        }
-
-        throw AccessDeniedException("Access is denied.")
+        personPolicy.checkCanView(caller, target)
+        return target
     }
 
     @Transactional
@@ -89,6 +74,8 @@ class PersonService(
         if (command.role == PersonRole.CANDIDATE) {
             throw PersonBadRequestException("CANDIDATE is not allowed for internal users.")
         }
+
+        personPolicy.checkCanCreate(caller, command)
 
         val (companyId, teamId) = resolvePlacement(caller, command)
         val temporaryPassword = generateTemporaryPassword()
@@ -124,9 +111,6 @@ class PersonService(
         caller: Person,
         command: CreatePersonCommand,
     ): Pair<CompanyId?, TeamId?> {
-        if (command.role == PersonRole.ADMIN) {
-            throw AccessDeniedException("HR cannot assign ADMIN role.")
-        }
         val companyId = caller.companyId ?: throw PersonBadRequestException("HR has no company assigned.")
         if (command.companyId != null && command.companyId != companyId) {
             throw PersonBadRequestException("HR cannot specify a different companyId.")
@@ -205,6 +189,8 @@ class PersonService(
             throw PersonBadRequestException("CANDIDATE can not be assigned to internal users.")
         }
 
+        personPolicy.checkCanUpdate(caller, target, command)
+
         val (companyId, teamId) = resolvePlacement(caller, target, command)
 
         val updated =
@@ -239,15 +225,6 @@ class PersonService(
         command: UpdatePersonCommand,
     ): Pair<CompanyId?, TeamId?> {
         val hrCompanyId = caller.companyId ?: throw PersonBadRequestException("HR has no company assigned.")
-        if (target.companyId != null && target.companyId != hrCompanyId) {
-            throw AccessDeniedException("Access is denied. Cannot edit users outside of your company.")
-        }
-        if (target.role == PersonRole.ADMIN) {
-            throw AccessDeniedException("Access is denied. HR cannot edit administrators.")
-        }
-        if (command.role == PersonRole.ADMIN) {
-            throw AccessDeniedException("Access is denied. HR cannot assign ADMIN role.")
-        }
         validateRoleAndTeam(command.role, command.teamId, hrCompanyId)
         return hrCompanyId to command.teamId
     }
@@ -329,9 +306,7 @@ class PersonService(
         caller: Person,
         targetPersonId: PersonId,
     ) {
-        if (caller.id != targetPersonId && caller.role != PersonRole.ADMIN) {
-            throw AccessDeniedException("Access is denied. Only administrators can delete other users.")
-        }
+        personPolicy.checkCanDelete(caller, targetPersonId)
 
         val target = personRepository.findById(targetPersonId) ?: throw PersonNotFoundException()
         refreshTokenRepository.revokeAllByPersonId(target.id)
@@ -348,16 +323,8 @@ class PersonService(
         if (target.role == PersonRole.CANDIDATE) {
             throw PersonBadRequestException("Candidate is not employed and cannot be dismissed.")
         }
-        if (target.role == PersonRole.ADMIN) {
-            throw AccessDeniedException("Access is denied. Administrators cannot be dismissed.")
-        }
 
-        if (caller.role == PersonRole.HR) {
-            val hrCompanyId = caller.companyId ?: throw PersonBadRequestException("HR has no company assigned.")
-            if (target.companyId != hrCompanyId) {
-                throw AccessDeniedException("Access is denied. Cannot dismiss users outside of your company.")
-            }
-        }
+        personPolicy.checkCanDismiss(caller, target)
 
         val dismissed =
             Person(

@@ -49,7 +49,7 @@ class PersonController(
     private val personResponseMapper: PersonResponseMapper,
 ) {
     @GetMapping
-    @RequiresRole(PersonRole.HR, PersonRole.ADMIN)
+    @RequiresRole(PersonRole.HR, PersonRole.ADMIN, PersonRole.MANAGER, PersonRole.TEAM_LEAD)
     fun getPersons(
         @AuthenticationPrincipal currentPerson: Person,
         @Min(0) @RequestParam(defaultValue = "0") page: Int,
