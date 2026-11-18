@@ -26,6 +26,10 @@ class DataIntegrityExceptionHandler {
     }
 
     private fun resolveDetail(ex: DataIntegrityViolationException): String {
+        val causeMsg = ex.mostSpecificCause.message.orEmpty()
+        if ("собеседование" in causeMsg.lowercase()) {
+            return causeMsg.substringAfter("ERROR: ").trim().substringBefore("\n")
+        }
         val context = buildDiagnosticText(ex)
         return CONFLICT_RULES
             .firstOrNull { rule -> rule.matches(context) }
@@ -84,6 +88,18 @@ class DataIntegrityExceptionHandler {
                 ConflictRule(
                     keywords = listOf("interview_teamlead"),
                     detail = "The user is referenced by an interview as a team lead.",
+                ),
+                ConflictRule(
+                    keywords = listOf("chk_interview_scheduled_end"),
+                    detail = "Scheduled end must be later than scheduled start.",
+                ),
+                ConflictRule(
+                    keywords = listOf("chk_interview_person_teamlead"),
+                    detail = "Team lead and candidate cannot be the same person.",
+                ),
+                ConflictRule(
+                    keywords = listOf("interview_feedback_interview_id_key", "uq_interview_feedback"),
+                    detail = "Feedback for this interview already exists.",
                 ),
                 ConflictRule(
                     keywords = listOf("uq_application_response_app_hr", "application_response_app_hr"),
