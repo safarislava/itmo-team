@@ -182,6 +182,10 @@ class DataIntegrityExceptionHandler {
                     detail = "The user is referenced by a contest as a participant.",
                 ),
                 ConflictRule(
+                    keywords = listOf("submission_language", "submission_language_id_fkey"),
+                    detail = "Submissions in this language exist.",
+                ),
+                ConflictRule(
                     keywords = listOf("violates foreign key constraint", "foreign key", "fkey"),
                     detail = "The user is referenced by a team, a task, an assessment or an interview as a team lead.",
                 ),

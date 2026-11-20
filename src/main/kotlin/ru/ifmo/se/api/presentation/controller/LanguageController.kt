@@ -39,6 +39,15 @@ class LanguageController(
         return ResponseEntity.ok(languages.map(languageResponseMapper::toResponse))
     }
 
+    @GetMapping("/{languageId}")
+    @Authenticated
+    fun getLanguage(
+        @PathVariable languageId: UUID,
+    ): ResponseEntity<LanguageResponse> {
+        val language = languageService.getLanguage(LanguageId(languageId))
+        return ResponseEntity.ok(languageResponseMapper.toResponse(language))
+    }
+
     @PostMapping
     @RequiresRole(PersonRole.ADMIN)
     fun createLanguage(
