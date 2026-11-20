@@ -7,6 +7,12 @@ put:
   summary: Add a task to a contest
   security:
     - BearerAuth: [ TEAM_LEAD ]
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../../openapi.yaml#/components/schemas/ContestTaskRequest"
   responses:
     '204':
       description: The task is a part of the contest.

@@ -558,6 +558,9 @@ components:
     ContestRequest:
       $ref: "./schemas/request/ContestRequest.yaml"
 
+    ContestTaskRequest:
+      $ref: "./schemas/request/ContestTaskRequest.yaml"
+
     TaskRequest:
       $ref: "./schemas/request/TaskRequest.yaml"
 

@@ -1,0 +1,9 @@
+type: object
+required: [ maxAttempts ]
+properties:
+  maxAttempts:
+    type: integer
+    format: int32
+    minimum: 1
+    description: Maximum number of attempts allowed for this task in the contest.
+    examples: [ 3 ]
