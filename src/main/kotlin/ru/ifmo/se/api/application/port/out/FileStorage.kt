@@ -8,6 +8,11 @@ interface FileStorage {
         bytes: ByteArray,
     ): String
 
+    fun storeWithKey(
+        s3key: String,
+        bytes: ByteArray,
+    )
+
     fun load(s3key: String): ByteArray
 
     fun delete(s3key: String)

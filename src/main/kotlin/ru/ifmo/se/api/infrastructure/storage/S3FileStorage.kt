@@ -26,6 +26,14 @@ class S3FileStorage(
         bytes: ByteArray,
     ): String {
         val s3key = "${UUID.randomUUID()}_$filename"
+        storeWithKey(s3key, bytes)
+        return s3key
+    }
+
+    override fun storeWithKey(
+        s3key: String,
+        bytes: ByteArray,
+    ) {
         val request =
             PutObjectRequest
                 .builder()
@@ -34,7 +42,6 @@ class S3FileStorage(
                 .build()
 
         s3Client.putObject(request, RequestBody.fromBytes(bytes))
-        return s3key
     }
 
     override fun load(s3key: String): ByteArray {
