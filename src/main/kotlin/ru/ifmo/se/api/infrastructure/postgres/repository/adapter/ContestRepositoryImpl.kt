@@ -14,7 +14,6 @@ import ru.ifmo.se.api.domain.model.PageQuery
 import ru.ifmo.se.api.domain.model.PageResult
 import ru.ifmo.se.api.domain.model.PersonId
 import ru.ifmo.se.api.domain.model.SortDirection
-import ru.ifmo.se.api.domain.model.Task
 import ru.ifmo.se.api.domain.model.TaskId
 import ru.ifmo.se.api.domain.repository.ContestRepository
 import ru.ifmo.se.api.infrastructure.postgres.entity.CompanyEntity
@@ -23,9 +22,7 @@ import ru.ifmo.se.api.infrastructure.postgres.entity.PersonEntity
 import ru.ifmo.se.api.infrastructure.postgres.entity.TeamEntity
 import ru.ifmo.se.api.infrastructure.postgres.entity.VacancyEntity
 import ru.ifmo.se.api.infrastructure.postgres.mapper.ContestEntityMapper
-import ru.ifmo.se.api.infrastructure.postgres.mapper.TaskEntityMapper
 import ru.ifmo.se.api.infrastructure.postgres.repository.JpaContestRepository
-import ru.ifmo.se.api.infrastructure.postgres.repository.JpaTaskRepository
 import java.time.Instant
 import java.util.UUID
 
@@ -33,8 +30,6 @@ import java.util.UUID
 class ContestRepositoryImpl(
     private val repo: JpaContestRepository,
     private val mapper: ContestEntityMapper,
-    private val taskRepo: JpaTaskRepository,
-    private val taskMapper: TaskEntityMapper,
 ) : ContestRepository {
     override fun findById(id: ContestId): Contest? = repo.findById(id.value).map(mapper::toDomain).orElse(null)
 
@@ -91,33 +86,6 @@ class ContestRepositoryImpl(
     override fun save(contest: Contest): Contest = mapper.toDomain(repo.save(mapper.toEntity(contest)))
 
     override fun delete(id: ContestId) = repo.deleteById(id.value)
-
-    @Transactional
-    override fun addTask(
-        contestId: ContestId,
-        taskId: TaskId,
-    ) {
-        val contest = repo.findById(contestId.value).orElse(null) ?: return
-        if (contest.tasks.none { it.id == taskId.value }) {
-            contest.tasks.add(taskRepo.getReferenceById(taskId.value))
-            repo.save(contest)
-        }
-    }
-
-    @Transactional
-    override fun removeTask(
-        contestId: ContestId,
-        taskId: TaskId,
-    ) {
-        repo.findById(contestId.value).ifPresent { contest ->
-            contest.tasks.removeIf { it.id == taskId.value }
-            repo.save(contest)
-        }
-    }
-
-    @Transactional(readOnly = true)
-    override fun findTasksByContestId(contestId: ContestId): List<Task> =
-        repo.findById(contestId.value).map { it.tasks.map(taskMapper::toDomain) }.orElse(emptyList())
 
     override fun isCandidateParticipantOfRunningContestWithTask(
         candidateId: PersonId,
