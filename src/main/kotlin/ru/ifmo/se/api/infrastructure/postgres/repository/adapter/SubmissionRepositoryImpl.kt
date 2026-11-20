@@ -25,20 +25,14 @@ import ru.ifmo.se.api.infrastructure.postgres.entity.TeamEntity
 import ru.ifmo.se.api.infrastructure.postgres.entity.VacancyEntity
 import ru.ifmo.se.api.infrastructure.postgres.mapper.SubmissionEntityMapper
 import ru.ifmo.se.api.infrastructure.postgres.repository.JpaSubmissionRepository
-import ru.ifmo.se.api.infrastructure.postgres.repository.JpaSubmissionResponseRepository
 import java.util.UUID
 
 @Repository
 class SubmissionRepositoryImpl(
     private val repo: JpaSubmissionRepository,
-    private val responseRepo: JpaSubmissionResponseRepository,
     private val mapper: SubmissionEntityMapper,
 ) : SubmissionRepository {
-    override fun findById(id: SubmissionId): Submission? {
-        val entity = repo.findById(id.value).orElse(null) ?: return null
-        val response = responseRepo.findBySubmissionId(id.value)
-        return mapper.toDomain(entity, response)
-    }
+    override fun findById(id: SubmissionId): Submission? = repo.findById(id.value).map(mapper::toDomain).orElse(null)
 
     override fun findAll(
         filter: SubmissionFilter,
@@ -83,16 +77,8 @@ class SubmissionRepositoryImpl(
         val pageable = PageRequest.of(pageQuery.pageNumber, pageQuery.pageSize, Sort.by(direction, sortBy))
         val pagedResult = repo.findAll(specification, pageable)
 
-        val submissionIds = pagedResult.content.map { it.id }
-        val responses =
-            if (submissionIds.isNotEmpty()) {
-                responseRepo.findBySubmissionIdIn(submissionIds).associateBy { it.submission.id }
-            } else {
-                emptyMap()
-            }
-
         return PageResult(
-            items = pagedResult.content.map { mapper.toDomain(it, responses[it.id]) },
+            items = pagedResult.content.map(mapper::toDomain),
             totalElements = pagedResult.totalElements,
             pageNumber = pagedResult.number,
             totalPages = pagedResult.totalPages,
