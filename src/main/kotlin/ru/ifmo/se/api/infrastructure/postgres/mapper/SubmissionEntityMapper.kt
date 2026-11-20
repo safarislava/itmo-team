@@ -8,13 +8,8 @@ import ru.ifmo.se.api.domain.model.Submission
 import ru.ifmo.se.api.domain.model.SubmissionId
 import ru.ifmo.se.api.domain.model.SubmissionResult
 import ru.ifmo.se.api.domain.model.TaskId
-import ru.ifmo.se.api.infrastructure.postgres.entity.ContestEntity
-import ru.ifmo.se.api.infrastructure.postgres.entity.LanguageEntity
-import ru.ifmo.se.api.infrastructure.postgres.entity.PersonEntity
 import ru.ifmo.se.api.infrastructure.postgres.entity.SubmissionEntity
 import ru.ifmo.se.api.infrastructure.postgres.entity.SubmissionResponseEntity
-import ru.ifmo.se.api.infrastructure.postgres.entity.TaskEntity
-
 import ru.ifmo.se.api.infrastructure.postgres.repository.JpaContestRepository
 import ru.ifmo.se.api.infrastructure.postgres.repository.JpaLanguageRepository
 import ru.ifmo.se.api.infrastructure.postgres.repository.JpaPersonRepository
