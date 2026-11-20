@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import ru.ifmo.se.api.domain.exception.TaskBadRequestException
 import ru.ifmo.se.api.domain.exception.TaskNotFoundException
+import ru.ifmo.se.api.domain.exception.TaskNotPartOfContestException
 import java.net.URI
 
 @RestControllerAdvice
@@ -29,5 +30,19 @@ class TaskExceptionHandler {
                 title = "Bad Request"
             }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problem)
+    }
+
+    @ExceptionHandler(TaskNotPartOfContestException::class)
+    fun handleTaskNotPartOfContest(ex: TaskNotPartOfContestException): ResponseEntity<ProblemDetail> {
+        val problem =
+            ProblemDetail
+                .forStatusAndDetail(
+                    HttpStatus.NOT_FOUND,
+                    ex.message ?: "The task is not a part of the contest.",
+                ).apply {
+                    type = URI.create("about:blank")
+                    title = "Not Found"
+                }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(problem)
     }
 }

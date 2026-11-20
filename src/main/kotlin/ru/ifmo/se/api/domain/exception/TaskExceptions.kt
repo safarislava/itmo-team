@@ -7,3 +7,7 @@ class TaskNotFoundException(
 class TaskBadRequestException(
     message: String = "Bad request.",
 ) : RuntimeException(message)
+
+class TaskNotPartOfContestException(
+    message: String = "The task is not a part of the contest.",
+) : RuntimeException(message)

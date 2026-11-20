@@ -11,3 +11,11 @@ class ContestBadRequestException(
 class ContestAlreadyStartedException(
     message: String = "The contest has already started.",
 ) : RuntimeException(message)
+
+class CandidateNotParticipantException(
+    message: String = "The candidate does not participate in this contest.",
+) : RuntimeException(message)
+
+class ContestNotRunningException(
+    message: String = "The contest is not running.",
+) : RuntimeException(message)
