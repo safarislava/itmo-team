@@ -30,6 +30,11 @@ class TestRepositoryImpl(
     }
 
     @Transactional
+    override fun deleteAll(ids: List<TestId>) {
+        repo.deleteAllById(ids.map { it.value })
+    }
+
+    @Transactional
     override fun deleteAllByTaskId(taskId: TaskId) {
         repo.deleteByTaskId(taskId.value)
     }

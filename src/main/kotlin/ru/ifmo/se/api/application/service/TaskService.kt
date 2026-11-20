@@ -6,7 +6,7 @@ import ru.ifmo.se.api.application.dto.CreateTaskCommand
 import ru.ifmo.se.api.application.dto.TaskDetails
 import ru.ifmo.se.api.application.dto.UpdateTaskCommand
 import ru.ifmo.se.api.application.policy.TaskPolicy
-import ru.ifmo.se.api.application.port.out.FileStorage
+import ru.ifmo.se.api.application.port.out.TestStorage
 import ru.ifmo.se.api.domain.exception.TaskNotFoundException
 import ru.ifmo.se.api.domain.model.PageQuery
 import ru.ifmo.se.api.domain.model.PageResult
@@ -27,7 +27,7 @@ class TaskService(
     private val contestRepository: ContestRepository,
     private val personRepository: PersonRepository,
     private val taskPolicy: TaskPolicy,
-    private val fileStorage: FileStorage,
+    private val testStorage: TestStorage,
 ) {
     fun getTasks(
         caller: Person,
@@ -114,12 +114,7 @@ class TaskService(
 
         val tests = testRepository.findByTaskId(taskId)
         tests.forEach { test ->
-            try {
-                fileStorage.delete(test.inputS3key)
-                fileStorage.delete(test.outputS3key)
-            } catch (_: Exception) {
-                // best-effort cleanup
-            }
+            testStorage.delete(test.inputS3key, test.outputS3key)
         }
 
         taskRepository.delete(taskId)

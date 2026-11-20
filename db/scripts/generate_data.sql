@@ -805,14 +805,18 @@ WITH t AS MATERIALIZED (
     FROM task tk
     WHERE NOT EXISTS (SELECT 1 FROM test ts WHERE ts.task_id = tk.task_id)
 )
-INSERT INTO test (task_id, input_s3key, output_s3key, is_hidden)
+INSERT INTO test (test_id, task_id, input_s3key, output_s3key, is_hidden)
 SELECT
+    sub.test_id,
     t.task_id,
-    'tasks/' || t.task_id || '/tests/' || gen_random_uuid() || '_input.txt',
-    'tasks/' || t.task_id || '/tests/' || gen_random_uuid() || '_output.txt',
-    g.j > 2
+    sub.test_id || '.in',
+    sub.test_id || '.out',
+    sub.j > 2
 FROM t
-         CROSS JOIN LATERAL generate_series(1, t.test_count) g(j);
+         CROSS JOIN LATERAL (
+             SELECT gen_random_uuid() AS test_id, j
+             FROM generate_series(1, t.test_count) g(j)
+         ) sub;
 
 CREATE TEMP TABLE gen_task ON COMMIT DROP AS
 SELECT row_number() OVER (ORDER BY task_id) AS n, task_id FROM task;

@@ -17,5 +17,7 @@ interface TestRepository {
 
     fun delete(id: TestId)
 
+    fun deleteAll(ids: List<TestId>)
+
     fun deleteAllByTaskId(taskId: TaskId)
 }
