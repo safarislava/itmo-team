@@ -5,9 +5,11 @@ import org.springframework.http.ProblemDetail
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
+import ru.ifmo.se.api.domain.exception.CandidateNotParticipantException
 import ru.ifmo.se.api.domain.exception.ContestAlreadyStartedException
 import ru.ifmo.se.api.domain.exception.ContestBadRequestException
 import ru.ifmo.se.api.domain.exception.ContestNotFoundException
+import ru.ifmo.se.api.domain.exception.ContestNotRunningException
 import java.net.URI
 
 @RestControllerAdvice
@@ -36,6 +38,30 @@ class ContestExceptionHandler {
     fun handleContestAlreadyStarted(ex: ContestAlreadyStartedException): ResponseEntity<ProblemDetail> {
         val problem =
             ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.message ?: "The contest has already started.").apply {
+                type = URI.create("about:blank")
+                title = "Conflict"
+            }
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(problem)
+    }
+
+    @ExceptionHandler(CandidateNotParticipantException::class)
+    fun handleCandidateNotParticipant(ex: CandidateNotParticipantException): ResponseEntity<ProblemDetail> {
+        val problem =
+            ProblemDetail
+                .forStatusAndDetail(
+                    HttpStatus.FORBIDDEN,
+                    ex.message ?: "The candidate does not participate in the contest.",
+                ).apply {
+                    type = URI.create("about:blank")
+                    title = "Forbidden"
+                }
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(problem)
+    }
+
+    @ExceptionHandler(ContestNotRunningException::class)
+    fun handleContestNotRunning(ex: ContestNotRunningException): ResponseEntity<ProblemDetail> {
+        val problem =
+            ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.message ?: "The contest is not running.").apply {
                 type = URI.create("about:blank")
                 title = "Conflict"
             }
