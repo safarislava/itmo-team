@@ -13,5 +13,6 @@
     <include file="db/changelog/changesets/06-application-reservation.sql"/>
     <include file="db/changelog/changesets/07-tests-s3.sql"/>
     <include file="db/changelog/changesets/08-contest-name.sql"/>
+    <include file="db/changelog/changesets/09-contest-task-max-attempts.sql"/>
 
 </databaseChangeLog>
