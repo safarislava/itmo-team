@@ -110,6 +110,74 @@ class DataIntegrityExceptionHandler {
                     detail = "The user is referenced by an application response as an HR.",
                 ),
                 ConflictRule(
+                    keywords = listOf("contest_duration_check", "chk_contest_duration", "contest_duration"),
+                    detail = "Contest duration must be positive.",
+                ),
+                ConflictRule(
+                    keywords = listOf("task_time_limit_check", "chk_task_time_limit", "time_limit"),
+                    detail = "Time limit must be positive.",
+                ),
+                ConflictRule(
+                    keywords = listOf("task_memory_limit_check", "chk_task_memory_limit", "memory_limit"),
+                    detail = "Memory limit must be positive.",
+                ),
+                ConflictRule(
+                    keywords = listOf("task_name_check", "chk_task_name"),
+                    detail = "Task name cannot be empty.",
+                ),
+                ConflictRule(
+                    keywords = listOf("contest_task_pkey", "uq_contest_task", "contest_task"),
+                    detail = "The task is already part of this contest.",
+                ),
+                ConflictRule(
+                    keywords = listOf("contest_participant_pkey", "uq_contest_participant"),
+                    detail = "The candidate is already a participant of this contest.",
+                ),
+                ConflictRule(
+                    keywords = listOf("vacancy_contest_pkey", "uq_vacancy_contest"),
+                    detail = "The contest is already associated with this vacancy.",
+                ),
+                ConflictRule(
+                    keywords = listOf("uq_submission_attempt", "submission_attempt"),
+                    detail = "The submission attempt already exists.",
+                ),
+                ConflictRule(
+                    keywords = listOf("submission_attempt_check", "chk_submission_attempt"),
+                    detail = "Submission attempt must be at least 1.",
+                ),
+                ConflictRule(
+                    keywords = listOf("submission_ai_score_check", "chk_submission_ai_score"),
+                    detail = "AI score must be between 0 and 100.",
+                ),
+                ConflictRule(
+                    keywords = listOf("uq_language_name_version", "language_name_version"),
+                    detail = "A language with this name and version already exists.",
+                ),
+                ConflictRule(
+                    keywords = listOf("test_task", "test_task_id_fkey"),
+                    detail = "The task is referenced by tests.",
+                ),
+                ConflictRule(
+                    keywords = listOf("contest_task_task", "contest_task_task_id_fkey"),
+                    detail = "The task is referenced by contests.",
+                ),
+                ConflictRule(
+                    keywords = listOf("contest_task_contest", "contest_task_contest_id_fkey"),
+                    detail = "The contest is referenced by tasks.",
+                ),
+                ConflictRule(
+                    keywords = listOf("contest_participant_contest", "contest_participant_contest_id_fkey"),
+                    detail = "The contest is referenced by participants.",
+                ),
+                ConflictRule(
+                    keywords = listOf("vacancy_contest_contest", "vacancy_contest_contest_id_fkey"),
+                    detail = "The contest is referenced by vacancies.",
+                ),
+                ConflictRule(
+                    keywords = listOf("contest_participant_person", "contest_participant_person_id_fkey"),
+                    detail = "The user is referenced by a contest as a participant.",
+                ),
+                ConflictRule(
                     keywords = listOf("violates foreign key constraint", "foreign key", "fkey"),
                     detail = "The user is referenced by a team, a task, an assessment or an interview as a team lead.",
                 ),
