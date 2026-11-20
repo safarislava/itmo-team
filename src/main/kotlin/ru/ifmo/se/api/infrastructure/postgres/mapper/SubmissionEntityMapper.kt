@@ -6,7 +6,7 @@ import ru.ifmo.se.api.domain.model.LanguageId
 import ru.ifmo.se.api.domain.model.PersonId
 import ru.ifmo.se.api.domain.model.Submission
 import ru.ifmo.se.api.domain.model.SubmissionId
-import ru.ifmo.se.api.domain.model.SubmissionResult
+import ru.ifmo.se.api.domain.model.SubmissionResponse
 import ru.ifmo.se.api.domain.model.TaskId
 import ru.ifmo.se.api.infrastructure.postgres.entity.SubmissionEntity
 import ru.ifmo.se.api.infrastructure.postgres.entity.SubmissionResponseEntity
@@ -22,13 +22,10 @@ class SubmissionEntityMapper(
     private val taskRepository: JpaTaskRepository,
     private val languageRepository: JpaLanguageRepository,
 ) {
-    fun toDomain(
-        entity: SubmissionEntity,
-        responseEntity: SubmissionResponseEntity? = null,
-    ): Submission {
-        val result =
-            responseEntity?.let {
-                SubmissionResult(
+    fun toDomain(entity: SubmissionEntity): Submission {
+        val response =
+            entity.response?.let {
+                SubmissionResponse(
                     verdict = it.verdict,
                     executionTime = it.executionTime,
                     memoryUsed = it.memoryUsed,
@@ -45,21 +42,34 @@ class SubmissionEntityMapper(
             attempt = entity.attempt.toInt(),
             aiScore = entity.aiScore?.toInt(),
             submittedAt = entity.submittedAt,
-            result = result,
+            response = response,
         )
     }
 
-    fun toEntity(domain: Submission): SubmissionEntity =
-        SubmissionEntity(
-            id = domain.id.value,
-            sender = personRepository.getReferenceById(domain.senderId.value),
-            contest = contestRepository.getReferenceById(domain.contestId.value),
-            task = taskRepository.getReferenceById(domain.taskId.value),
-            language = languageRepository.getReferenceById(domain.languageId.value),
-            snapshotS3key = domain.snapshotS3key,
-            status = domain.status,
-            attempt = domain.attempt.toShort(),
-            aiScore = domain.aiScore?.toShort(),
-            submittedAt = domain.submittedAt,
-        )
+    fun toEntity(domain: Submission): SubmissionEntity {
+        val entity =
+            SubmissionEntity(
+                id = domain.id.value,
+                sender = personRepository.getReferenceById(domain.senderId.value),
+                contest = contestRepository.getReferenceById(domain.contestId.value),
+                task = taskRepository.getReferenceById(domain.taskId.value),
+                language = languageRepository.getReferenceById(domain.languageId.value),
+                snapshotS3key = domain.snapshotS3key,
+                status = domain.status,
+                attempt = domain.attempt.toShort(),
+                aiScore = domain.aiScore?.toShort(),
+                submittedAt = domain.submittedAt,
+            )
+        entity.response =
+            domain.response?.let {
+                SubmissionResponseEntity(
+                    submission = entity,
+                    verdict = it.verdict,
+                    executionTime = it.executionTime,
+                    memoryUsed = it.memoryUsed,
+                    runnerServer = null,
+                )
+            }
+        return entity
+    }
 }

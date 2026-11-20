@@ -8,6 +8,7 @@ import jakarta.persistence.FetchType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
+import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import ru.ifmo.se.api.domain.model.SubmissionStatus
 import java.time.Instant
@@ -38,4 +39,6 @@ class SubmissionEntity(
     var attempt: Short,
     var aiScore: Short?,
     var submittedAt: Instant,
+    @OneToOne(mappedBy = "submission", fetch = FetchType.LAZY)
+    var response: SubmissionResponseEntity? = null,
 ) : BasicEntity()

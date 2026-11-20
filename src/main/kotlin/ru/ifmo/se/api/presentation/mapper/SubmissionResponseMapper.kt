@@ -27,7 +27,7 @@ class SubmissionResponseMapper(
             aiScore = if (caller.role == PersonRole.CANDIDATE) null else details.submission.aiScore,
             submittedAt = details.submission.submittedAt,
             result =
-                details.submission.result?.let {
+                details.submission.response?.let {
                     SubmissionResultResponse(
                         verdict = it.verdict,
                         executionTime = it.executionTime,
