@@ -20,4 +20,17 @@ class ResumePolicy {
         }
         throw AccessDeniedException("Access is denied. Only the owner or admin can access this resume.")
     }
+
+    fun checkCanUpdate(
+        caller: Person,
+        resume: Resume,
+    ) {
+        if (caller.role == PersonRole.ADMIN) {
+            return
+        }
+        if (resume.candidateId == caller.id) {
+            return
+        }
+        throw AccessDeniedException("Access is denied. Only the owner or admin can update this resume.")
+    }
 }
