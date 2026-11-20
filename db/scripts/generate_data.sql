@@ -837,8 +837,8 @@ SELECT
 FROM gen_vacancy v
 WHERE v.final_status <> 'DRAFT' AND random() < 0.6;
 
-INSERT INTO contest (contest_id, scheduled_time, duration)
-SELECT contest_id, scheduled_time, duration FROM gen_contest;
+INSERT INTO contest (contest_id, name, scheduled_time, duration)
+SELECT contest_id, 'Contest #' || contest_id, scheduled_time, duration FROM gen_contest;
 
 INSERT INTO vacancy_contest (vacancy_id, contest_id)
 SELECT vacancy_id, contest_id FROM gen_contest;

@@ -20,6 +20,7 @@ class ContestEntity(
     @Id
     @Column(name = "contest_id")
     override var id: UUID,
+    var name: String,
     var scheduledTime: Instant,
     @JdbcTypeCode(SqlTypes.INTERVAL_SECOND)
     var duration: Duration,
