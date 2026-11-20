@@ -3,9 +3,11 @@ package ru.ifmo.se.api.domain.repository
 import ru.ifmo.se.api.domain.model.Application
 import ru.ifmo.se.api.domain.model.ApplicationFilter
 import ru.ifmo.se.api.domain.model.ApplicationId
+import ru.ifmo.se.api.domain.model.FormId
 import ru.ifmo.se.api.domain.model.PageQuery
 import ru.ifmo.se.api.domain.model.PageResult
 import ru.ifmo.se.api.domain.model.PersonId
+import ru.ifmo.se.api.domain.model.ResumeId
 import ru.ifmo.se.api.domain.model.VacancyId
 
 interface ApplicationRepository {
@@ -15,6 +17,10 @@ interface ApplicationRepository {
         candidateId: PersonId,
         vacancyId: VacancyId,
     ): Application?
+
+    fun findAllByResumeId(resumeId: ResumeId): List<Application>
+
+    fun findAllByFormId(formId: FormId): List<Application>
 
     fun findAll(
         filter: ApplicationFilter,

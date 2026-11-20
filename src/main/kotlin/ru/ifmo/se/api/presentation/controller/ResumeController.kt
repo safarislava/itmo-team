@@ -10,6 +10,7 @@ import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
@@ -56,6 +57,33 @@ class ResumeController(
             )
         val created = resumeService.uploadResume(currentPerson, command)
         return ResponseEntity.status(HttpStatus.CREATED).body(resumeResponseMapper.toResponse(created))
+    }
+
+    @PutMapping("/{resumeId}", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
+    @RequiresRole(PersonRole.CANDIDATE, PersonRole.ADMIN)
+    fun updateResume(
+        @AuthenticationPrincipal currentPerson: Person,
+        @PathVariable resumeId: UUID,
+        @RequestParam("file") file: MultipartFile,
+    ): ResponseEntity<ResumeResponse> {
+        val contentType = file.contentType
+        if (contentType !in ALLOWED_CONTENT_TYPES) {
+            throw ResumeBadRequestException(
+                "Unsupported resume format: $contentType. Supported: PDF, PNG, JPG, DOCX.",
+            )
+        }
+
+        if (file.size > MAX_FILE_SIZE) {
+            throw ResumeBadRequestException("File size exceeds 5MB limit.")
+        }
+
+        val command =
+            UploadResumeCommand(
+                filename = file.originalFilename ?: "resume",
+                bytes = file.bytes,
+            )
+        val updated = resumeService.updateResume(currentPerson, ResumeId(resumeId), command)
+        return ResponseEntity.ok(resumeResponseMapper.toResponse(updated))
     }
 
     @GetMapping("/{resumeId}")

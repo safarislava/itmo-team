@@ -5,16 +5,20 @@ import org.springframework.transaction.annotation.Transactional
 import ru.ifmo.se.api.application.dto.CreateFormCommand
 import ru.ifmo.se.api.application.dto.UpdateFormCommand
 import ru.ifmo.se.api.application.policy.FormPolicy
+import ru.ifmo.se.api.domain.exception.FormLockedException
 import ru.ifmo.se.api.domain.exception.FormNotFoundException
+import ru.ifmo.se.api.domain.model.ApplicationStatus
 import ru.ifmo.se.api.domain.model.Form
 import ru.ifmo.se.api.domain.model.FormId
 import ru.ifmo.se.api.domain.model.Person
+import ru.ifmo.se.api.domain.repository.ApplicationRepository
 import ru.ifmo.se.api.domain.repository.FormRepository
 
 @Service
 class FormService(
     private val formRepository: FormRepository,
     private val formPolicy: FormPolicy,
+    private val applicationRepository: ApplicationRepository,
 ) {
     @Transactional
     fun createForm(
@@ -52,6 +56,13 @@ class FormService(
     ): Form {
         val existing = formRepository.findById(formId) ?: throw FormNotFoundException()
         formPolicy.checkCanUpdate(currentPerson, existing)
+
+        val applications = applicationRepository.findAllByFormId(formId)
+        val isLocked = applications.any { app -> app.status != ApplicationStatus.NEW }
+        if (isLocked) {
+            throw FormLockedException()
+        }
+
         val updated =
             existing.copy(
                 university = command.university,

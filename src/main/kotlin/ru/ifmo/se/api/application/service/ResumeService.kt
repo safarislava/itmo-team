@@ -5,10 +5,13 @@ import org.springframework.transaction.annotation.Transactional
 import ru.ifmo.se.api.application.dto.UploadResumeCommand
 import ru.ifmo.se.api.application.policy.ResumePolicy
 import ru.ifmo.se.api.application.port.out.FileStorage
+import ru.ifmo.se.api.domain.exception.ResumeLockedException
 import ru.ifmo.se.api.domain.exception.ResumeNotFoundException
+import ru.ifmo.se.api.domain.model.ApplicationStatus
 import ru.ifmo.se.api.domain.model.Person
 import ru.ifmo.se.api.domain.model.Resume
 import ru.ifmo.se.api.domain.model.ResumeId
+import ru.ifmo.se.api.domain.repository.ApplicationRepository
 import ru.ifmo.se.api.domain.repository.ResumeRepository
 
 @Service
@@ -16,6 +19,7 @@ class ResumeService(
     private val resumeRepository: ResumeRepository,
     private val fileStorage: FileStorage,
     private val resumePolicy: ResumePolicy,
+    private val applicationRepository: ApplicationRepository,
 ) {
     @Transactional
     fun uploadResume(
@@ -31,6 +35,36 @@ class ResumeService(
                 filename = command.filename,
             )
         return resumeRepository.save(resume)
+    }
+
+    @Transactional
+    fun updateResume(
+        currentPerson: Person,
+        resumeId: ResumeId,
+        command: UploadResumeCommand,
+    ): Resume {
+        val resume = resumeRepository.findById(resumeId) ?: throw ResumeNotFoundException()
+        resumePolicy.checkCanUpdate(currentPerson, resume)
+
+        val applications = applicationRepository.findAllByResumeId(resumeId)
+        val isLocked = applications.any { app -> app.status != ApplicationStatus.NEW }
+        if (isLocked) {
+            throw ResumeLockedException()
+        }
+
+        val newS3Key = fileStorage.store(command.filename, command.bytes)
+        try {
+            fileStorage.delete(resume.s3key)
+        } catch (_: Exception) {
+            // best-effort cleanup of previous file
+        }
+
+        val updated =
+            resume.copy(
+                s3key = newS3Key,
+                filename = command.filename,
+            )
+        return resumeRepository.save(updated)
     }
 
     fun getResume(

@@ -12,4 +12,8 @@ interface JpaApplicationRepository :
         candidateId: UUID,
         vacancyId: UUID,
     ): ApplicationEntity?
+
+    fun findAllByResumeId(resumeId: UUID): List<ApplicationEntity>
+
+    fun findAllByFormId(formId: UUID): List<ApplicationEntity>
 }

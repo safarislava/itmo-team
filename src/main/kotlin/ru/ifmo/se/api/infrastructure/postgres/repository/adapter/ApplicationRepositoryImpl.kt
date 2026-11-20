@@ -10,9 +10,11 @@ import ru.ifmo.se.api.domain.model.Application
 import ru.ifmo.se.api.domain.model.ApplicationFilter
 import ru.ifmo.se.api.domain.model.ApplicationId
 import ru.ifmo.se.api.domain.model.ApplicationStatus
+import ru.ifmo.se.api.domain.model.FormId
 import ru.ifmo.se.api.domain.model.PageQuery
 import ru.ifmo.se.api.domain.model.PageResult
 import ru.ifmo.se.api.domain.model.PersonId
+import ru.ifmo.se.api.domain.model.ResumeId
 import ru.ifmo.se.api.domain.model.SortDirection
 import ru.ifmo.se.api.domain.model.VacancyId
 import ru.ifmo.se.api.domain.repository.ApplicationRepository
@@ -43,6 +45,10 @@ class ApplicationRepositoryImpl(
         candidateId: PersonId,
         vacancyId: VacancyId,
     ): Application? = repo.findByCandidateIdAndVacancyId(candidateId.value, vacancyId.value)?.let(mapper::toDomain)
+
+    override fun findAllByResumeId(resumeId: ResumeId): List<Application> = repo.findAllByResumeId(resumeId.value).map(mapper::toDomain)
+
+    override fun findAllByFormId(formId: FormId): List<Application> = repo.findAllByFormId(formId.value).map(mapper::toDomain)
 
     override fun findAll(
         filter: ApplicationFilter,
