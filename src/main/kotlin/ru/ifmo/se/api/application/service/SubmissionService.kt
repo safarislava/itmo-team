@@ -1,6 +1,5 @@
 package ru.ifmo.se.api.application.service
 
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import ru.ifmo.se.api.application.dto.CreateSubmissionCommand
@@ -24,6 +23,7 @@ import ru.ifmo.se.api.domain.model.SubmissionFilter
 import ru.ifmo.se.api.domain.model.SubmissionId
 import ru.ifmo.se.api.domain.model.SubmissionStatus
 import ru.ifmo.se.api.domain.repository.ContestRepository
+import ru.ifmo.se.api.domain.repository.ContestTaskRepository
 import ru.ifmo.se.api.domain.repository.LanguageRepository
 import ru.ifmo.se.api.domain.repository.PersonRepository
 import ru.ifmo.se.api.domain.repository.SubmissionRepository
@@ -35,12 +35,12 @@ import java.util.UUID
 class SubmissionService(
     private val submissionRepository: SubmissionRepository,
     private val contestRepository: ContestRepository,
+    private val contestTaskRepository: ContestTaskRepository,
     private val taskRepository: TaskRepository,
     private val languageRepository: LanguageRepository,
     private val personRepository: PersonRepository,
     private val submissionPolicy: SubmissionPolicy,
     private val fileStorage: FileStorage,
-    private val maxAttemptsPerTask: Int = 99,
 ) {
     fun listSubmissions(
         caller: Person,
@@ -135,10 +135,9 @@ class SubmissionService(
         taskRepository.findById(command.taskId)
             ?: throw TaskNotFoundException()
 
-        val contestTasks = contestRepository.findTasksByContestId(command.contestId)
-        if (contestTasks.none { it.id == command.taskId }) {
-            throw TaskNotPartOfContestException()
-        }
+        val contestTask =
+            contestTaskRepository.findById(command.contestId, command.taskId)
+                ?: throw TaskNotPartOfContestException()
 
         val language =
             languageRepository.findById(command.languageId)
@@ -150,7 +149,7 @@ class SubmissionService(
         }
 
         val attemptsCount = submissionRepository.countAttempts(caller.id, command.contestId, command.taskId)
-        if (attemptsCount >= maxAttemptsPerTask) {
+        if (attemptsCount >= contestTask.maxAttempts) {
             throw SubmissionAttemptsExhaustedException()
         }
 
@@ -168,7 +167,7 @@ class SubmissionService(
                 attempt = attemptsCount + 1,
                 aiScore = null,
                 submittedAt = now,
-                result = null,
+                response = null,
             )
 
         val saved = submissionRepository.save(submission)
