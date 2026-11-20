@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import ru.ifmo.se.api.domain.exception.FormBadRequestException
+import ru.ifmo.se.api.domain.exception.FormLockedException
 import ru.ifmo.se.api.domain.exception.FormNotFoundException
 import java.net.URI
 
@@ -29,5 +30,15 @@ class FormExceptionHandler {
                 title = "Bad Request"
             }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problem)
+    }
+
+    @ExceptionHandler(FormLockedException::class)
+    fun handleFormLocked(ex: FormLockedException): ResponseEntity<ProblemDetail> {
+        val problem =
+            ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.message ?: "Form is locked.").apply {
+                type = URI.create("about:blank")
+                title = "Conflict"
+            }
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(problem)
     }
 }
