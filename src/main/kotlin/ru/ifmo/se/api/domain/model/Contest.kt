@@ -5,6 +5,7 @@ import java.time.Instant
 
 data class Contest(
     val id: ContestId,
+    val name: String,
     val scheduledTime: Instant,
     val duration: Duration,
 ) {

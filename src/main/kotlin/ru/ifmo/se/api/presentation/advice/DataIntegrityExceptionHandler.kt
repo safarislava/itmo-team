@@ -110,6 +110,10 @@ class DataIntegrityExceptionHandler {
                     detail = "The user is referenced by an application response as an HR.",
                 ),
                 ConflictRule(
+                    keywords = listOf("contest_name_check", "chk_contest_name"),
+                    detail = "Contest name cannot be empty.",
+                ),
+                ConflictRule(
                     keywords = listOf("contest_duration_check", "chk_contest_duration", "contest_duration"),
                     detail = "Contest duration must be positive.",
                 ),
