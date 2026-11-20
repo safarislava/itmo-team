@@ -23,18 +23,6 @@ interface ContestRepository {
 
     fun delete(id: ContestId)
 
-    fun addTask(
-        contestId: ContestId,
-        taskId: TaskId,
-    )
-
-    fun removeTask(
-        contestId: ContestId,
-        taskId: TaskId,
-    )
-
-    fun findTasksByContestId(contestId: ContestId): List<Task>
-
     fun isCandidateParticipantOfRunningContestWithTask(
         candidateId: PersonId,
         taskId: TaskId,

@@ -8,9 +8,11 @@ import ru.ifmo.se.api.domain.exception.ContestAlreadyStartedException
 import ru.ifmo.se.api.domain.exception.ContestNotFoundException
 import ru.ifmo.se.api.domain.exception.TaskNotFoundException
 import ru.ifmo.se.api.domain.model.ContestId
+import ru.ifmo.se.api.domain.model.ContestTask
 import ru.ifmo.se.api.domain.model.Person
 import ru.ifmo.se.api.domain.model.TaskId
 import ru.ifmo.se.api.domain.repository.ContestRepository
+import ru.ifmo.se.api.domain.repository.ContestTaskRepository
 import ru.ifmo.se.api.domain.repository.PersonRepository
 import ru.ifmo.se.api.domain.repository.TaskRepository
 import java.time.Instant
@@ -18,6 +20,7 @@ import java.time.Instant
 @Service
 class ContestTaskService(
     private val contestRepository: ContestRepository,
+    private val contestTaskRepository: ContestTaskRepository,
     private val taskRepository: TaskRepository,
     private val personRepository: PersonRepository,
     private val contestTaskPolicy: ContestTaskPolicy,
@@ -30,7 +33,7 @@ class ContestTaskService(
         val isParticipant = contestRepository.isParticipant(contestId, caller.id)
         contestTaskPolicy.checkCanView(caller, contest, isParticipant)
 
-        val tasks = contestRepository.findTasksByContestId(contestId)
+        val tasks = contestTaskRepository.findTasksByContestId(contestId)
         return tasks.map { task ->
             val author = personRepository.findById(task.authorId) ?: caller
             TaskDetails(task = task, author = author)
@@ -42,6 +45,7 @@ class ContestTaskService(
         caller: Person,
         contestId: ContestId,
         taskId: TaskId,
+        maxAttempts: Int,
     ) {
         val contest = contestRepository.findById(contestId) ?: throw ContestNotFoundException()
         taskRepository.findById(taskId) ?: throw TaskNotFoundException()
@@ -53,7 +57,13 @@ class ContestTaskService(
             throw ContestAlreadyStartedException()
         }
 
-        contestRepository.addTask(contestId, taskId)
+        contestTaskRepository.save(
+            ContestTask(
+                contestId = contestId,
+                taskId = taskId,
+                maxAttempts = maxAttempts,
+            ),
+        )
     }
 
     @Transactional
@@ -72,6 +82,6 @@ class ContestTaskService(
             throw ContestAlreadyStartedException()
         }
 
-        contestRepository.removeTask(contestId, taskId)
+        contestTaskRepository.delete(contestId, taskId)
     }
 }

@@ -138,6 +138,10 @@ class DataIntegrityExceptionHandler {
                     detail = "The candidate is already a participant of this contest.",
                 ),
                 ConflictRule(
+                    keywords = listOf("chk_contest_task_max_attempts", "contest_task_max_attempts_check"),
+                    detail = "Max attempts must be at least 1.",
+                ),
+                ConflictRule(
                     keywords = listOf("vacancy_contest_pkey", "uq_vacancy_contest"),
                     detail = "The contest is already associated with this vacancy.",
                 ),
