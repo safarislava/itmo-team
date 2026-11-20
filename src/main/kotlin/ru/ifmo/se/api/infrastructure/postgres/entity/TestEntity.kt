@@ -18,7 +18,7 @@ class TestEntity(
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "task_id")
     var task: TaskEntity,
-    var inputData: String,
-    var outputData: String,
+    var inputS3key: String,
+    var outputS3key: String,
     var isHidden: Boolean,
 ) : BasicEntity()

@@ -805,18 +805,14 @@ WITH t AS MATERIALIZED (
     FROM task tk
     WHERE NOT EXISTS (SELECT 1 FROM test ts WHERE ts.task_id = tk.task_id)
 )
-INSERT INTO test (task_id, input_data, output_data, is_hidden)
+INSERT INTO test (task_id, input_s3key, output_s3key, is_hidden)
 SELECT
     t.task_id,
-    cardinality(x.nums) || E'\n' || array_to_string(x.nums, ' '),
-    (SELECT sum(v) FROM unnest(x.nums) v)::text,
+    'tasks/' || t.task_id || '/tests/' || gen_random_uuid() || '_input.txt',
+    'tasks/' || t.task_id || '/tests/' || gen_random_uuid() || '_output.txt',
     g.j > 2
 FROM t
-         CROSS JOIN LATERAL generate_series(1, t.test_count) g(j)
-         CROSS JOIN LATERAL (
-    SELECT array_agg(floor(random() * 2001)::int - 1000) AS nums
-    FROM generate_series(1, 3 + (t.task_id + g.j)::int % 15)
-    ) x;
+         CROSS JOIN LATERAL generate_series(1, t.test_count) g(j);
 
 CREATE TEMP TABLE gen_task ON COMMIT DROP AS
 SELECT row_number() OVER (ORDER BY task_id) AS n, task_id FROM task;
