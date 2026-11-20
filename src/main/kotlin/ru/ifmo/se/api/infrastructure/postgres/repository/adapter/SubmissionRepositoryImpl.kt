@@ -1,0 +1,109 @@
+package ru.ifmo.se.api.infrastructure.postgres.repository.adapter
+
+import jakarta.persistence.criteria.JoinType
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
+import org.springframework.data.jpa.domain.Specification
+import org.springframework.stereotype.Repository
+import ru.ifmo.se.api.domain.model.ContestId
+import ru.ifmo.se.api.domain.model.PageQuery
+import ru.ifmo.se.api.domain.model.PageResult
+import ru.ifmo.se.api.domain.model.PersonId
+import ru.ifmo.se.api.domain.model.SortDirection
+import ru.ifmo.se.api.domain.model.Submission
+import ru.ifmo.se.api.domain.model.SubmissionFilter
+import ru.ifmo.se.api.domain.model.SubmissionId
+import ru.ifmo.se.api.domain.model.SubmissionStatus
+import ru.ifmo.se.api.domain.model.TaskId
+import ru.ifmo.se.api.domain.repository.SubmissionRepository
+import ru.ifmo.se.api.infrastructure.postgres.entity.CompanyEntity
+import ru.ifmo.se.api.infrastructure.postgres.entity.ContestEntity
+import ru.ifmo.se.api.infrastructure.postgres.entity.PersonEntity
+import ru.ifmo.se.api.infrastructure.postgres.entity.SubmissionEntity
+import ru.ifmo.se.api.infrastructure.postgres.entity.TaskEntity
+import ru.ifmo.se.api.infrastructure.postgres.entity.TeamEntity
+import ru.ifmo.se.api.infrastructure.postgres.entity.VacancyEntity
+import ru.ifmo.se.api.infrastructure.postgres.mapper.SubmissionEntityMapper
+import ru.ifmo.se.api.infrastructure.postgres.repository.JpaSubmissionRepository
+import ru.ifmo.se.api.infrastructure.postgres.repository.JpaSubmissionResponseRepository
+import java.util.UUID
+
+@Repository
+class SubmissionRepositoryImpl(
+    private val repo: JpaSubmissionRepository,
+    private val responseRepo: JpaSubmissionResponseRepository,
+    private val mapper: SubmissionEntityMapper,
+) : SubmissionRepository {
+    override fun findById(id: SubmissionId): Submission? {
+        val entity = repo.findById(id.value).orElse(null) ?: return null
+        val response = responseRepo.findBySubmissionId(id.value)
+        return mapper.toDomain(entity, response)
+    }
+
+    override fun findAll(
+        filter: SubmissionFilter,
+        pageQuery: PageQuery,
+    ): PageResult<Submission> {
+        val specification =
+            Specification<SubmissionEntity> { root, query, cb ->
+                query.distinct(true)
+                val predicates =
+                    buildList {
+                        filter.contestId?.let {
+                            add(cb.equal(root.get<ContestEntity>("contest").get<UUID>("id"), it.value))
+                        }
+                        filter.taskId?.let {
+                            add(cb.equal(root.get<TaskEntity>("task").get<UUID>("id"), it.value))
+                        }
+                        filter.senderId?.let {
+                            add(cb.equal(root.get<PersonEntity>("sender").get<UUID>("id"), it.value))
+                        }
+                        filter.status?.let {
+                            add(cb.equal(root.get<SubmissionStatus>("status"), it))
+                        }
+                        filter.companyId?.let { compId ->
+                            val contestJoin = root.join<SubmissionEntity, ContestEntity>("contest", JoinType.INNER)
+                            val vacancies = contestJoin.join<ContestEntity, VacancyEntity>("vacancies", JoinType.INNER)
+                            add(
+                                cb.equal(
+                                    vacancies
+                                        .get<TeamEntity>("team")
+                                        .get<CompanyEntity>("company")
+                                        .get<UUID>("id"),
+                                    compId.value,
+                                ),
+                            )
+                        }
+                    }
+                cb.and(*predicates.toTypedArray())
+            }
+
+        val direction = if (pageQuery.sortOrder == SortDirection.ASC) Sort.Direction.ASC else Sort.Direction.DESC
+        val sortBy = if (pageQuery.sortBy.isNotBlank()) pageQuery.sortBy else "submittedAt"
+        val pageable = PageRequest.of(pageQuery.pageNumber, pageQuery.pageSize, Sort.by(direction, sortBy))
+        val pagedResult = repo.findAll(specification, pageable)
+
+        val submissionIds = pagedResult.content.map { it.id }
+        val responses =
+            if (submissionIds.isNotEmpty()) {
+                responseRepo.findBySubmissionIdIn(submissionIds).associateBy { it.submission.id }
+            } else {
+                emptyMap()
+            }
+
+        return PageResult(
+            items = pagedResult.content.map { mapper.toDomain(it, responses[it.id]) },
+            totalElements = pagedResult.totalElements,
+            pageNumber = pagedResult.number,
+            totalPages = pagedResult.totalPages,
+        )
+    }
+
+    override fun save(submission: Submission): Submission = mapper.toDomain(repo.save(mapper.toEntity(submission)))
+
+    override fun countAttempts(
+        senderId: PersonId,
+        contestId: ContestId,
+        taskId: TaskId,
+    ): Int = repo.countBySenderIdAndContestIdAndTaskId(senderId.value, contestId.value, taskId.value).toInt()
+}
