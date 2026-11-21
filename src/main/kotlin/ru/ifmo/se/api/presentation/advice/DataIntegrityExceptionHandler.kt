@@ -62,6 +62,14 @@ class DataIntegrityExceptionHandler {
                     detail = "A company with this name already exists.",
                 ),
                 ConflictRule(
+                    keywords = listOf("uq_team_company_name", "team_company_name"),
+                    detail = "The company already has a team with this name.",
+                ),
+                ConflictRule(
+                    keywords = listOf("team_teamlead_id_key", "uq_team_teamlead"),
+                    detail = "The team lead already leads a team.",
+                ),
+                ConflictRule(
                     keywords = listOf("uq_application_person_vacancy", "application_person_vacancy"),
                     detail = "The candidate has already applied to this vacancy.",
                 ),
