@@ -1,5 +1,6 @@
 package ru.ifmo.se.api.infrastructure.postgres.entity
 
+import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
@@ -9,6 +10,7 @@ import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToOne
+import jakarta.persistence.PrimaryKeyJoinColumn
 import jakarta.persistence.Table
 import ru.ifmo.se.api.domain.model.SubmissionStatus
 import java.time.Instant
@@ -39,6 +41,7 @@ class SubmissionEntity(
     var attempt: Short,
     var aiScore: Short?,
     var submittedAt: Instant,
-    @OneToOne(mappedBy = "submission", fetch = FetchType.LAZY)
-    var response: SubmissionResponseEntity? = null,
+    @OneToOne(fetch = FetchType.LAZY)
+    @PrimaryKeyJoinColumn
+    var response: SubmissionResponseEntity?,
 ) : BasicEntity()

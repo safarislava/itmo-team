@@ -13,5 +13,5 @@ data class Submission(
     val attempt: Int,
     val aiScore: Int?,
     val submittedAt: Instant,
-    val response: SubmissionResponse? = null,
+    val response: SubmissionResponse?,
 )
