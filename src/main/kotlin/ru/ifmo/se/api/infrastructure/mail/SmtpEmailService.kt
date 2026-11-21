@@ -47,4 +47,21 @@ class SmtpEmailService(
             }
         mailSender.send(message)
     }
+
+    override fun sendApplicationRejection(
+        toEmail: String,
+        vacancyTitle: String,
+    ) {
+        val message =
+            SimpleMailMessage().apply {
+                setTo(toEmail)
+                subject = "ITMO're than team - Application Update"
+                text =
+                    """
+                    Hello,
+                    We regret to inform you that your application for '$vacancyTitle' has been rejected as the vacancy has been closed.
+                    """.trimIndent()
+            }
+        mailSender.send(message)
+    }
 }
