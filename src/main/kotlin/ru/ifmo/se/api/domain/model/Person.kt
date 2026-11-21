@@ -1,6 +1,6 @@
 package ru.ifmo.se.api.domain.model
 
-class Person(
+data class Person(
     val id: PersonId,
     val name: String,
     val email: String,
