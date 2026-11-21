@@ -11,4 +11,9 @@ interface EmailService {
         interviewId: java.util.UUID,
         scheduledStart: java.time.Instant,
     )
+
+    fun sendApplicationRejection(
+        toEmail: String,
+        vacancyTitle: String,
+    )
 }
