@@ -130,6 +130,14 @@ class DataIntegrityExceptionHandler {
                     detail = "Task name cannot be empty.",
                 ),
                 ConflictRule(
+                    keywords = listOf("skill_name_check", "chk_skill_name"),
+                    detail = "Skill name cannot be empty.",
+                ),
+                ConflictRule(
+                    keywords = listOf("skill_description_check", "chk_skill_description"),
+                    detail = "Skill description cannot be empty.",
+                ),
+                ConflictRule(
                     keywords = listOf("contest_task_pkey", "uq_contest_task", "contest_task"),
                     detail = "The task is already part of this contest.",
                 ),
