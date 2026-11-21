@@ -46,6 +46,9 @@ class ApplicationRepositoryImpl(
         vacancyId: VacancyId,
     ): Application? = repo.findByCandidateIdAndVacancyId(candidateId.value, vacancyId.value)?.let(mapper::toDomain)
 
+    override fun findAllByVacancyId(vacancyId: VacancyId): List<Application> =
+        repo.findAllByVacancyId(vacancyId.value).map(mapper::toDomain)
+
     override fun findAllByResumeId(resumeId: ResumeId): List<Application> = repo.findAllByResumeId(resumeId.value).map(mapper::toDomain)
 
     override fun findAllByFormId(formId: FormId): List<Application> = repo.findAllByFormId(formId.value).map(mapper::toDomain)

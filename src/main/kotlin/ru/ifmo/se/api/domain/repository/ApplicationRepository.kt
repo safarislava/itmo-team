@@ -18,6 +18,8 @@ interface ApplicationRepository {
         vacancyId: VacancyId,
     ): Application?
 
+    fun findAllByVacancyId(vacancyId: VacancyId): List<Application>
+
     fun findAllByResumeId(resumeId: ResumeId): List<Application>
 
     fun findAllByFormId(formId: FormId): List<Application>
