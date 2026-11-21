@@ -7,8 +7,8 @@ import ru.ifmo.se.api.domain.model.ContestId
 import ru.ifmo.se.api.domain.model.PageQuery
 import ru.ifmo.se.api.domain.model.PageResult
 import ru.ifmo.se.api.domain.model.PersonId
-import ru.ifmo.se.api.domain.model.Task
 import ru.ifmo.se.api.domain.model.TaskId
+import ru.ifmo.se.api.domain.model.VacancyId
 import java.time.Instant
 
 interface ContestRepository {
@@ -35,4 +35,11 @@ interface ContestRepository {
     ): Boolean
 
     fun findCompanyIdsByContestId(contestId: ContestId): Set<CompanyId>
+
+    fun findByVacancyId(vacancyId: VacancyId): List<Contest>
+
+    fun addParticipant(
+        contestId: ContestId,
+        personId: PersonId,
+    )
 }

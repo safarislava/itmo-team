@@ -2,7 +2,9 @@ package ru.ifmo.se.api.infrastructure.postgres.repository
 
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor
+import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
+import org.springframework.data.repository.query.Param
 import ru.ifmo.se.api.infrastructure.postgres.entity.ContestEntity
 import java.util.UUID
 
@@ -14,11 +16,15 @@ interface JpaContestRepository :
         taskId: UUID,
     ): List<ContestEntity>
 
-    fun existsByIdAndParticipantsId(
-        id: UUID,
-        candidateId: UUID,
-    ): Boolean
+    fun findAllByVacanciesIdOrderByScheduledTimeAsc(vacancyId: UUID): List<ContestEntity>
 
-    @Query("SELECT DISTINCT v.team.company.id FROM ContestEntity c JOIN c.vacancies v WHERE c.id = :contestId")
-    fun findCompanyIdsByContestId(contestId: UUID): List<UUID>
+    @Modifying
+    @Query(
+        value = "INSERT INTO contest_participant (contest_id, person_id) VALUES (:contestId, :personId) ON CONFLICT DO NOTHING",
+        nativeQuery = true,
+    )
+    fun addParticipant(
+        @Param("contestId") contestId: UUID,
+        @Param("personId") personId: UUID,
+    )
 }

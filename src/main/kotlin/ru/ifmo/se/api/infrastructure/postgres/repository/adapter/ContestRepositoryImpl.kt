@@ -15,6 +15,7 @@ import ru.ifmo.se.api.domain.model.PageResult
 import ru.ifmo.se.api.domain.model.PersonId
 import ru.ifmo.se.api.domain.model.SortDirection
 import ru.ifmo.se.api.domain.model.TaskId
+import ru.ifmo.se.api.domain.model.VacancyId
 import ru.ifmo.se.api.domain.repository.ContestRepository
 import ru.ifmo.se.api.infrastructure.postgres.entity.CompanyEntity
 import ru.ifmo.se.api.infrastructure.postgres.entity.ContestEntity
@@ -23,18 +24,23 @@ import ru.ifmo.se.api.infrastructure.postgres.entity.TeamEntity
 import ru.ifmo.se.api.infrastructure.postgres.entity.VacancyEntity
 import ru.ifmo.se.api.infrastructure.postgres.mapper.ContestEntityMapper
 import ru.ifmo.se.api.infrastructure.postgres.repository.JpaContestRepository
+import ru.ifmo.se.api.infrastructure.postgres.repository.JpaVacancyRepository
 import java.time.Instant
 import java.util.UUID
 
 @Repository
 class ContestRepositoryImpl(
     private val repo: JpaContestRepository,
+    private val vacancyRepo: JpaVacancyRepository,
     private val mapper: ContestEntityMapper,
 ) : ContestRepository {
     override fun findById(id: ContestId): Contest? = repo.findById(id.value).map(mapper::toDomain).orElse(null)
 
     override fun findCompanyIdsByContestId(contestId: ContestId): Set<CompanyId> =
-        repo.findCompanyIdsByContestId(contestId.value).map(::CompanyId).toSet()
+        vacancyRepo
+            .findAllByContestsId(contestId.value)
+            .map { CompanyId(it.team.company.id) }
+            .toSet()
 
     override fun findAll(
         filter: ContestFilter,
@@ -96,8 +102,24 @@ class ContestRepositoryImpl(
         return contests.any { it.scheduledTime <= now && now <= it.scheduledTime.plus(it.duration) }
     }
 
+    @Transactional(readOnly = true)
     override fun isParticipant(
         contestId: ContestId,
         candidateId: PersonId,
-    ): Boolean = repo.existsByIdAndParticipantsId(contestId.value, candidateId.value)
+    ): Boolean =
+        repo
+            .findById(contestId.value)
+            .map { contest -> contest.participants.any { it.id == candidateId.value } }
+            .orElse(false)
+
+    override fun findByVacancyId(vacancyId: VacancyId): List<Contest> =
+        repo.findAllByVacanciesIdOrderByScheduledTimeAsc(vacancyId.value).map(mapper::toDomain)
+
+    @Transactional
+    override fun addParticipant(
+        contestId: ContestId,
+        personId: PersonId,
+    ) {
+        repo.addParticipant(contestId.value, personId.value)
+    }
 }
