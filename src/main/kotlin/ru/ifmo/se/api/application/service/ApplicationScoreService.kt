@@ -35,11 +35,15 @@ class ApplicationScoreService(
             applicationRepository.findById(applicationId)
                 ?: throw ApplicationNotFoundException("Application with id ${applicationId.value} not found.")
 
-        val vacancyEntity =
-            vacancyRepository.findEntityById(application.vacancyId)
+        val vacancy =
+            vacancyRepository.findById(application.vacancyId)
                 ?: throw VacancyNotFoundException("Vacancy not found.")
 
-        applicationScorePolicy.checkCanViewScore(caller, vacancyEntity)
+        val team =
+            teamRepository.findById(vacancy.teamId)
+                ?: throw VacancyNotFoundException("Team not found.")
+
+        applicationScorePolicy.checkCanViewScore(caller, team)
 
         return applicationScoreRepository.findByApplicationId(applicationId)
             ?: throw ApplicationScoreExceptions("Score not found for application ${applicationId.value}.")
@@ -59,7 +63,7 @@ class ApplicationScoreService(
             teamRepository.findById(vacancy.teamId)
                 ?: throw VacancyNotFoundException("Team not found.")
 
-        applicationScorePolicy.checkCanViewLeaderboard(caller, vacancy, team)
+        applicationScorePolicy.checkCanViewLeaderboard(caller, team)
 
         return applicationScoreRepository.getLeaderboard(filter, pageQuery)
     }

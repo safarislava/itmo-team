@@ -132,6 +132,4 @@ class VacancyRepositoryImpl(
     ): Boolean = repo.isContestAttached(vacancyId.value, contestId.value)
 
     override fun countContests(vacancyId: VacancyId): Long = repo.countContestsByVacancyId(vacancyId.value)
-
-    override fun findEntityById(id: VacancyId): VacancyEntity? = repo.findById(id.value).orElse(null)
 }

@@ -5,14 +5,12 @@ import org.springframework.stereotype.Component
 import ru.ifmo.se.api.domain.model.Person
 import ru.ifmo.se.api.domain.model.PersonRole
 import ru.ifmo.se.api.domain.model.Team
-import ru.ifmo.se.api.domain.model.Vacancy
-import ru.ifmo.se.api.infrastructure.postgres.entity.VacancyEntity
 
 @Component
 class ApplicationScorePolicy {
     fun checkCanViewScore(
         caller: Person,
-        vacancy: VacancyEntity,
+        team: Team,
     ) {
         if (caller.role == PersonRole.ADMIN) {
             return
@@ -20,7 +18,7 @@ class ApplicationScorePolicy {
 
         val companyId = caller.companyId
         if (caller.role == PersonRole.HR || caller.role == PersonRole.MANAGER) {
-            if (companyId != null && vacancy.team.company.id == companyId.value) {
+            if (companyId != null && team.companyId == companyId) {
                 return
             }
             throw AccessDeniedException("Access is denied. Application does not belong to your company.")
@@ -28,7 +26,7 @@ class ApplicationScorePolicy {
 
         val teamId = caller.teamId
         if (caller.role == PersonRole.TEAM_LEAD) {
-            if (teamId != null && vacancy.team.id == teamId.value) {
+            if (teamId != null && team.id == teamId) {
                 return
             }
             throw AccessDeniedException("Access is denied. Application does not belong to your team.")
@@ -39,7 +37,6 @@ class ApplicationScorePolicy {
 
     fun checkCanViewLeaderboard(
         caller: Person,
-        vacancy: Vacancy,
         team: Team,
     ) {
         if (caller.role == PersonRole.ADMIN) {
