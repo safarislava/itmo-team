@@ -3,10 +3,9 @@ get:
   operationId: getHiringStatistics
   summary: Get hiring metrics
   description: |
-    Aggregated hiring metrics of the company or one of its teams.
+    Aggregated hiring metrics of the manager's company or one of its teams.
   security:
     - BearerAuth: [ MANAGER ]
-    - BearerAuth: [ ADMIN ]
   parameters:
     - name: from
       in: query
@@ -29,7 +28,7 @@ get:
         format: int64
     - name: companyId
       in: query
-      description: Required for administrators, ignored for managers.
+      description: Optional company ID; must match the manager's company.
       schema:
         type: integer
         format: int64

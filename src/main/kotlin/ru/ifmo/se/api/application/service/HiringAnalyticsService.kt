@@ -30,14 +30,15 @@ class HiringAnalyticsService(
     ): HiringStatistics {
         hiringAnalyticsPolicy.checkInterval(from, to)
 
+        val resolvedCompanyId = hiringAnalyticsPolicy.resolveCompanyId(caller, companyId)
+
+        companyRepository.findById(resolvedCompanyId)
+            ?: throw AnalyticsNotFoundException("Company not found.")
+
         val team =
             teamId?.let {
                 teamRepository.findById(it) ?: throw AnalyticsNotFoundException("Team not found.")
             }
-        val resolvedCompanyId = hiringAnalyticsPolicy.resolveCompanyId(caller, companyId, team)
-
-        companyRepository.findById(resolvedCompanyId)
-            ?: throw AnalyticsNotFoundException("Company not found.")
 
         hiringAnalyticsPolicy.checkCanView(caller, resolvedCompanyId, team)
 

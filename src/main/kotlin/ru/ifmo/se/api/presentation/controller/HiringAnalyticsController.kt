@@ -26,7 +26,7 @@ class HiringAnalyticsController(
     private val analyticsResponseMapper: AnalyticsResponseMapper,
 ) {
     @GetMapping
-    @RequiresRole(PersonRole.MANAGER, PersonRole.ADMIN)
+    @RequiresRole(PersonRole.MANAGER)
     fun getHiringStatistics(
         @AuthenticationPrincipal currentPerson: Person,
         @RequestParam from: Instant,

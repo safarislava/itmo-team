@@ -23,50 +23,37 @@ class HiringAnalyticsPolicy {
     fun resolveCompanyId(
         caller: Person,
         requestedCompanyId: CompanyId?,
-        team: Team?,
-    ): CompanyId =
-        when (caller.role) {
-            PersonRole.ADMIN -> {
-                if (team != null) {
-                    if (requestedCompanyId != null && team.companyId != requestedCompanyId) {
-                        throw AnalyticsBadRequestException("Team does not belong to specified company.")
-                    }
-                    team.companyId
-                } else {
-                    requestedCompanyId
-                        ?: throw AnalyticsBadRequestException("Company ID is required for administrators.")
-                }
-            }
-
-            PersonRole.MANAGER -> {
-                caller.companyId
-                    ?: throw AccessDeniedException("Access is denied. Manager is not assigned to a company.")
-            }
-
-            else -> {
-                throw AccessDeniedException("Access is denied.")
-            }
+    ): CompanyId {
+        if (caller.role != PersonRole.MANAGER) {
+            throw AccessDeniedException("Access is denied. Only managers can view hiring analytics.")
         }
+
+        val managerCompanyId =
+            caller.companyId
+                ?: throw AccessDeniedException("Access is denied. Manager is not assigned to a company.")
+
+        if (requestedCompanyId != null && requestedCompanyId != managerCompanyId) {
+            throw AccessDeniedException("Access is denied. Cannot view hiring analytics of another company.")
+        }
+
+        return managerCompanyId
+    }
 
     fun checkCanView(
         caller: Person,
         companyId: CompanyId,
         team: Team?,
     ) {
-        if (caller.role == PersonRole.ADMIN) {
-            return
+        if (caller.role != PersonRole.MANAGER) {
+            throw AccessDeniedException("Access is denied. Only managers can view hiring analytics.")
         }
 
-        if (caller.role == PersonRole.MANAGER) {
-            if (caller.companyId != companyId) {
-                throw AccessDeniedException("Access is denied. Cannot view hiring analytics of another company.")
-            }
-            if (team != null && team.companyId != companyId) {
-                throw AccessDeniedException("Access is denied. Team belongs to another company.")
-            }
-            return
+        if (caller.companyId != companyId) {
+            throw AccessDeniedException("Access is denied. Cannot view hiring analytics of another company.")
         }
 
-        throw AccessDeniedException("Access is denied.")
+        if (team != null && team.companyId != companyId) {
+            throw AccessDeniedException("Access is denied. Team belongs to another company.")
+        }
     }
 }
