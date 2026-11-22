@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import ru.ifmo.se.api.application.service.HiringAnalyticsService
-import ru.ifmo.se.api.domain.model.CompanyId
 import ru.ifmo.se.api.domain.model.Person
 import ru.ifmo.se.api.domain.model.PersonRole
 import ru.ifmo.se.api.domain.model.TeamId
@@ -32,14 +31,12 @@ class HiringAnalyticsController(
         @RequestParam from: Instant,
         @RequestParam to: Instant,
         @RequestParam(required = false) teamId: UUID?,
-        @RequestParam(required = false) companyId: UUID?,
     ): ResponseEntity<HiringStatisticsResponse> {
         val stats =
             hiringAnalyticsService.getHiringStatistics(
                 caller = currentPerson,
                 from = from,
                 to = to,
-                companyId = companyId?.let { CompanyId(it) },
                 teamId = teamId?.let { TeamId(it) },
             )
         return ResponseEntity.ok(analyticsResponseMapper.toResponse(stats))

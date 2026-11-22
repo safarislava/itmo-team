@@ -4,7 +4,6 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import ru.ifmo.se.api.application.policy.HiringAnalyticsPolicy
 import ru.ifmo.se.api.domain.exception.AnalyticsNotFoundException
-import ru.ifmo.se.api.domain.model.CompanyId
 import ru.ifmo.se.api.domain.model.HiringStatistics
 import ru.ifmo.se.api.domain.model.Person
 import ru.ifmo.se.api.domain.model.TeamId
@@ -25,27 +24,25 @@ class HiringAnalyticsService(
         caller: Person,
         from: Instant,
         to: Instant,
-        companyId: CompanyId?,
         teamId: TeamId?,
     ): HiringStatistics {
         hiringAnalyticsPolicy.checkInterval(from, to)
-
-        val resolvedCompanyId = hiringAnalyticsPolicy.resolveCompanyId(caller, companyId)
-
-        companyRepository.findById(resolvedCompanyId)
-            ?: throw AnalyticsNotFoundException("Company not found.")
 
         val team =
             teamId?.let {
                 teamRepository.findById(it) ?: throw AnalyticsNotFoundException("Team not found.")
             }
 
-        hiringAnalyticsPolicy.checkCanView(caller, resolvedCompanyId, team)
+        hiringAnalyticsPolicy.checkCanView(caller, team)
+
+        val companyId = caller.companyId!!
+        companyRepository.findById(companyId)
+            ?: throw AnalyticsNotFoundException("Company not found.")
 
         return hiringAnalyticsRepository.getHiringStatistics(
             from = from,
             to = to,
-            companyId = resolvedCompanyId,
+            companyId = companyId,
             teamId = teamId,
         )
     }

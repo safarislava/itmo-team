@@ -26,12 +26,6 @@ get:
       schema:
         type: integer
         format: int64
-    - name: companyId
-      in: query
-      description: Optional company ID; must match the manager's company.
-      schema:
-        type: integer
-        format: int64
   responses:
     '200':
       description: Hiring metrics.
