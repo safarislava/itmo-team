@@ -54,7 +54,14 @@ class LanguageController(
         @AuthenticationPrincipal currentPerson: Person,
         @Valid @RequestBody request: LanguageRequest,
     ): ResponseEntity<LanguageResponse> {
-        val command = LanguageCommand(name = request.name, version = request.version)
+        val command =
+            LanguageCommand(
+                name = request.name,
+                version = request.version,
+                sourceFilename = request.sourceFilename,
+                compileCommand = request.compileCommand,
+                runCommand = request.runCommand,
+            )
         val created = languageService.createLanguage(currentPerson, command)
         return ResponseEntity.status(HttpStatus.CREATED).body(languageResponseMapper.toResponse(created))
     }
@@ -66,7 +73,14 @@ class LanguageController(
         @PathVariable languageId: UUID,
         @Valid @RequestBody request: LanguageRequest,
     ): ResponseEntity<LanguageResponse> {
-        val command = LanguageCommand(name = request.name, version = request.version)
+        val command =
+            LanguageCommand(
+                name = request.name,
+                version = request.version,
+                sourceFilename = request.sourceFilename,
+                compileCommand = request.compileCommand,
+                runCommand = request.runCommand,
+            )
         val updated = languageService.updateLanguage(currentPerson, LanguageId(languageId), command)
         return ResponseEntity.ok(languageResponseMapper.toResponse(updated))
     }

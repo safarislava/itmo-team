@@ -12,6 +12,9 @@ class LanguageEntityMapper {
             id = LanguageId(entity.id),
             name = entity.name,
             version = entity.version,
+            sourceFilename = entity.sourceFilename,
+            compileCommand = entity.compileCommand,
+            runCommand = entity.runCommand,
         )
 
     fun toEntity(domain: Language): LanguageEntity =
@@ -19,5 +22,8 @@ class LanguageEntityMapper {
             id = domain.id.value,
             name = domain.name,
             version = domain.version,
+            sourceFilename = domain.sourceFilename,
+            compileCommand = domain.compileCommand,
+            runCommand = domain.runCommand,
         )
 }
