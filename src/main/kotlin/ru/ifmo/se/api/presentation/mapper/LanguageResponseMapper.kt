@@ -11,5 +11,8 @@ class LanguageResponseMapper {
             id = domain.id.value,
             name = domain.name,
             version = domain.version,
+            sourceFilename = domain.sourceFilename,
+            compileCommand = domain.compileCommand,
+            runCommand = domain.runCommand,
         )
 }

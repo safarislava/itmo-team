@@ -14,4 +14,7 @@ class LanguageEntity(
     override var id: UUID,
     var name: String,
     var version: String,
+    var sourceFilename: String,
+    var compileCommand: String?,
+    var runCommand: String,
 ) : BasicEntity()

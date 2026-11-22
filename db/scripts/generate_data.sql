@@ -745,18 +745,21 @@ WHERE r_feedback < 0.95;
 -- Задачи, тесты, языки, серверы проверки
 -- ---------------------------------------------------------------------
 
-INSERT INTO language (name, version) VALUES
-                                         ('Java', '17'),
-                                         ('Kotlin', '1.9'),
-                                         ('Python', '3.11'),
-                                         ('C++', '17'),
-                                         ('Go', '1.22'),
-                                         ('C#', '12'),
-                                         ('JavaScript', 'Node 20'),
-                                         ('TypeScript', '5.4'),
-                                         ('Rust', '1.79'),
-                                         ('Swift', '5.10')
-ON CONFLICT (name, version) DO NOTHING;
+INSERT INTO language (name, version, source_filename, compile_command, run_command) VALUES
+    ('Java', '17', 'Solution.java', '/usr/bin/javac -encoding UTF-8 Solution.java', '/usr/bin/java -Xss64m Solution'),
+    ('Kotlin', '1.9', 'Solution.kt', '/usr/bin/kotlinc Solution.kt -include-runtime -d solution.jar', '/usr/bin/java -jar solution.jar'),
+    ('Python', '3.11', 'solution.py', '/usr/bin/python3 -m py_compile solution.py', '/usr/bin/python3 solution.py'),
+    ('C++', '17', 'solution.cpp', '/usr/bin/g++ -O3 solution.cpp -o solution', './solution'),
+    ('Go', '1.22', 'solution.go', '/usr/bin/go build -o solution solution.go', './solution'),
+    ('C#', '12', 'solution.cs', '/usr/bin/dotnet build -c Release -o out', '/usr/bin/dotnet out/solution.dll'),
+    ('JavaScript', 'Node 20', 'solution.js', NULL, '/usr/bin/node solution.js'),
+    ('TypeScript', '5.4', 'solution.ts', '/usr/bin/tsc solution.ts', '/usr/bin/node solution.js'),
+    ('Rust', '1.79', 'solution.rs', '/usr/bin/rustc -O solution.rs -o solution', './solution'),
+    ('Swift', '5.10', 'solution.swift', '/usr/bin/swiftc -O solution.swift -o solution', './solution')
+ON CONFLICT (name, version) DO UPDATE SET
+    source_filename = EXCLUDED.source_filename,
+    compile_command = EXCLUDED.compile_command,
+    run_command = EXCLUDED.run_command;
 
 CREATE TEMP TABLE gen_language ON COMMIT DROP AS
 SELECT

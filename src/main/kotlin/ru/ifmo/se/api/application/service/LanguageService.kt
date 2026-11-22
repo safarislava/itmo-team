@@ -30,6 +30,9 @@ class LanguageService(
                 id = LanguageId.generate(),
                 name = command.name.trim(),
                 version = command.version.trim(),
+                sourceFilename = command.sourceFilename.trim(),
+                compileCommand = command.compileCommand?.trim()?.takeIf { it.isNotBlank() },
+                runCommand = command.runCommand.trim(),
             )
         return languageRepository.save(language)
     }
@@ -46,6 +49,9 @@ class LanguageService(
             existing.copy(
                 name = command.name.trim(),
                 version = command.version.trim(),
+                sourceFilename = command.sourceFilename.trim(),
+                compileCommand = command.compileCommand?.trim()?.takeIf { it.isNotBlank() },
+                runCommand = command.runCommand.trim(),
             )
         return languageRepository.save(updated)
     }
