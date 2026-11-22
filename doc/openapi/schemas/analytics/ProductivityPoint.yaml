@@ -1,0 +1,9 @@
+description: GitHub activity counters for a specific period start date.
+allOf:
+  - type: object
+    required: [ periodStart ]
+    properties:
+      periodStart:
+        type: string
+        format: date
+  - $ref: "../../openapi.yaml#/components/schemas/ActivityMetrics"

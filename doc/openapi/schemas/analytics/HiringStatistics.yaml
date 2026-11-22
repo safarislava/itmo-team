@@ -1,6 +1,6 @@
 type: object
 description: Aggregated hiring metrics for the selected period.
-required: [ from, to, openVacancies, closedVacancies, applications, averageApplicationsPerVacancy, interviewsScheduled, interviewsCompleted, offers ]
+required: [ from, to, openVacancies, closedVacancies, applications ]
 properties:
   from:
     type: string
@@ -43,19 +43,3 @@ properties:
             INTERVIEW: 4
             OFFER: 1
             REJECTED: 25
-  averageApplicationsPerVacancy:
-    type: number
-    format: double
-    minimum: 0
-  interviewsScheduled:
-    type: integer
-    format: int32
-    minimum: 0
-  interviewsCompleted:
-    type: integer
-    format: int32
-    minimum: 0
-  offers:
-    type: integer
-    format: int32
-    minimum: 0

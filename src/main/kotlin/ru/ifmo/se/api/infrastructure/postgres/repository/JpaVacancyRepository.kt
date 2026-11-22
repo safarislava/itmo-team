@@ -5,7 +5,9 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
+import ru.ifmo.se.api.domain.model.VacancyStatus
 import ru.ifmo.se.api.infrastructure.postgres.entity.VacancyEntity
+import java.time.Instant
 import java.util.UUID
 
 interface JpaVacancyRepository :
@@ -58,4 +60,28 @@ interface JpaVacancyRepository :
     ): Long
 
     fun findAllByContestsId(contestId: UUID): List<VacancyEntity>
+
+    fun countByTeamIdAndStatusAndCreatedAtLessThanEqual(
+        teamId: UUID,
+        status: VacancyStatus,
+        to: Instant,
+    ): Long
+
+    fun countByTeamCompanyIdAndStatusAndCreatedAtLessThanEqual(
+        companyId: UUID,
+        status: VacancyStatus,
+        to: Instant,
+    ): Long
+
+    fun countByTeamIdAndClosedAtGreaterThanEqualAndClosedAtLessThan(
+        teamId: UUID,
+        from: Instant,
+        to: Instant,
+    ): Long
+
+    fun countByTeamCompanyIdAndClosedAtGreaterThanEqualAndClosedAtLessThan(
+        companyId: UUID,
+        from: Instant,
+        to: Instant,
+    ): Long
 }
