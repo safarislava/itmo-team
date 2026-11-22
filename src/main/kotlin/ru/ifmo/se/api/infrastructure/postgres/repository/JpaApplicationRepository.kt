@@ -18,4 +18,8 @@ interface JpaApplicationRepository :
     fun findAllByFormId(formId: UUID): List<ApplicationEntity>
 
     fun findAllByVacancyId(vacancyId: UUID): List<ApplicationEntity>
+
+    fun findAllByVacancyTeamId(teamId: UUID): List<ApplicationEntity>
+
+    fun findAllByVacancyTeamCompanyId(companyId: UUID): List<ApplicationEntity>
 }
