@@ -3,6 +3,7 @@ package ru.ifmo.se.api.presentation.dto.request
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.PositiveOrZero
 import jakarta.validation.constraints.Size
+import ru.ifmo.se.api.presentation.validation.ValidCity
 import java.util.UUID
 
 data class VacancyRequest(
@@ -12,6 +13,7 @@ data class VacancyRequest(
     @field:NotBlank
     val description: String,
     @field:Size(max = 255)
+    @field:ValidCity
     val city: String? = null,
     @field:PositiveOrZero
     val salary: Int? = null,
