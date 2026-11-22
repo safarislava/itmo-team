@@ -1,4 +1,3 @@
-# TODO: coder_report.coder_id can be null in database?
 parameters:
   - $ref: "../../openapi.yaml#/components/parameters/PersonId"
 get:
@@ -6,11 +5,11 @@ get:
   operationId: getPersonStatistics
   summary: Get activity statistics of an employee
   description: |
-    GitHub activity of one employee for the period: the totals and a time series for charts.
+    GitHub activity of one employee for the period: totals and time series for charts.
     Built from the daily reports collected at 00:00.
 
-    A developer sees only the own statistics, a team lead those of the own team members,
-    a manager those of the company employees.
+    A developer sees only their own statistics, a team lead sees statistics of their team members,
+    a manager sees statistics of all company employees.
   security:
     - BearerAuth: [ DEVELOPER ]
     - BearerAuth: [ TEAM_LEAD ]

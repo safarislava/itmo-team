@@ -285,9 +285,6 @@ paths:
   /api/analytics/hiring:
     $ref: "./paths/analytics/analytics.hiring.yaml"
 
-  /api/analytics/productivity:
-    $ref: "./paths/analytics/analytics.productivity.yaml"
-
   /api/analytics/persons/{personId}/statistics:
     $ref: "./paths/analytics/analytics.persons.personId.statistics.yaml"
 
@@ -618,11 +615,11 @@ components:
     HiringStatistics:
       $ref: "./schemas/analytics/HiringStatistics.yaml"
 
-    ProductivityStatistics:
-      $ref: "./schemas/analytics/ProductivityStatistics.yaml"
-
     PersonStatistics:
       $ref: "./schemas/analytics/PersonStatistics.yaml"
+
+    ProductivityPoint:
+      $ref: "./schemas/analytics/ProductivityPoint.yaml"
 
     ActivityMetrics:
       $ref: "./schemas/analytics/ActivityMetrics.yaml"
