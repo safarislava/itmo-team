@@ -19,9 +19,12 @@ import org.springframework.web.bind.annotation.RestController
 import ru.ifmo.se.api.application.dto.CreateVacancyCommand
 import ru.ifmo.se.api.application.dto.UpdateVacancyCommand
 import ru.ifmo.se.api.application.dto.UpdateVacancyStatusCommand
+import ru.ifmo.se.api.application.service.ApplicationScoreService
 import ru.ifmo.se.api.application.service.VacancyService
 import ru.ifmo.se.api.domain.exception.VacancyBadRequestException
+import ru.ifmo.se.api.domain.model.ApplicationStatus
 import ru.ifmo.se.api.domain.model.CompanyId
+import ru.ifmo.se.api.domain.model.LeaderboardFilter
 import ru.ifmo.se.api.domain.model.PageQuery
 import ru.ifmo.se.api.domain.model.Person
 import ru.ifmo.se.api.domain.model.PersonRole
@@ -34,9 +37,11 @@ import ru.ifmo.se.api.domain.model.VacancyStatus
 import ru.ifmo.se.api.infrastructure.security.annotation.RequiresRole
 import ru.ifmo.se.api.presentation.dto.request.VacancyRequest
 import ru.ifmo.se.api.presentation.dto.request.VacancyStatusRequest
+import ru.ifmo.se.api.presentation.dto.response.LeaderboardEntryResponse
 import ru.ifmo.se.api.presentation.dto.response.PageResponse
 import ru.ifmo.se.api.presentation.dto.response.VacancyResponse
 import ru.ifmo.se.api.presentation.dto.response.VacancyStatusResponse
+import ru.ifmo.se.api.presentation.mapper.LeaderboardResponseMapper
 import ru.ifmo.se.api.presentation.mapper.VacancyResponseMapper
 import java.util.UUID
 
@@ -46,6 +51,8 @@ import java.util.UUID
 class VacancyController(
     private val vacancyService: VacancyService,
     private val vacancyResponseMapper: VacancyResponseMapper,
+    private val applicationScoreService: ApplicationScoreService,
+    private val leaderboardResponseMapper: LeaderboardResponseMapper,
 ) {
     @GetMapping
     fun listVacancies(
@@ -166,5 +173,55 @@ class VacancyController(
         val command = UpdateVacancyStatusCommand(status = request.status)
         val result = vacancyService.updateStatus(currentPerson, VacancyId(vacancyId), command)
         return ResponseEntity.ok(vacancyResponseMapper.toStatusResponse(result))
+    }
+
+    @GetMapping("/{vacancyId}/leaderboard")
+    @RequiresRole(PersonRole.TEAM_LEAD, PersonRole.HR, PersonRole.ADMIN)
+    fun getVacancyLeaderboard(
+        @AuthenticationPrincipal currentPerson: Person,
+        @PathVariable vacancyId: UUID,
+        @Min(0) @RequestParam(defaultValue = "0") page: Int,
+        @Min(1) @Max(100) @RequestParam(defaultValue = "20") size: Int,
+        @RequestParam(defaultValue = "1.0") motivationWeight: Double,
+        @RequestParam(defaultValue = "1.0") softSkillsWeight: Double,
+        @RequestParam(defaultValue = "1.0") petProjectsWeight: Double,
+        @RequestParam(defaultValue = "1.0") jobExpWeight: Double,
+        @RequestParam(defaultValue = "1.0") hardSkillsWeight: Double,
+        @RequestParam(defaultValue = "1.0") workFormatWeight: Double,
+        @RequestParam(required = false) minScore: Double?,
+        @RequestParam(required = false) status: ApplicationStatus?,
+        @RequestParam(required = false) skillIds: List<UUID>?,
+    ): ResponseEntity<PageResponse<LeaderboardEntryResponse>> {
+        val filter =
+            LeaderboardFilter(
+                vacancyId = VacancyId(vacancyId),
+                motivationWeight = motivationWeight,
+                softSkillsWeight = softSkillsWeight,
+                petProjectsWeight = petProjectsWeight,
+                jobExpWeight = jobExpWeight,
+                hardSkillsWeight = hardSkillsWeight,
+                workFormatWeight = workFormatWeight,
+                minScore = minScore,
+                status = status,
+                skillIds = skillIds?.map { SkillId(it) }?.toSet(),
+            )
+        val pageQuery =
+            PageQuery(
+                pageNumber = page,
+                pageSize = size,
+                sortBy = "score",
+                sortOrder = SortDirection.DESC,
+            )
+        val pageResult = applicationScoreService.getLeaderboard(currentPerson, filter, pageQuery)
+
+        return ResponseEntity.ok(
+            PageResponse(
+                page = pageResult.pageNumber,
+                size = size,
+                totalElements = pageResult.totalElements,
+                totalPages = pageResult.totalPages,
+                content = pageResult.items.map(leaderboardResponseMapper::toResponse),
+            ),
+        )
     }
 }

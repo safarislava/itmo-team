@@ -6,7 +6,6 @@ import ru.ifmo.se.api.domain.model.PageResult
 import ru.ifmo.se.api.domain.model.Vacancy
 import ru.ifmo.se.api.domain.model.VacancyFilter
 import ru.ifmo.se.api.domain.model.VacancyId
-import ru.ifmo.se.api.infrastructure.postgres.entity.VacancyEntity
 
 interface VacancyRepository {
     fun findById(id: VacancyId): Vacancy?
@@ -36,6 +35,4 @@ interface VacancyRepository {
     ): Boolean
 
     fun countContests(vacancyId: VacancyId): Long
-
-    fun findEntityById(id: VacancyId): VacancyEntity?
 }

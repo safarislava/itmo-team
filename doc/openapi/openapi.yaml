@@ -219,6 +219,9 @@ paths:
   /api/applications/{applicationId}/status:
     $ref: "./paths/applications/applications.applicationId.status.yaml"
 
+  /api/applications/{applicationId}/score:
+    $ref: "./paths/applications/applications.applicationId.score.yaml"
+
   /api/applications/{applicationId}/employment:
     $ref: "./paths/applications/applications.applicationId.employment.yaml"
 

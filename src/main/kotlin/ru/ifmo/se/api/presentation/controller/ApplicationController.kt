@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController
 import ru.ifmo.se.api.application.dto.CreateApplicationCommand
 import ru.ifmo.se.api.application.dto.CreateFormCommand
 import ru.ifmo.se.api.application.dto.UpdateApplicationStatusCommand
+import ru.ifmo.se.api.application.service.ApplicationScoreService
 import ru.ifmo.se.api.application.service.ApplicationService
 import ru.ifmo.se.api.domain.exception.ApplicationBadRequestException
 import ru.ifmo.se.api.domain.model.ApplicationFilter
@@ -37,7 +38,9 @@ import ru.ifmo.se.api.presentation.dto.request.ApplicationCreateRequest
 import ru.ifmo.se.api.presentation.dto.request.ApplicationStatusRequest
 import ru.ifmo.se.api.presentation.dto.response.ApplicationResponse
 import ru.ifmo.se.api.presentation.dto.response.PageResponse
+import ru.ifmo.se.api.presentation.dto.response.ScoreMetricsResponse
 import ru.ifmo.se.api.presentation.mapper.ApplicationResponseMapper
+import ru.ifmo.se.api.presentation.mapper.ScoreMetricsResponseMapper
 import java.util.UUID
 
 @Validated
@@ -46,6 +49,8 @@ import java.util.UUID
 class ApplicationController(
     private val applicationService: ApplicationService,
     private val applicationResponseMapper: ApplicationResponseMapper,
+    private val applicationScoreService: ApplicationScoreService,
+    private val scoreMetricsResponseMapper: ScoreMetricsResponseMapper,
 ) {
     @PostMapping
     @RequiresRole(PersonRole.CANDIDATE)
@@ -170,5 +175,15 @@ class ApplicationController(
         val command = UpdateApplicationStatusCommand(request.status)
         applicationService.updateStatus(currentPerson, ApplicationId(applicationId), command)
         return ResponseEntity.noContent().build()
+    }
+
+    @GetMapping("/{applicationId}/score")
+    @RequiresRole(PersonRole.TEAM_LEAD, PersonRole.HR, PersonRole.ADMIN)
+    fun getApplicationScore(
+        @AuthenticationPrincipal currentPerson: Person,
+        @PathVariable applicationId: UUID,
+    ): ResponseEntity<ScoreMetricsResponse> {
+        val score = applicationScoreService.getScore(currentPerson, ApplicationId(applicationId))
+        return ResponseEntity.ok(scoreMetricsResponseMapper.toResponse(score))
     }
 }

@@ -1,0 +1,26 @@
+parameters:
+  - $ref: "../../openapi.yaml#/components/parameters/ApplicationId"
+get:
+  tags: [ Screening ]
+  operationId: getApplicationScore
+  summary: Get averaged score metrics of an application
+  description: |
+    Metrics averaged over all HR assessments for the application.
+    Accessible by team lead of the vacancy's team, HR of the vacancy's company, and admin.
+  security:
+    - BearerAuth: [ TEAM_LEAD ]
+    - BearerAuth: [ HR ]
+    - BearerAuth: [ ADMIN ]
+  responses:
+    '200':
+      description: The averaged score metrics.
+      content:
+        application/json:
+          schema:
+            $ref: "../../openapi.yaml#/components/schemas/ScoreMetrics"
+    '401':
+      $ref: "../../openapi.yaml#/components/responses/Unauthorized"
+    '403':
+      $ref: "../../openapi.yaml#/components/responses/Forbidden"
+    '404':
+      $ref: "../../openapi.yaml#/components/responses/NotFound"
