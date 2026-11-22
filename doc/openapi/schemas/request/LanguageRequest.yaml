@@ -1,5 +1,5 @@
 type: object
-required: [ name, version ]
+required: [ name, version, sourceFilename, runCommand ]
 properties:
   name:
     type: string
@@ -10,3 +10,15 @@ properties:
     minLength: 1
     maxLength: 20
     description: The pair of name and version must be unique.
+  sourceFilename:
+    type: string
+    minLength: 1
+    maxLength: 100
+  compileCommand:
+    type: string
+    maxLength: 500
+    nullable: true
+  runCommand:
+    type: string
+    minLength: 1
+    maxLength: 500
