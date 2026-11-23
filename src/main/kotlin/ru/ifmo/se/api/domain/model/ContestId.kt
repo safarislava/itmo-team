@@ -6,7 +6,13 @@ import java.util.UUID
 value class ContestId(
     val value: UUID,
 ) {
+    override fun toString(): String = value.toString()
+
     companion object {
         fun generate(): ContestId = ContestId(UUID.randomUUID())
+
+        fun from(raw: String): ContestId = ContestId(UUID.fromString(raw))
+
+        fun fromOrNull(raw: String): ContestId? = runCatching { ContestId(UUID.fromString(raw)) }.getOrNull()
     }
 }

@@ -6,7 +6,13 @@ import java.util.UUID
 value class ApplicationId(
     val value: UUID,
 ) {
+    override fun toString(): String = value.toString()
+
     companion object {
         fun generate(): ApplicationId = ApplicationId(UUID.randomUUID())
+
+        fun from(raw: String): ApplicationId = ApplicationId(UUID.fromString(raw))
+
+        fun fromOrNull(raw: String): ApplicationId? = runCatching { ApplicationId(UUID.fromString(raw)) }.getOrNull()
     }
 }

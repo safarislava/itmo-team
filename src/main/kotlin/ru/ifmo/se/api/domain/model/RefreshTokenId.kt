@@ -12,5 +12,7 @@ value class RefreshTokenId(
         fun generate(): RefreshTokenId = RefreshTokenId(UUID.randomUUID())
 
         fun from(raw: String): RefreshTokenId = RefreshTokenId(UUID.fromString(raw))
+
+        fun fromOrNull(raw: String): RefreshTokenId? = runCatching { RefreshTokenId(UUID.fromString(raw)) }.getOrNull()
     }
 }

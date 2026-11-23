@@ -6,7 +6,13 @@ import java.util.UUID
 value class LanguageId(
     val value: UUID,
 ) {
+    override fun toString(): String = value.toString()
+
     companion object {
         fun generate(): LanguageId = LanguageId(UUID.randomUUID())
+
+        fun from(raw: String): LanguageId = LanguageId(UUID.fromString(raw))
+
+        fun fromOrNull(raw: String): LanguageId? = runCatching { LanguageId(UUID.fromString(raw)) }.getOrNull()
     }
 }

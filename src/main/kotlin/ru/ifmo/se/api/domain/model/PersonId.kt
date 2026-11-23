@@ -12,5 +12,7 @@ value class PersonId(
         fun generate(): PersonId = PersonId(UUID.randomUUID())
 
         fun from(raw: String): PersonId = PersonId(UUID.fromString(raw))
+
+        fun fromOrNull(raw: String): PersonId? = runCatching { PersonId(UUID.fromString(raw)) }.getOrNull()
     }
 }
