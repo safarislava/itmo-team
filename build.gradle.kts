@@ -2,7 +2,6 @@ plugins {
     kotlin("jvm") version "2.4.20"
     kotlin("plugin.spring") version "2.4.20"
     kotlin("plugin.jpa") version "2.4.21"
-    kotlin("kapt") version "2.4.0"
     id("org.springframework.boot") version "4.1.2"
     id("io.spring.dependency-management") version "1.1.7"
 }
@@ -26,20 +25,11 @@ dependencies {
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.6")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("software.amazon.awssdk:s3:2.29.52")
-    implementation("org.mapstruct:mapstruct:1.6.3")
-    kapt("org.mapstruct:mapstruct-processor:1.6.3")
     runtimeOnly("org.postgresql:postgresql")
 }
 
 kotlin {
     jvmToolchain(25)
-}
-
-kapt {
-    arguments {
-        arg("mapstruct.defaultComponentModel", "spring")
-        arg("mapstruct.unmappedTargetPolicy", "IGNORE")
-    }
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
