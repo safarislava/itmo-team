@@ -6,7 +6,8 @@ import ru.ifmo.se.api.domain.model.Application
 import ru.ifmo.se.api.domain.model.ApplicationFilter
 import ru.ifmo.se.api.domain.model.Person
 import ru.ifmo.se.api.domain.model.PersonRole
-import ru.ifmo.se.api.infrastructure.postgres.entity.VacancyEntity
+import ru.ifmo.se.api.domain.model.Team
+import ru.ifmo.se.api.domain.model.Vacancy
 
 @Component
 class ApplicationPolicy {
@@ -41,7 +42,8 @@ class ApplicationPolicy {
     fun checkCanView(
         caller: Person,
         application: Application,
-        vacancy: VacancyEntity,
+        vacancy: Vacancy,
+        team: Team,
     ) {
         if (caller.role == PersonRole.ADMIN) {
             return
@@ -56,7 +58,7 @@ class ApplicationPolicy {
 
         val companyId = caller.companyId
         if (caller.role == PersonRole.HR || caller.role == PersonRole.MANAGER) {
-            if (companyId != null && vacancy.team.company.id == companyId.value) {
+            if (companyId != null && team.companyId == companyId) {
                 return
             }
             throw AccessDeniedException("Access is denied. Application does not belong to your company.")
@@ -64,7 +66,7 @@ class ApplicationPolicy {
 
         val teamId = caller.teamId
         if (caller.role == PersonRole.TEAM_LEAD) {
-            if (teamId != null && vacancy.team.id == teamId.value) {
+            if (teamId != null && vacancy.teamId == teamId) {
                 return
             }
             throw AccessDeniedException("Access is denied. Application does not belong to your team.")
@@ -81,7 +83,8 @@ class ApplicationPolicy {
 
     fun checkCanUpdateStatus(
         caller: Person,
-        vacancy: VacancyEntity,
+        vacancy: Vacancy,
+        team: Team,
     ) {
         if (caller.role == PersonRole.ADMIN) {
             return
@@ -89,7 +92,7 @@ class ApplicationPolicy {
 
         val companyId = caller.companyId
         if (caller.role == PersonRole.HR) {
-            if (companyId != null && vacancy.team.company.id == companyId.value) {
+            if (companyId != null && team.companyId == companyId) {
                 return
             }
             throw AccessDeniedException("Access is denied. You can only update applications of your company.")
@@ -97,7 +100,7 @@ class ApplicationPolicy {
 
         val teamId = caller.teamId
         if (caller.role == PersonRole.TEAM_LEAD) {
-            if (teamId != null && vacancy.team.id == teamId.value) {
+            if (teamId != null && vacancy.teamId == teamId) {
                 return
             }
             throw AccessDeniedException("Access is denied. You can only update applications of your team.")

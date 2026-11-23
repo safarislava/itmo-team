@@ -14,6 +14,9 @@ class LanguageRepositoryImpl(
 ) : LanguageRepository {
     override fun findById(id: LanguageId): Language? = repo.findById(id.value).map(mapper::toDomain).orElse(null)
 
+    override fun findAllById(ids: Iterable<LanguageId>): List<Language> =
+        ids.map { it.value }.takeIf { it.isNotEmpty() }?.let { repo.findAllById(it).map(mapper::toDomain) } ?: emptyList()
+
     override fun findAll(): List<Language> =
         repo
             .findAll(

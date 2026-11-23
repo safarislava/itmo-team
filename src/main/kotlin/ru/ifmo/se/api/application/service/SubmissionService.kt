@@ -2,8 +2,6 @@ package ru.ifmo.se.api.application.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.transaction.support.TransactionSynchronization
-import org.springframework.transaction.support.TransactionSynchronizationManager
 import ru.ifmo.se.api.application.dto.CreateSubmissionCommand
 import ru.ifmo.se.api.application.dto.SubmissionDetails
 import ru.ifmo.se.api.application.policy.SubmissionPolicy
@@ -24,6 +22,7 @@ import ru.ifmo.se.api.domain.model.Submission
 import ru.ifmo.se.api.domain.model.SubmissionFilter
 import ru.ifmo.se.api.domain.model.SubmissionId
 import ru.ifmo.se.api.domain.model.SubmissionStatus
+import ru.ifmo.se.api.domain.model.map
 import ru.ifmo.se.api.domain.repository.ContestRepository
 import ru.ifmo.se.api.domain.repository.ContestTaskRepository
 import ru.ifmo.se.api.domain.repository.LanguageRepository
@@ -52,33 +51,23 @@ class SubmissionService(
     ): PageResult<SubmissionDetails> {
         val scopedFilter =
             submissionPolicy.applyFilterScope(caller, filter)
-                ?: return PageResult(
-                    items = emptyList(),
-                    totalElements = 0,
-                    pageNumber = pageQuery.pageNumber,
-                    totalPages = 0,
-                )
+                ?: return PageResult.empty(pageQuery.pageNumber)
 
         val page = submissionRepository.findAll(scopedFilter, pageQuery)
-        val items =
-            page.items.map { submission ->
-                val sender = personRepository.findById(submission.senderId) ?: caller
-                val language =
-                    languageRepository.findById(submission.languageId)
-                        ?: throw LanguageNotFoundException()
-                SubmissionDetails(
-                    submission = submission,
-                    sender = sender,
-                    language = language,
-                )
-            }
+        val sendersById = personRepository.findAllById(page.items.map { it.senderId }).associateBy { it.id }
+        val languagesById = languageRepository.findAllById(page.items.map { it.languageId }).associateBy { it.id }
 
-        return PageResult(
-            items = items,
-            totalElements = page.totalElements,
-            pageNumber = page.pageNumber,
-            totalPages = page.totalPages,
-        )
+        return page.map { submission ->
+            val sender = sendersById[submission.senderId] ?: caller
+            val language =
+                languagesById[submission.languageId]
+                    ?: throw LanguageNotFoundException()
+            SubmissionDetails(
+                submission = submission,
+                sender = sender,
+                language = language,
+            )
+        }
     }
 
     fun getSubmission(

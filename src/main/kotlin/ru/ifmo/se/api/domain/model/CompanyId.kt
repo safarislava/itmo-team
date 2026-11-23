@@ -12,5 +12,7 @@ value class CompanyId(
         fun generate(): CompanyId = CompanyId(UUID.randomUUID())
 
         fun from(raw: String): CompanyId = CompanyId(UUID.fromString(raw))
+
+        fun fromOrNull(raw: String): CompanyId? = runCatching { CompanyId(UUID.fromString(raw)) }.getOrNull()
     }
 }

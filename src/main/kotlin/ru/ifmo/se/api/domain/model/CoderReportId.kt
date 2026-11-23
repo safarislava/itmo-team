@@ -12,5 +12,7 @@ value class CoderReportId(
         fun generate(): CoderReportId = CoderReportId(UUID.randomUUID())
 
         fun from(raw: String): CoderReportId = CoderReportId(UUID.fromString(raw))
+
+        fun fromOrNull(raw: String): CoderReportId? = runCatching { CoderReportId(UUID.fromString(raw)) }.getOrNull()
     }
 }

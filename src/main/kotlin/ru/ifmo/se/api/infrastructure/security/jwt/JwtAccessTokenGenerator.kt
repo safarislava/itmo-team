@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component
 import ru.ifmo.se.api.application.port.out.AccessTokenGenerator
 import ru.ifmo.se.api.application.port.out.AccessTokenPolicy
 import ru.ifmo.se.api.domain.model.Person
+import ru.ifmo.se.api.domain.model.PersonId
 import java.nio.charset.StandardCharsets
 import java.util.Date
 import java.util.UUID
@@ -46,12 +47,5 @@ class JwtAccessTokenGenerator(
             null
         }
 
-    fun validateAndGetPersonId(token: String): UUID? =
-        parseClaims(token)?.subject?.let {
-            try {
-                UUID.fromString(it)
-            } catch (_: Exception) {
-                null
-            }
-        }
+    fun validateAndGetPersonId(token: String): UUID? = parseClaims(token)?.subject?.let { PersonId.fromOrNull(it)?.value }
 }

@@ -6,7 +6,13 @@ import java.util.UUID
 value class TaskId(
     val value: UUID,
 ) {
+    override fun toString(): String = value.toString()
+
     companion object {
         fun generate(): TaskId = TaskId(UUID.randomUUID())
+
+        fun from(raw: String): TaskId = TaskId(UUID.fromString(raw))
+
+        fun fromOrNull(raw: String): TaskId? = runCatching { TaskId(UUID.fromString(raw)) }.getOrNull()
     }
 }

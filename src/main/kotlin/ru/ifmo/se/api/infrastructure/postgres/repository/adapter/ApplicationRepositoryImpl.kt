@@ -1,8 +1,6 @@
 package ru.ifmo.se.api.infrastructure.postgres.repository.adapter
 
 import jakarta.persistence.criteria.Predicate
-import org.springframework.data.domain.PageRequest
-import org.springframework.data.domain.Sort
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Repository
 import ru.ifmo.se.api.domain.exception.ApplicationBadRequestException
@@ -15,13 +13,14 @@ import ru.ifmo.se.api.domain.model.PageQuery
 import ru.ifmo.se.api.domain.model.PageResult
 import ru.ifmo.se.api.domain.model.PersonId
 import ru.ifmo.se.api.domain.model.ResumeId
-import ru.ifmo.se.api.domain.model.SortDirection
 import ru.ifmo.se.api.domain.model.VacancyId
 import ru.ifmo.se.api.domain.repository.ApplicationRepository
 import ru.ifmo.se.api.infrastructure.postgres.entity.ApplicationEntity
 import ru.ifmo.se.api.infrastructure.postgres.entity.PersonEntity
 import ru.ifmo.se.api.infrastructure.postgres.entity.TeamEntity
 import ru.ifmo.se.api.infrastructure.postgres.entity.VacancyEntity
+import ru.ifmo.se.api.infrastructure.postgres.extension.toPageRequest
+import ru.ifmo.se.api.infrastructure.postgres.extension.toPageResult
 import ru.ifmo.se.api.infrastructure.postgres.mapper.ApplicationEntityMapper
 import ru.ifmo.se.api.infrastructure.postgres.repository.JpaApplicationRepository
 import ru.ifmo.se.api.infrastructure.postgres.repository.JpaFormRepository
@@ -98,22 +97,8 @@ class ApplicationRepositoryImpl(
                 cb.and(*predicates.toTypedArray())
             }
 
-        val direction = if (pageQuery.sortOrder == SortDirection.DESC) Sort.Direction.DESC else Sort.Direction.ASC
-        val sortProperty =
-            when (pageQuery.sortBy) {
-                "status" -> "status"
-                else -> "id"
-            }
-
-        val pageable = PageRequest.of(pageQuery.pageNumber, pageQuery.pageSize, Sort.by(direction, sortProperty))
-        val pagedResult = repo.findAll(specification, pageable)
-
-        return PageResult(
-            items = pagedResult.content.map(mapper::toDomain),
-            totalElements = pagedResult.totalElements,
-            pageNumber = pagedResult.number,
-            totalPages = pagedResult.totalPages,
-        )
+        val pageable = pageQuery.toPageRequest { if (it == "status") "status" else "id" }
+        return repo.findAll(specification, pageable).toPageResult(mapper::toDomain)
     }
 
     override fun save(application: Application): Application {

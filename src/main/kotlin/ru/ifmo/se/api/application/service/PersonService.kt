@@ -47,12 +47,7 @@ class PersonService(
     ): PageResult<Person> {
         val effectiveFilter =
             personPolicy.applyFilterScope(caller, filter)
-                ?: return PageResult(
-                    items = emptyList(),
-                    totalElements = 0,
-                    pageNumber = page.pageNumber,
-                    totalPages = 0,
-                )
+                ?: return PageResult.empty(page.pageNumber)
 
         return personRepository.findByFilter(effectiveFilter, page)
     }
@@ -194,15 +189,10 @@ class PersonService(
         val (companyId, teamId) = resolvePlacement(caller, target, command)
 
         val updated =
-            Person(
-                id = target.id,
-                name = target.name,
-                email = target.email,
-                passwordHash = target.passwordHash,
+            target.copy(
                 role = command.role,
                 companyId = companyId,
                 teamId = teamId,
-                githubId = target.githubId,
             )
 
         return personRepository.save(updated)
@@ -259,14 +249,9 @@ class PersonService(
         command: UpdateProfileCommand,
     ): Person {
         val updated =
-            Person(
-                id = currentPerson.id,
+            currentPerson.copy(
                 name = command.name,
                 email = command.email,
-                passwordHash = currentPerson.passwordHash,
-                role = currentPerson.role,
-                companyId = currentPerson.companyId,
-                teamId = currentPerson.teamId,
                 githubId = command.githubId,
             )
 
@@ -285,17 +270,7 @@ class PersonService(
         }
 
         val newPasswordHash = passwordHasher.hash(command.newPassword)
-        val updated =
-            Person(
-                id = person.id,
-                name = person.name,
-                email = person.email,
-                passwordHash = newPasswordHash,
-                role = person.role,
-                companyId = person.companyId,
-                teamId = person.teamId,
-                githubId = person.githubId,
-            )
+        val updated = person.copy(passwordHash = newPasswordHash)
 
         personRepository.save(updated)
         refreshTokenRepository.revokeAllByPersonId(person.id)
@@ -327,15 +302,10 @@ class PersonService(
         personPolicy.checkCanDismiss(caller, target)
 
         val dismissed =
-            Person(
-                id = target.id,
-                name = target.name,
-                email = target.email,
-                passwordHash = target.passwordHash,
+            target.copy(
                 role = PersonRole.CANDIDATE,
                 companyId = null,
                 teamId = null,
-                githubId = target.githubId,
             )
 
         personRepository.save(dismissed)

@@ -38,6 +38,8 @@ import ru.ifmo.se.api.presentation.dto.request.PersonUpdateRequest
 import ru.ifmo.se.api.presentation.dto.request.ProfileRequest
 import ru.ifmo.se.api.presentation.dto.response.PageResponse
 import ru.ifmo.se.api.presentation.dto.response.PersonResponse
+import ru.ifmo.se.api.presentation.extension.toPageResponse
+import ru.ifmo.se.api.presentation.extension.toSortDirectionOrNull
 import ru.ifmo.se.api.presentation.mapper.PersonResponseMapper
 import java.util.UUID
 
@@ -67,11 +69,8 @@ class PersonController(
         }
 
         val sortDirection =
-            when (order.lowercase()) {
-                "asc" -> SortDirection.ASC
-                "desc" -> SortDirection.DESC
-                else -> throw PersonBadRequestException("Invalid order: $order. Allowed: asc, desc")
-            }
+            order.toSortDirectionOrNull()
+                ?: throw PersonBadRequestException("Invalid order: $order. Allowed: asc, desc")
 
         val filter =
             PersonFilter(
@@ -90,18 +89,7 @@ class PersonController(
             )
 
         val pageResult = personService.getPersons(currentPerson, filter, pageQuery)
-        val content = pageResult.items.map(personResponseMapper::toResponse)
-
-        val response =
-            PageResponse(
-                page = pageResult.pageNumber,
-                size = size,
-                totalElements = pageResult.totalElements,
-                totalPages = pageResult.totalPages,
-                content = content,
-            )
-
-        return ResponseEntity.ok(response)
+        return ResponseEntity.ok(pageResult.toPageResponse(size, personResponseMapper::toResponse))
     }
 
     @PostMapping

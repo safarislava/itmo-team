@@ -1,8 +1,6 @@
 package ru.ifmo.se.api.infrastructure.postgres.repository.adapter
 
 import jakarta.persistence.criteria.Predicate
-import org.springframework.data.domain.PageRequest
-import org.springframework.data.domain.Sort
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Repository
 import ru.ifmo.se.api.domain.model.CompanyId
@@ -12,10 +10,11 @@ import ru.ifmo.se.api.domain.model.Person
 import ru.ifmo.se.api.domain.model.PersonFilter
 import ru.ifmo.se.api.domain.model.PersonId
 import ru.ifmo.se.api.domain.model.PersonRole
-import ru.ifmo.se.api.domain.model.SortDirection
 import ru.ifmo.se.api.domain.model.TeamId
 import ru.ifmo.se.api.domain.repository.PersonRepository
 import ru.ifmo.se.api.infrastructure.postgres.entity.PersonEntity
+import ru.ifmo.se.api.infrastructure.postgres.extension.toPageRequest
+import ru.ifmo.se.api.infrastructure.postgres.extension.toPageResult
 import ru.ifmo.se.api.infrastructure.postgres.mapper.PersonEntityMapper
 import ru.ifmo.se.api.infrastructure.postgres.repository.JpaPersonRepository
 import java.util.UUID
@@ -26,6 +25,9 @@ class PersonRepositoryImpl(
     private val mapper: PersonEntityMapper,
 ) : PersonRepository {
     override fun findById(id: PersonId): Person? = repo.findById(id.value).map(mapper::toDomain).orElse(null)
+
+    override fun findAllById(ids: Iterable<PersonId>): List<Person> =
+        ids.map { it.value }.takeIf { it.isNotEmpty() }?.let { repo.findAllById(it).map(mapper::toDomain) } ?: emptyList()
 
     override fun save(person: Person): Person = mapper.toDomain(repo.save(mapper.toEntity(person)))
 
@@ -80,23 +82,15 @@ class PersonRepositoryImpl(
                 cb.and(*predicates.toTypedArray())
             }
 
-        val direction = if (page.sortOrder == SortDirection.DESC) Sort.Direction.DESC else Sort.Direction.ASC
-        val sortProperty =
-            when (page.sortBy) {
-                "email" -> "email"
-                "name" -> "name"
-                "role" -> "role"
-                else -> "id"
+        val pageable =
+            page.toPageRequest {
+                when (it) {
+                    "email" -> "email"
+                    "name" -> "name"
+                    "role" -> "role"
+                    else -> "id"
+                }
             }
-
-        val pageable = PageRequest.of(page.pageNumber, page.pageSize, Sort.by(direction, sortProperty))
-        val pagedResult = repo.findAll(spec, pageable)
-
-        return PageResult(
-            items = pagedResult.content.map(mapper::toDomain),
-            totalElements = pagedResult.totalElements,
-            pageNumber = pagedResult.number,
-            totalPages = pagedResult.totalPages,
-        )
+        return repo.findAll(spec, pageable).toPageResult(mapper::toDomain)
     }
 }

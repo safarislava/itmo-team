@@ -11,6 +11,8 @@ import ru.ifmo.se.api.domain.model.TeamId
 interface PersonRepository {
     fun findById(id: PersonId): Person?
 
+    fun findAllById(ids: Iterable<PersonId>): List<Person>
+
     fun save(person: Person): Person
 
     fun delete(person: Person)

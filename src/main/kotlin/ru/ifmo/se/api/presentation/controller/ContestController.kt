@@ -30,6 +30,7 @@ import ru.ifmo.se.api.infrastructure.security.annotation.RequiresRole
 import ru.ifmo.se.api.presentation.dto.request.ContestRequest
 import ru.ifmo.se.api.presentation.dto.response.ContestResponse
 import ru.ifmo.se.api.presentation.dto.response.PageResponse
+import ru.ifmo.se.api.presentation.extension.toPageResponse
 import ru.ifmo.se.api.presentation.mapper.ContestResponseMapper
 import java.time.Instant
 import java.util.UUID
@@ -72,16 +73,7 @@ class ContestController(
             )
 
         val pageResult = contestService.getContests(currentPerson, pageQuery, filter)
-        val response =
-            PageResponse(
-                page = pageResult.pageNumber,
-                size = size,
-                totalElements = pageResult.totalElements,
-                totalPages = pageResult.totalPages,
-                content = pageResult.items.map(contestResponseMapper::toResponse),
-            )
-
-        return ResponseEntity.ok(response)
+        return ResponseEntity.ok(pageResult.toPageResponse(size, contestResponseMapper::toResponse))
     }
 
     @PostMapping

@@ -6,7 +6,8 @@ import ru.ifmo.se.api.domain.model.Interview
 import ru.ifmo.se.api.domain.model.InterviewFilter
 import ru.ifmo.se.api.domain.model.Person
 import ru.ifmo.se.api.domain.model.PersonRole
-import ru.ifmo.se.api.infrastructure.postgres.entity.VacancyEntity
+import ru.ifmo.se.api.domain.model.Team
+import ru.ifmo.se.api.domain.model.Vacancy
 
 @Component
 class InterviewPolicy {
@@ -39,14 +40,14 @@ class InterviewPolicy {
 
     fun checkCanSchedule(
         caller: Person,
-        vacancy: VacancyEntity,
+        vacancy: Vacancy,
     ) {
         if (caller.role == PersonRole.ADMIN) {
             return
         }
 
         val teamId = caller.teamId
-        if (caller.role == PersonRole.TEAM_LEAD && teamId != null && vacancy.team.id == teamId.value) {
+        if (caller.role == PersonRole.TEAM_LEAD && teamId != null && vacancy.teamId == teamId) {
             return
         }
 
@@ -56,7 +57,8 @@ class InterviewPolicy {
     fun checkCanView(
         caller: Person,
         interview: Interview,
-        vacancy: VacancyEntity,
+        vacancy: Vacancy,
+        team: Team,
     ) {
         if (caller.role == PersonRole.ADMIN) {
             return
@@ -71,7 +73,7 @@ class InterviewPolicy {
 
         if (caller.role == PersonRole.TEAM_LEAD) {
             val teamId = caller.teamId
-            if (interview.teamleadId == caller.id || (teamId != null && vacancy.team.id == teamId.value)) {
+            if (interview.teamleadId == caller.id || (teamId != null && vacancy.teamId == teamId)) {
                 return
             }
             throw AccessDeniedException("Access is denied. You can only view interviews of your own team.")
@@ -80,7 +82,7 @@ class InterviewPolicy {
         val companyId = caller.companyId
         if ((caller.role == PersonRole.HR || caller.role == PersonRole.MANAGER) &&
             companyId != null &&
-            vacancy.team.company.id == companyId.value
+            team.companyId == companyId
         ) {
             return
         }
@@ -125,20 +127,21 @@ class InterviewPolicy {
     fun checkCanViewRecording(
         caller: Person,
         interview: Interview,
-        vacancy: VacancyEntity,
+        vacancy: Vacancy,
+        team: Team,
     ) {
         if (caller.role == PersonRole.ADMIN) {
             return
         }
 
         val companyId = caller.companyId
-        if (caller.role == PersonRole.HR && companyId != null && vacancy.team.company.id == companyId.value) {
+        if (caller.role == PersonRole.HR && companyId != null && team.companyId == companyId) {
             return
         }
 
         val teamId = caller.teamId
         if (caller.role == PersonRole.TEAM_LEAD &&
-            (interview.teamleadId == caller.id || (teamId != null && vacancy.team.id == teamId.value))
+            (interview.teamleadId == caller.id || (teamId != null && vacancy.teamId == teamId))
         ) {
             return
         }

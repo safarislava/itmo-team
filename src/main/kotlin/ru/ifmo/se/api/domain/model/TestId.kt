@@ -6,7 +6,13 @@ import java.util.UUID
 value class TestId(
     val value: UUID,
 ) {
+    override fun toString(): String = value.toString()
+
     companion object {
         fun generate(): TestId = TestId(UUID.randomUUID())
+
+        fun from(raw: String): TestId = TestId(UUID.fromString(raw))
+
+        fun fromOrNull(raw: String): TestId? = runCatching { TestId(UUID.fromString(raw)) }.getOrNull()
     }
 }

@@ -47,13 +47,7 @@ class CompanyService(
         command: UpdateCompanyCommand,
     ): Company {
         val target = companyRepository.findById(companyId) ?: throw CompanyNotFoundException()
-
-        val updated =
-            Company(
-                id = target.id,
-                name = command.name.trim(),
-                creationDate = target.creationDate,
-            )
+        val updated = target.copy(name = command.name.trim())
         return companyRepository.save(updated)
     }
 
@@ -62,20 +56,15 @@ class CompanyService(
         val target = companyRepository.findById(companyId) ?: throw CompanyNotFoundException()
 
         val employees = personRepository.findAllByCompanyId(companyId)
-        for (employee in employees) {
+        employees.forEach { employee ->
             refreshTokenRepository.revokeAllByPersonId(employee.id)
-            val dismissedEmployee =
-                Person(
-                    id = employee.id,
-                    name = employee.name,
-                    email = employee.email,
-                    passwordHash = employee.passwordHash,
+            personRepository.save(
+                employee.copy(
                     role = PersonRole.CANDIDATE,
                     companyId = null,
                     teamId = null,
-                    githubId = employee.githubId,
-                )
-            personRepository.save(dismissedEmployee)
+                ),
+            )
         }
 
         companyRepository.delete(target)

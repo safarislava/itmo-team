@@ -9,6 +9,8 @@ import ru.ifmo.se.api.domain.model.PageResult
 interface CompanyRepository {
     fun findById(id: CompanyId): Company?
 
+    fun findAllById(ids: Iterable<CompanyId>): List<Company>
+
     fun findAll(
         filter: CompanyFilter,
         pageQuery: PageQuery,

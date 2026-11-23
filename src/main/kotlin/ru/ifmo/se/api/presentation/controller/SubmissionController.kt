@@ -32,6 +32,7 @@ import ru.ifmo.se.api.infrastructure.security.annotation.RequiresRole
 import ru.ifmo.se.api.presentation.dto.request.SubmissionRequest
 import ru.ifmo.se.api.presentation.dto.response.PageResponse
 import ru.ifmo.se.api.presentation.dto.response.SubmissionResponse
+import ru.ifmo.se.api.presentation.extension.toPageResponse
 import ru.ifmo.se.api.presentation.mapper.SubmissionResponseMapper
 import java.util.UUID
 
@@ -75,16 +76,9 @@ class SubmissionController(
             )
 
         val pageResult = submissionService.listSubmissions(currentPerson, pageQuery, filter)
-        val response =
-            PageResponse(
-                page = pageResult.pageNumber,
-                size = size,
-                totalElements = pageResult.totalElements,
-                totalPages = pageResult.totalPages,
-                content = pageResult.items.map { submissionResponseMapper.toResponse(it, currentPerson) },
-            )
-
-        return ResponseEntity.ok(response)
+        return ResponseEntity.ok(
+            pageResult.toPageResponse(size) { submissionResponseMapper.toResponse(it, currentPerson) },
+        )
     }
 
     @PostMapping

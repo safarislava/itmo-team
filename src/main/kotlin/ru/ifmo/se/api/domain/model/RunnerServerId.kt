@@ -6,7 +6,13 @@ import java.util.UUID
 value class RunnerServerId(
     val value: UUID,
 ) {
+    override fun toString(): String = value.toString()
+
     companion object {
         fun generate(): RunnerServerId = RunnerServerId(UUID.randomUUID())
+
+        fun from(raw: String): RunnerServerId = RunnerServerId(UUID.fromString(raw))
+
+        fun fromOrNull(raw: String): RunnerServerId? = runCatching { RunnerServerId(UUID.fromString(raw)) }.getOrNull()
     }
 }

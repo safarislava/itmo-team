@@ -15,6 +15,7 @@ import ru.ifmo.se.api.domain.exception.InterviewBadRequestException
 import ru.ifmo.se.api.domain.exception.InterviewNotFoundException
 import ru.ifmo.se.api.domain.exception.InterviewRecordingNotFoundException
 import ru.ifmo.se.api.domain.exception.PersonNotFoundException
+import ru.ifmo.se.api.domain.exception.TeamNotFoundException
 import ru.ifmo.se.api.domain.exception.VacancyNotFoundException
 import ru.ifmo.se.api.domain.model.ApplicationId
 import ru.ifmo.se.api.domain.model.ApplicationStatus
@@ -26,10 +27,12 @@ import ru.ifmo.se.api.domain.model.PageQuery
 import ru.ifmo.se.api.domain.model.PageResult
 import ru.ifmo.se.api.domain.model.Person
 import ru.ifmo.se.api.domain.model.PersonRole
+import ru.ifmo.se.api.domain.model.map
 import ru.ifmo.se.api.domain.repository.ApplicationRepository
 import ru.ifmo.se.api.domain.repository.InterviewFeedbackRepository
 import ru.ifmo.se.api.domain.repository.InterviewRepository
 import ru.ifmo.se.api.domain.repository.PersonRepository
+import ru.ifmo.se.api.domain.repository.TeamRepository
 import ru.ifmo.se.api.domain.repository.VacancyRepository
 import java.time.Instant
 
@@ -39,6 +42,7 @@ class InterviewService(
     private val interviewFeedbackRepository: InterviewFeedbackRepository,
     private val applicationRepository: ApplicationRepository,
     private val vacancyRepository: VacancyRepository,
+    private val teamRepository: TeamRepository,
     private val personRepository: PersonRepository,
     private val interviewPolicy: InterviewPolicy,
     private val emailService: EmailService,
@@ -55,7 +59,7 @@ class InterviewService(
                 ?: throw ApplicationNotFoundException()
 
         val vacancy =
-            vacancyRepository.findEntityById(application.vacancyId)
+            vacancyRepository.findById(application.vacancyId)
                 ?: throw VacancyNotFoundException()
 
         interviewPolicy.checkCanSchedule(currentPerson, vacancy)
@@ -118,25 +122,10 @@ class InterviewService(
     ): PageResult<InterviewDetails> {
         val scopedFilter =
             interviewPolicy.applyFilterScope(currentPerson, filter)
-                ?: return PageResult(
-                    items = emptyList(),
-                    totalElements = 0,
-                    pageNumber = pageQuery.pageNumber,
-                    totalPages = 0,
-                )
+                ?: return PageResult.empty(pageQuery.pageNumber)
 
         val paged = interviewRepository.findAll(scopedFilter, pageQuery)
-        val items =
-            paged.items.map { interview ->
-                assembleDetails(currentPerson, interview)
-            }
-
-        return PageResult(
-            items = items,
-            totalElements = paged.totalElements,
-            pageNumber = paged.pageNumber,
-            totalPages = paged.totalPages,
-        )
+        return paged.map { interview -> assembleDetails(currentPerson, interview) }
     }
 
     fun getInterview(
@@ -148,10 +137,14 @@ class InterviewService(
                 ?: throw InterviewNotFoundException()
 
         val vacancy =
-            vacancyRepository.findEntityById(interview.vacancyId)
+            vacancyRepository.findById(interview.vacancyId)
                 ?: throw VacancyNotFoundException()
 
-        interviewPolicy.checkCanView(currentPerson, interview, vacancy)
+        val team =
+            teamRepository.findById(vacancy.teamId)
+                ?: throw TeamNotFoundException()
+
+        interviewPolicy.checkCanView(currentPerson, interview, vacancy, team)
         return assembleDetails(currentPerson, interview)
     }
 
@@ -223,10 +216,14 @@ class InterviewService(
                 ?: throw InterviewNotFoundException()
 
         val vacancy =
-            vacancyRepository.findEntityById(interview.vacancyId)
+            vacancyRepository.findById(interview.vacancyId)
                 ?: throw VacancyNotFoundException()
 
-        interviewPolicy.checkCanViewRecording(currentPerson, interview, vacancy)
+        val team =
+            teamRepository.findById(vacancy.teamId)
+                ?: throw TeamNotFoundException()
+
+        interviewPolicy.checkCanViewRecording(currentPerson, interview, vacancy, team)
 
         val s3key = interview.videoS3key ?: throw InterviewRecordingNotFoundException()
         return fileStorage.getPresignedUrl(s3key)
@@ -243,7 +240,7 @@ class InterviewService(
             personRepository.findById(interview.teamleadId)
                 ?: throw PersonNotFoundException()
         val vacancy =
-            vacancyRepository.findEntityById(interview.vacancyId)
+            vacancyRepository.findById(interview.vacancyId)
                 ?: throw VacancyNotFoundException()
 
         val feedback =

@@ -12,5 +12,7 @@ value class TeamId(
         fun generate(): TeamId = TeamId(UUID.randomUUID())
 
         fun from(raw: String): TeamId = TeamId(UUID.fromString(raw))
+
+        fun fromOrNull(raw: String): TeamId? = runCatching { TeamId(UUID.fromString(raw)) }.getOrNull()
     }
 }

@@ -14,6 +14,7 @@ import ru.ifmo.se.api.domain.model.Person
 import ru.ifmo.se.api.domain.model.Task
 import ru.ifmo.se.api.domain.model.TaskFilter
 import ru.ifmo.se.api.domain.model.TaskId
+import ru.ifmo.se.api.domain.model.map
 import ru.ifmo.se.api.domain.repository.ContestRepository
 import ru.ifmo.se.api.domain.repository.PersonRepository
 import ru.ifmo.se.api.domain.repository.TaskRepository
@@ -35,17 +36,11 @@ class TaskService(
         filter: TaskFilter,
     ): PageResult<TaskDetails> {
         val paged = taskRepository.findAll(filter, pageQuery)
-        val items =
-            paged.items.map { task ->
-                val author = personRepository.findById(task.authorId) ?: caller
-                TaskDetails(task = task, author = author)
-            }
-        return PageResult(
-            items = items,
-            totalElements = paged.totalElements,
-            pageNumber = paged.pageNumber,
-            totalPages = paged.totalPages,
-        )
+        val authorsById = personRepository.findAllById(paged.items.map { it.authorId }).associateBy { it.id }
+        return paged.map { task ->
+            val author = authorsById[task.authorId] ?: caller
+            TaskDetails(task = task, author = author)
+        }
     }
 
     fun getTask(

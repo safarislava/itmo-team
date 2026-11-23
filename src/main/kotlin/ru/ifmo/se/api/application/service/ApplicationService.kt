@@ -10,6 +10,7 @@ import ru.ifmo.se.api.domain.exception.ApplicationBadRequestException
 import ru.ifmo.se.api.domain.exception.ApplicationNotFoundException
 import ru.ifmo.se.api.domain.exception.FormNotFoundException
 import ru.ifmo.se.api.domain.exception.ResumeNotFoundException
+import ru.ifmo.se.api.domain.exception.TeamNotFoundException
 import ru.ifmo.se.api.domain.exception.VacancyNotFoundException
 import ru.ifmo.se.api.domain.model.Application
 import ru.ifmo.se.api.domain.model.ApplicationFilter
@@ -21,15 +22,18 @@ import ru.ifmo.se.api.domain.model.PageQuery
 import ru.ifmo.se.api.domain.model.PageResult
 import ru.ifmo.se.api.domain.model.Person
 import ru.ifmo.se.api.domain.model.VacancyStatus
+import ru.ifmo.se.api.domain.model.map
 import ru.ifmo.se.api.domain.repository.ApplicationRepository
 import ru.ifmo.se.api.domain.repository.FormRepository
 import ru.ifmo.se.api.domain.repository.ResumeRepository
+import ru.ifmo.se.api.domain.repository.TeamRepository
 import ru.ifmo.se.api.domain.repository.VacancyRepository
 
 @Service
 class ApplicationService(
     private val applicationRepository: ApplicationRepository,
     private val vacancyRepository: VacancyRepository,
+    private val teamRepository: TeamRepository,
     private val resumeRepository: ResumeRepository,
     private val formRepository: FormRepository,
     private val applicationPolicy: ApplicationPolicy,
@@ -42,7 +46,7 @@ class ApplicationService(
         applicationPolicy.checkCanCreate(currentPerson)
 
         val vacancy =
-            vacancyRepository.findEntityById(command.vacancyId)
+            vacancyRepository.findById(command.vacancyId)
                 ?: throw VacancyNotFoundException()
 
         if (vacancy.status != VacancyStatus.OPEN) {
@@ -103,22 +107,10 @@ class ApplicationService(
     ): PageResult<ApplicationDetails> {
         val effectiveFilter =
             applicationPolicy.applyFilterScope(currentPerson, filter)
-                ?: return PageResult(
-                    items = emptyList(),
-                    totalElements = 0,
-                    pageNumber = pageQuery.pageNumber,
-                    totalPages = 0,
-                )
+                ?: return PageResult.empty(pageQuery.pageNumber)
 
         val paged = applicationRepository.findAll(effectiveFilter, pageQuery)
-        val mappedItems = paged.items.map { assembleDetails(it) }
-
-        return PageResult(
-            items = mappedItems,
-            totalElements = paged.totalElements,
-            pageNumber = paged.pageNumber,
-            totalPages = paged.totalPages,
-        )
+        return paged.map { assembleDetails(it) }
     }
 
     fun getApplication(
@@ -130,10 +122,14 @@ class ApplicationService(
                 ?: throw ApplicationNotFoundException()
 
         val vacancy =
-            vacancyRepository.findEntityById(application.vacancyId)
+            vacancyRepository.findById(application.vacancyId)
                 ?: throw VacancyNotFoundException()
 
-        applicationPolicy.checkCanView(currentPerson, application, vacancy)
+        val team =
+            teamRepository.findById(vacancy.teamId)
+                ?: throw TeamNotFoundException()
+
+        applicationPolicy.checkCanView(currentPerson, application, vacancy, team)
 
         return assembleDetails(application)
     }
@@ -149,10 +145,14 @@ class ApplicationService(
                 ?: throw ApplicationNotFoundException()
 
         val vacancy =
-            vacancyRepository.findEntityById(application.vacancyId)
+            vacancyRepository.findById(application.vacancyId)
                 ?: throw VacancyNotFoundException()
 
-        applicationPolicy.checkCanUpdateStatus(currentPerson, vacancy)
+        val team =
+            teamRepository.findById(vacancy.teamId)
+                ?: throw TeamNotFoundException()
+
+        applicationPolicy.checkCanUpdateStatus(currentPerson, vacancy, team)
 
         val updated = application.copy(status = command.status)
         applicationRepository.save(updated)

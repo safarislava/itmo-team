@@ -6,13 +6,15 @@ import ru.ifmo.se.api.domain.exception.ApplicationResponseAccessDeniedException
 import ru.ifmo.se.api.domain.model.ApplicationResponse
 import ru.ifmo.se.api.domain.model.Person
 import ru.ifmo.se.api.domain.model.PersonRole
-import ru.ifmo.se.api.infrastructure.postgres.entity.VacancyEntity
+import ru.ifmo.se.api.domain.model.Team
+import ru.ifmo.se.api.domain.model.Vacancy
 
 @Component
 class ApplicationResponsePolicy {
     fun checkCanView(
         caller: Person,
-        vacancy: VacancyEntity,
+        vacancy: Vacancy,
+        team: Team,
     ) {
         if (caller.role == PersonRole.ADMIN) {
             return
@@ -21,7 +23,7 @@ class ApplicationResponsePolicy {
         val companyId = caller.companyId
         if ((caller.role == PersonRole.HR || caller.role == PersonRole.MANAGER) &&
             companyId != null &&
-            vacancy.team.company.id == companyId.value
+            team.companyId == companyId
         ) {
             return
         }
@@ -29,7 +31,7 @@ class ApplicationResponsePolicy {
         val teamId = caller.teamId
         if (caller.role == PersonRole.TEAM_LEAD &&
             teamId != null &&
-            vacancy.team.id == teamId.value
+            vacancy.teamId == teamId
         ) {
             return
         }
@@ -39,14 +41,15 @@ class ApplicationResponsePolicy {
 
     fun checkCanCreate(
         caller: Person,
-        vacancy: VacancyEntity,
+        vacancy: Vacancy,
+        team: Team,
     ) {
         if (caller.role == PersonRole.ADMIN) {
             return
         }
 
         val companyId = caller.companyId
-        if (caller.role == PersonRole.HR && companyId != null && vacancy.team.company.id == companyId.value) {
+        if (caller.role == PersonRole.HR && companyId != null && team.companyId == companyId) {
             return
         }
 

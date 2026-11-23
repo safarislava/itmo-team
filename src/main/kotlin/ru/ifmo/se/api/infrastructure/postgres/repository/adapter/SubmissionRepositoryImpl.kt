@@ -1,8 +1,6 @@
 package ru.ifmo.se.api.infrastructure.postgres.repository.adapter
 
 import jakarta.persistence.criteria.JoinType
-import org.springframework.data.domain.PageRequest
-import org.springframework.data.domain.Sort
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
@@ -10,7 +8,6 @@ import ru.ifmo.se.api.domain.model.ContestId
 import ru.ifmo.se.api.domain.model.PageQuery
 import ru.ifmo.se.api.domain.model.PageResult
 import ru.ifmo.se.api.domain.model.PersonId
-import ru.ifmo.se.api.domain.model.SortDirection
 import ru.ifmo.se.api.domain.model.Submission
 import ru.ifmo.se.api.domain.model.SubmissionFilter
 import ru.ifmo.se.api.domain.model.SubmissionId
@@ -24,6 +21,8 @@ import ru.ifmo.se.api.infrastructure.postgres.entity.SubmissionEntity
 import ru.ifmo.se.api.infrastructure.postgres.entity.TaskEntity
 import ru.ifmo.se.api.infrastructure.postgres.entity.TeamEntity
 import ru.ifmo.se.api.infrastructure.postgres.entity.VacancyEntity
+import ru.ifmo.se.api.infrastructure.postgres.extension.toPageRequest
+import ru.ifmo.se.api.infrastructure.postgres.extension.toPageResult
 import ru.ifmo.se.api.infrastructure.postgres.mapper.SubmissionEntityMapper
 import ru.ifmo.se.api.infrastructure.postgres.repository.JpaSubmissionRepository
 import java.util.UUID
@@ -73,17 +72,8 @@ class SubmissionRepositoryImpl(
                 cb.and(*predicates.toTypedArray())
             }
 
-        val direction = if (pageQuery.sortOrder == SortDirection.ASC) Sort.Direction.ASC else Sort.Direction.DESC
-        val sortBy = if (pageQuery.sortBy.isNotBlank()) pageQuery.sortBy else "submittedAt"
-        val pageable = PageRequest.of(pageQuery.pageNumber, pageQuery.pageSize, Sort.by(direction, sortBy))
-        val pagedResult = repo.findAll(specification, pageable)
-
-        return PageResult(
-            items = pagedResult.content.map(mapper::toDomain),
-            totalElements = pagedResult.totalElements,
-            pageNumber = pagedResult.number,
-            totalPages = pagedResult.totalPages,
-        )
+        val pageable = pageQuery.toPageRequest { it.takeIf { it.isNotBlank() } ?: "submittedAt" }
+        return repo.findAll(specification, pageable).toPageResult(mapper::toDomain)
     }
 
     override fun save(submission: Submission): Submission = mapper.toDomain(repo.save(mapper.toEntity(submission)))

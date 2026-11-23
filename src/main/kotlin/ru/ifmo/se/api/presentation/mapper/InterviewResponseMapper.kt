@@ -21,7 +21,7 @@ class InterviewResponseMapper(
             teamlead = personResponseMapper.toSummaryResponse(details.teamlead),
             vacancy =
                 VacancySummaryResponse(
-                    id = details.vacancy.id,
+                    id = details.vacancy.id.value,
                     title = details.vacancy.title,
                     status = details.vacancy.status,
                 ),
