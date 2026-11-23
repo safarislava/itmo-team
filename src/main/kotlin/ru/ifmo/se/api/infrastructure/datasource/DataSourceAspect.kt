@@ -12,17 +12,19 @@ import org.springframework.stereotype.Component
 class DataSourceAspect(
     private val context: DataSourceContext,
 ) {
-    @Around("@annotation(ru.ifmo.se.api.application.annotation.ReadOnlyDataAссess) || @within(ru.ifmo.se.api.application.annotation.ReadOnlyDataAссess)")
-private fun setSlaveDataSource(joinPoint: ProceedingJoinPoint): Any? {
-        return context.withDataSourceType(DataSourceType.SLAVE) {
+    @Around(
+        "@annotation(ru.ifmo.se.api.application.annotation.ReadOnlyDataAccess) || @within(ru.ifmo.se.api.application.annotation.ReadOnlyDataAccess)",
+    )
+    fun setSlaveDataSource(joinPoint: ProceedingJoinPoint): Any? =
+        context.withDataSourceType(DataSourceType.SLAVE) {
             joinPoint.proceed()
         }
-    }
 
-    @Around("@annotation(ru.ifmo.se.api.application.annotation.WriteDataAссess) || @within(ru.ifmo.se.api.application.annotation.WriteDataAссess)")
-private fun setMasterDataSource(joinPoint: ProceedingJoinPoint): Any? {
-        return context.withDataSourceType(DataSourceType.MASTER) {
+    @Around(
+        "@annotation(ru.ifmo.se.api.application.annotation.WriteDataAccess) || @within(ru.ifmo.se.api.application.annotation.WriteDataAccess)",
+    )
+    fun setMasterDataSource(joinPoint: ProceedingJoinPoint): Any? =
+        context.withDataSourceType(DataSourceType.MASTER) {
             joinPoint.proceed()
         }
-    }
 }
