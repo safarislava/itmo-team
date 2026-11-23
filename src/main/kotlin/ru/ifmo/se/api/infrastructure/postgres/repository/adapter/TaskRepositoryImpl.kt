@@ -1,19 +1,18 @@
 package ru.ifmo.se.api.infrastructure.postgres.repository.adapter
 
 import jakarta.persistence.criteria.Predicate
-import org.springframework.data.domain.PageRequest
-import org.springframework.data.domain.Sort
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Repository
 import ru.ifmo.se.api.domain.model.PageQuery
 import ru.ifmo.se.api.domain.model.PageResult
-import ru.ifmo.se.api.domain.model.SortDirection
 import ru.ifmo.se.api.domain.model.Task
 import ru.ifmo.se.api.domain.model.TaskFilter
 import ru.ifmo.se.api.domain.model.TaskId
 import ru.ifmo.se.api.domain.repository.TaskRepository
 import ru.ifmo.se.api.infrastructure.postgres.entity.PersonEntity
 import ru.ifmo.se.api.infrastructure.postgres.entity.TaskEntity
+import ru.ifmo.se.api.infrastructure.postgres.extension.toPageRequest
+import ru.ifmo.se.api.infrastructure.postgres.extension.toPageResult
 import ru.ifmo.se.api.infrastructure.postgres.mapper.TaskEntityMapper
 import ru.ifmo.se.api.infrastructure.postgres.repository.JpaTaskRepository
 import java.util.UUID
@@ -45,24 +44,16 @@ class TaskRepositoryImpl(
                 cb.and(*predicates.toTypedArray())
             }
 
-        val direction = if (pageQuery.sortOrder == SortDirection.DESC) Sort.Direction.DESC else Sort.Direction.ASC
-        val sortProperty =
-            when (pageQuery.sortBy) {
-                "name" -> "name"
-                "timeLimit" -> "timeLimit"
-                "memoryLimit" -> "memoryLimit"
-                else -> "id"
+        val pageable =
+            pageQuery.toPageRequest {
+                when (it) {
+                    "name" -> "name"
+                    "timeLimit" -> "timeLimit"
+                    "memoryLimit" -> "memoryLimit"
+                    else -> "id"
+                }
             }
-
-        val pageable = PageRequest.of(pageQuery.pageNumber, pageQuery.pageSize, Sort.by(direction, sortProperty))
-        val pagedResult = repo.findAll(specification, pageable)
-
-        return PageResult(
-            items = pagedResult.content.map(mapper::toDomain),
-            totalElements = pagedResult.totalElements,
-            pageNumber = pagedResult.number,
-            totalPages = pagedResult.totalPages,
-        )
+        return repo.findAll(specification, pageable).toPageResult(mapper::toDomain)
     }
 
     override fun save(task: Task): Task = mapper.toDomain(repo.save(mapper.toEntity(task)))

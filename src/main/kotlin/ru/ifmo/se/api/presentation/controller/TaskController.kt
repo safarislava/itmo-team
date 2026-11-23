@@ -31,6 +31,8 @@ import ru.ifmo.se.api.infrastructure.security.annotation.RequiresRole
 import ru.ifmo.se.api.presentation.dto.request.TaskRequest
 import ru.ifmo.se.api.presentation.dto.response.PageResponse
 import ru.ifmo.se.api.presentation.dto.response.TaskResponse
+import ru.ifmo.se.api.presentation.extension.toPageResponse
+import ru.ifmo.se.api.presentation.extension.toSortDirectionOrNull
 import ru.ifmo.se.api.presentation.mapper.TaskResponseMapper
 import java.util.UUID
 
@@ -58,11 +60,8 @@ class TaskController(
         }
 
         val sortDirection =
-            try {
-                SortDirection.valueOf(order.uppercase())
-            } catch (_: IllegalArgumentException) {
-                throw TaskBadRequestException("Invalid order: $order. Allowed values: asc, desc.")
-            }
+            order.toSortDirectionOrNull()
+                ?: throw TaskBadRequestException("Invalid order: $order. Allowed values: asc, desc.")
 
         val pageQuery =
             PageQuery(
@@ -79,16 +78,7 @@ class TaskController(
             )
 
         val pageResult = taskService.getTasks(currentPerson, pageQuery, filter)
-        val response =
-            PageResponse(
-                page = pageResult.pageNumber,
-                size = size,
-                totalElements = pageResult.totalElements,
-                totalPages = pageResult.totalPages,
-                content = pageResult.items.map(taskResponseMapper::toResponse),
-            )
-
-        return ResponseEntity.ok(response)
+        return ResponseEntity.ok(pageResult.toPageResponse(size, taskResponseMapper::toResponse))
     }
 
     @PostMapping

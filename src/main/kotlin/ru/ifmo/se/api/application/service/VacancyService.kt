@@ -13,7 +13,6 @@ import ru.ifmo.se.api.domain.exception.CompanyNotFoundException
 import ru.ifmo.se.api.domain.exception.TeamNotFoundException
 import ru.ifmo.se.api.domain.exception.VacancyBadRequestException
 import ru.ifmo.se.api.domain.exception.VacancyNotFoundException
-import ru.ifmo.se.api.domain.model.ApplicationId
 import ru.ifmo.se.api.domain.model.ApplicationStatus
 import ru.ifmo.se.api.domain.model.PageQuery
 import ru.ifmo.se.api.domain.model.PageResult
@@ -22,6 +21,7 @@ import ru.ifmo.se.api.domain.model.Vacancy
 import ru.ifmo.se.api.domain.model.VacancyFilter
 import ru.ifmo.se.api.domain.model.VacancyId
 import ru.ifmo.se.api.domain.model.VacancyStatus
+import ru.ifmo.se.api.domain.model.map
 import ru.ifmo.se.api.domain.repository.ApplicationRepository
 import ru.ifmo.se.api.domain.repository.CompanyRepository
 import ru.ifmo.se.api.domain.repository.PersonRepository
@@ -47,22 +47,10 @@ class VacancyService(
         pageQuery: PageQuery,
     ): PageResult<VacancyDetails> {
         val scopedFilter =
-            vacancyPolicy.applyFilterScope(caller, filter) ?: return PageResult(
-                items = emptyList(),
-                totalElements = 0,
-                pageNumber = pageQuery.pageNumber,
-                totalPages = 0,
-            )
+            vacancyPolicy.applyFilterScope(caller, filter) ?: return PageResult.empty(pageQuery.pageNumber)
 
         val pagedVacancies = vacancyRepository.findAll(scopedFilter, pageQuery)
-        val items = pagedVacancies.items.map { assembleDetails(it) }
-
-        return PageResult(
-            items = items,
-            totalElements = pagedVacancies.totalElements,
-            pageNumber = pagedVacancies.pageNumber,
-            totalPages = pagedVacancies.totalPages,
-        )
+        return pagedVacancies.map { assembleDetails(it) }
     }
 
     fun getVacancy(

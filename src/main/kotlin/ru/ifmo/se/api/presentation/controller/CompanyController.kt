@@ -29,6 +29,8 @@ import ru.ifmo.se.api.presentation.dto.request.CompanyCreateRequest
 import ru.ifmo.se.api.presentation.dto.request.CompanyRequest
 import ru.ifmo.se.api.presentation.dto.response.CompanyResponse
 import ru.ifmo.se.api.presentation.dto.response.PageResponse
+import ru.ifmo.se.api.presentation.extension.toPageResponse
+import ru.ifmo.se.api.presentation.extension.toSortDirectionOrNull
 import ru.ifmo.se.api.presentation.mapper.CompanyResponseMapper
 import java.util.UUID
 
@@ -53,11 +55,8 @@ class CompanyController(
         }
 
         val sortDirection =
-            try {
-                SortDirection.valueOf(order.uppercase())
-            } catch (_: IllegalArgumentException) {
-                throw CompanyBadRequestException("Invalid order: $order. Allowed values: asc, desc.")
-            }
+            order.toSortDirectionOrNull()
+                ?: throw CompanyBadRequestException("Invalid order: $order. Allowed values: asc, desc.")
 
         val filter = CompanyFilter(search = search)
         val pageQuery =
@@ -69,18 +68,7 @@ class CompanyController(
             )
 
         val pageResult = companyService.getCompanies(filter, pageQuery)
-        val content = pageResult.items.map(companyResponseMapper::toResponse)
-
-        val response =
-            PageResponse(
-                page = pageResult.pageNumber,
-                size = size,
-                totalElements = pageResult.totalElements,
-                totalPages = pageResult.totalPages,
-                content = content,
-            )
-
-        return ResponseEntity.ok(response)
+        return ResponseEntity.ok(pageResult.toPageResponse(size, companyResponseMapper::toResponse))
     }
 
     @PostMapping

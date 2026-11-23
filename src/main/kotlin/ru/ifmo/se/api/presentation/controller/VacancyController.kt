@@ -41,6 +41,8 @@ import ru.ifmo.se.api.presentation.dto.response.LeaderboardEntryResponse
 import ru.ifmo.se.api.presentation.dto.response.PageResponse
 import ru.ifmo.se.api.presentation.dto.response.VacancyResponse
 import ru.ifmo.se.api.presentation.dto.response.VacancyStatusResponse
+import ru.ifmo.se.api.presentation.extension.toPageResponse
+import ru.ifmo.se.api.presentation.extension.toSortDirectionOrNull
 import ru.ifmo.se.api.presentation.mapper.LeaderboardResponseMapper
 import ru.ifmo.se.api.presentation.mapper.VacancyResponseMapper
 import java.util.UUID
@@ -75,11 +77,8 @@ class VacancyController(
         }
 
         val sortDirection =
-            when (order.lowercase()) {
-                "asc" -> SortDirection.ASC
-                "desc" -> SortDirection.DESC
-                else -> throw VacancyBadRequestException("Invalid order '$order'. Allowed values: asc, desc.")
-            }
+            order.toSortDirectionOrNull()
+                ?: throw VacancyBadRequestException("Invalid order '$order'. Allowed values: asc, desc.")
 
         val filter =
             VacancyFilter(
@@ -93,16 +92,7 @@ class VacancyController(
             )
 
         val pageResult = vacancyService.listVacancies(currentPerson, filter, PageQuery(page, size, sort, sortDirection))
-
-        return ResponseEntity.ok(
-            PageResponse(
-                page = pageResult.pageNumber,
-                size = size,
-                totalElements = pageResult.totalElements,
-                totalPages = pageResult.totalPages,
-                content = pageResult.items.map(vacancyResponseMapper::toResponse),
-            ),
-        )
+        return ResponseEntity.ok(pageResult.toPageResponse(size, vacancyResponseMapper::toResponse))
     }
 
     @PostMapping
@@ -213,15 +203,6 @@ class VacancyController(
                 sortOrder = SortDirection.DESC,
             )
         val pageResult = applicationScoreService.getLeaderboard(currentPerson, filter, pageQuery)
-
-        return ResponseEntity.ok(
-            PageResponse(
-                page = pageResult.pageNumber,
-                size = size,
-                totalElements = pageResult.totalElements,
-                totalPages = pageResult.totalPages,
-                content = pageResult.items.map(leaderboardResponseMapper::toResponse),
-            ),
-        )
+        return ResponseEntity.ok(pageResult.toPageResponse(size, leaderboardResponseMapper::toResponse))
     }
 }

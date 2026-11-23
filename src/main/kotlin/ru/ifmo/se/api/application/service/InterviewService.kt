@@ -27,6 +27,7 @@ import ru.ifmo.se.api.domain.model.PageQuery
 import ru.ifmo.se.api.domain.model.PageResult
 import ru.ifmo.se.api.domain.model.Person
 import ru.ifmo.se.api.domain.model.PersonRole
+import ru.ifmo.se.api.domain.model.map
 import ru.ifmo.se.api.domain.repository.ApplicationRepository
 import ru.ifmo.se.api.domain.repository.InterviewFeedbackRepository
 import ru.ifmo.se.api.domain.repository.InterviewRepository
@@ -121,22 +122,10 @@ class InterviewService(
     ): PageResult<InterviewDetails> {
         val scopedFilter =
             interviewPolicy.applyFilterScope(currentPerson, filter)
-                ?: return PageResult(
-                    items = emptyList(),
-                    totalElements = 0,
-                    pageNumber = pageQuery.pageNumber,
-                    totalPages = 0,
-                )
+                ?: return PageResult.empty(pageQuery.pageNumber)
 
         val paged = interviewRepository.findAll(scopedFilter, pageQuery)
-        val items = paged.items.map { interview -> assembleDetails(currentPerson, interview) }
-
-        return PageResult(
-            items = items,
-            totalElements = paged.totalElements,
-            pageNumber = paged.pageNumber,
-            totalPages = paged.totalPages,
-        )
+        return paged.map { interview -> assembleDetails(currentPerson, interview) }
     }
 
     fun getInterview(

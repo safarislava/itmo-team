@@ -1,8 +1,6 @@
 package ru.ifmo.se.api.infrastructure.postgres.repository.adapter
 
 import jakarta.persistence.criteria.Predicate
-import org.springframework.data.domain.PageRequest
-import org.springframework.data.domain.Sort
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Repository
 import ru.ifmo.se.api.domain.model.Company
@@ -10,9 +8,10 @@ import ru.ifmo.se.api.domain.model.CompanyFilter
 import ru.ifmo.se.api.domain.model.CompanyId
 import ru.ifmo.se.api.domain.model.PageQuery
 import ru.ifmo.se.api.domain.model.PageResult
-import ru.ifmo.se.api.domain.model.SortDirection
 import ru.ifmo.se.api.domain.repository.CompanyRepository
 import ru.ifmo.se.api.infrastructure.postgres.entity.CompanyEntity
+import ru.ifmo.se.api.infrastructure.postgres.extension.toPageRequest
+import ru.ifmo.se.api.infrastructure.postgres.extension.toPageResult
 import ru.ifmo.se.api.infrastructure.postgres.mapper.CompanyEntityMapper
 import ru.ifmo.se.api.infrastructure.postgres.repository.JpaCompanyRepository
 
@@ -42,23 +41,15 @@ class CompanyRepositoryImpl(
                 cb.and(*predicates.toTypedArray())
             }
 
-        val direction = if (pageQuery.sortOrder == SortDirection.DESC) Sort.Direction.DESC else Sort.Direction.ASC
-        val sortProperty =
-            when (pageQuery.sortBy) {
-                "name" -> "name"
-                "creationDate" -> "creationDate"
-                else -> "id"
+        val pageable =
+            pageQuery.toPageRequest {
+                when (it) {
+                    "name" -> "name"
+                    "creationDate" -> "creationDate"
+                    else -> "id"
+                }
             }
-
-        val pageable = PageRequest.of(pageQuery.pageNumber, pageQuery.pageSize, Sort.by(direction, sortProperty))
-        val pagedResult = repo.findAll(specification, pageable)
-
-        return PageResult(
-            items = pagedResult.content.map(mapper::toDomain),
-            totalElements = pagedResult.totalElements,
-            pageNumber = pagedResult.number,
-            totalPages = pagedResult.totalPages,
-        )
+        return repo.findAll(specification, pageable).toPageResult(mapper::toDomain)
     }
 
     override fun save(company: Company): Company = mapper.toDomain(repo.save(mapper.toEntity(company)))

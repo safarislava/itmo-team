@@ -18,6 +18,7 @@ import ru.ifmo.se.api.domain.model.PersonRole
 import ru.ifmo.se.api.domain.model.Team
 import ru.ifmo.se.api.domain.model.TeamFilter
 import ru.ifmo.se.api.domain.model.TeamId
+import ru.ifmo.se.api.domain.model.map
 import ru.ifmo.se.api.domain.repository.CompanyRepository
 import ru.ifmo.se.api.domain.repository.PersonRepository
 import ru.ifmo.se.api.domain.repository.TeamRepository
@@ -35,29 +36,16 @@ class TeamService(
         pageQuery: PageQuery,
     ): PageResult<TeamDetails> {
         val scopedFilter =
-            teamPolicy.applyFilterScope(caller, filter) ?: return PageResult(
-                items = emptyList(),
-                totalElements = 0,
-                pageNumber = pageQuery.pageNumber,
-                totalPages = 0,
-            )
+            teamPolicy.applyFilterScope(caller, filter) ?: return PageResult.empty(pageQuery.pageNumber)
         val pagedTeams = teamRepository.findAll(scopedFilter, pageQuery)
         val companiesById = companyRepository.findAllById(pagedTeams.items.map { it.companyId }).associateBy { it.id }
         val teamleadsById = personRepository.findAllById(pagedTeams.items.map { it.teamleadId }).associateBy { it.id }
 
-        val items =
-            pagedTeams.items.map { team ->
-                val company = companiesById[team.companyId] ?: throw CompanyNotFoundException()
-                val teamlead = teamleadsById[team.teamleadId] ?: throw PersonNotFoundException()
-                TeamDetails(team = team, company = company, teamlead = teamlead)
-            }
-
-        return PageResult(
-            items = items,
-            totalElements = pagedTeams.totalElements,
-            pageNumber = pagedTeams.pageNumber,
-            totalPages = pagedTeams.totalPages,
-        )
+        return pagedTeams.map { team ->
+            val company = companiesById[team.companyId] ?: throw CompanyNotFoundException()
+            val teamlead = teamleadsById[team.teamleadId] ?: throw PersonNotFoundException()
+            TeamDetails(team = team, company = company, teamlead = teamlead)
+        }
     }
 
     fun getTeam(

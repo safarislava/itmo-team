@@ -47,12 +47,7 @@ class PersonService(
     ): PageResult<Person> {
         val effectiveFilter =
             personPolicy.applyFilterScope(caller, filter)
-                ?: return PageResult(
-                    items = emptyList(),
-                    totalElements = 0,
-                    pageNumber = page.pageNumber,
-                    totalPages = 0,
-                )
+                ?: return PageResult.empty(page.pageNumber)
 
         return personRepository.findByFilter(effectiveFilter, page)
     }

@@ -39,6 +39,8 @@ import ru.ifmo.se.api.presentation.dto.request.ApplicationStatusRequest
 import ru.ifmo.se.api.presentation.dto.response.ApplicationResponse
 import ru.ifmo.se.api.presentation.dto.response.PageResponse
 import ru.ifmo.se.api.presentation.dto.response.ScoreMetricsResponse
+import ru.ifmo.se.api.presentation.extension.toPageResponse
+import ru.ifmo.se.api.presentation.extension.toSortDirectionOrNull
 import ru.ifmo.se.api.presentation.mapper.ApplicationResponseMapper
 import ru.ifmo.se.api.presentation.mapper.ScoreMetricsResponseMapper
 import java.util.UUID
@@ -108,11 +110,8 @@ class ApplicationController(
         }
 
         val sortDirection =
-            when (order.lowercase()) {
-                "asc" -> SortDirection.ASC
-                "desc" -> SortDirection.DESC
-                else -> throw ApplicationBadRequestException("Invalid order: $order. Allowed: asc, desc")
-            }
+            order.toSortDirectionOrNull()
+                ?: throw ApplicationBadRequestException("Invalid order: $order. Allowed: asc, desc")
 
         val pageQuery =
             PageQuery(
@@ -137,16 +136,7 @@ class ApplicationController(
                 filter = filter,
             )
 
-        val response =
-            PageResponse(
-                page = pageResult.pageNumber,
-                size = size,
-                totalElements = pageResult.totalElements,
-                totalPages = pageResult.totalPages,
-                content = pageResult.items.map(applicationResponseMapper::toResponse),
-            )
-
-        return ResponseEntity.ok(response)
+        return ResponseEntity.ok(pageResult.toPageResponse(size, applicationResponseMapper::toResponse))
     }
 
     @GetMapping("/{applicationId}")

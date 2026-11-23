@@ -1,8 +1,6 @@
 package ru.ifmo.se.api.infrastructure.postgres.repository.adapter
 
 import jakarta.persistence.criteria.JoinType
-import org.springframework.data.domain.PageRequest
-import org.springframework.data.domain.Sort
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
@@ -13,7 +11,6 @@ import ru.ifmo.se.api.domain.model.ContestId
 import ru.ifmo.se.api.domain.model.PageQuery
 import ru.ifmo.se.api.domain.model.PageResult
 import ru.ifmo.se.api.domain.model.PersonId
-import ru.ifmo.se.api.domain.model.SortDirection
 import ru.ifmo.se.api.domain.model.TaskId
 import ru.ifmo.se.api.domain.model.VacancyId
 import ru.ifmo.se.api.domain.repository.ContestRepository
@@ -22,6 +19,8 @@ import ru.ifmo.se.api.infrastructure.postgres.entity.ContestEntity
 import ru.ifmo.se.api.infrastructure.postgres.entity.PersonEntity
 import ru.ifmo.se.api.infrastructure.postgres.entity.TeamEntity
 import ru.ifmo.se.api.infrastructure.postgres.entity.VacancyEntity
+import ru.ifmo.se.api.infrastructure.postgres.extension.toPageRequest
+import ru.ifmo.se.api.infrastructure.postgres.extension.toPageResult
 import ru.ifmo.se.api.infrastructure.postgres.mapper.ContestEntityMapper
 import ru.ifmo.se.api.infrastructure.postgres.repository.JpaContestRepository
 import ru.ifmo.se.api.infrastructure.postgres.repository.JpaVacancyRepository
@@ -77,16 +76,8 @@ class ContestRepositoryImpl(
                 cb.and(*predicates.toTypedArray())
             }
 
-        val direction = if (pageQuery.sortOrder == SortDirection.DESC) Sort.Direction.DESC else Sort.Direction.ASC
-        val pageable = PageRequest.of(pageQuery.pageNumber, pageQuery.pageSize, Sort.by(direction, "scheduledTime"))
-        val pagedResult = repo.findAll(specification, pageable)
-
-        return PageResult(
-            items = pagedResult.content.map(mapper::toDomain),
-            totalElements = pagedResult.totalElements,
-            pageNumber = pagedResult.number,
-            totalPages = pagedResult.totalPages,
-        )
+        val pageable = pageQuery.toPageRequest("scheduledTime")
+        return repo.findAll(specification, pageable).toPageResult(mapper::toDomain)
     }
 
     override fun save(contest: Contest): Contest = mapper.toDomain(repo.save(mapper.toEntity(contest)))

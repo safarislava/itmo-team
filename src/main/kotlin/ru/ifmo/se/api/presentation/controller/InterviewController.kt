@@ -33,6 +33,7 @@ import ru.ifmo.se.api.presentation.dto.request.InterviewStatusRequest
 import ru.ifmo.se.api.presentation.dto.response.InterviewResponse
 import ru.ifmo.se.api.presentation.dto.response.LiveSessionResponse
 import ru.ifmo.se.api.presentation.dto.response.PageResponse
+import ru.ifmo.se.api.presentation.extension.toPageResponse
 import ru.ifmo.se.api.presentation.mapper.InterviewResponseMapper
 import java.net.URI
 import java.time.Instant
@@ -81,17 +82,7 @@ class InterviewController(
             )
 
         val pageResult = interviewService.getInterviews(currentPerson, pageQuery, filter)
-
-        val response =
-            PageResponse(
-                page = pageResult.pageNumber,
-                size = size,
-                totalElements = pageResult.totalElements,
-                totalPages = pageResult.totalPages,
-                content = pageResult.items.map(interviewResponseMapper::toResponse),
-            )
-
-        return ResponseEntity.ok(response)
+        return ResponseEntity.ok(pageResult.toPageResponse(size, interviewResponseMapper::toResponse))
     }
 
     @PostMapping

@@ -27,12 +27,7 @@ class ContestService(
         filter: ContestFilter,
     ): PageResult<Contest> {
         val scopedFilter =
-            contestPolicy.applyFilterScope(caller, filter) ?: return PageResult(
-                items = emptyList(),
-                totalElements = 0,
-                pageNumber = pageQuery.pageNumber,
-                totalPages = 0,
-            )
+            contestPolicy.applyFilterScope(caller, filter) ?: return PageResult.empty(pageQuery.pageNumber)
         return contestRepository.findAll(scopedFilter, pageQuery)
     }
 

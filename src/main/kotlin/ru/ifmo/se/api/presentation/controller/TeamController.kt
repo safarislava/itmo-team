@@ -32,6 +32,8 @@ import ru.ifmo.se.api.infrastructure.security.annotation.RequiresRole
 import ru.ifmo.se.api.presentation.dto.request.TeamRequest
 import ru.ifmo.se.api.presentation.dto.response.PageResponse
 import ru.ifmo.se.api.presentation.dto.response.TeamResponse
+import ru.ifmo.se.api.presentation.extension.toPageResponse
+import ru.ifmo.se.api.presentation.extension.toSortDirectionOrNull
 import ru.ifmo.se.api.presentation.mapper.TeamResponseMapper
 import java.util.UUID
 
@@ -65,11 +67,8 @@ class TeamController(
         }
 
         val sortDirection =
-            try {
-                SortDirection.valueOf(order.uppercase())
-            } catch (_: IllegalArgumentException) {
-                throw TeamBadRequestException("Invalid order: $order. Allowed values: asc, desc.")
-            }
+            order.toSortDirectionOrNull()
+                ?: throw TeamBadRequestException("Invalid order: $order. Allowed values: asc, desc.")
 
         val filter =
             TeamFilter(
@@ -85,18 +84,7 @@ class TeamController(
             )
 
         val pageResult = teamService.listTeams(currentPerson, filter, pageQuery)
-        val content = pageResult.items.map(teamResponseMapper::toResponse)
-
-        val response =
-            PageResponse(
-                page = pageResult.pageNumber,
-                size = size,
-                totalElements = pageResult.totalElements,
-                totalPages = pageResult.totalPages,
-                content = content,
-            )
-
-        return ResponseEntity.ok(response)
+        return ResponseEntity.ok(pageResult.toPageResponse(size, teamResponseMapper::toResponse))
     }
 
     @PostMapping

@@ -22,6 +22,7 @@ import ru.ifmo.se.api.domain.model.PageQuery
 import ru.ifmo.se.api.domain.model.PageResult
 import ru.ifmo.se.api.domain.model.Person
 import ru.ifmo.se.api.domain.model.VacancyStatus
+import ru.ifmo.se.api.domain.model.map
 import ru.ifmo.se.api.domain.repository.ApplicationRepository
 import ru.ifmo.se.api.domain.repository.FormRepository
 import ru.ifmo.se.api.domain.repository.ResumeRepository
@@ -106,22 +107,10 @@ class ApplicationService(
     ): PageResult<ApplicationDetails> {
         val effectiveFilter =
             applicationPolicy.applyFilterScope(currentPerson, filter)
-                ?: return PageResult(
-                    items = emptyList(),
-                    totalElements = 0,
-                    pageNumber = pageQuery.pageNumber,
-                    totalPages = 0,
-                )
+                ?: return PageResult.empty(pageQuery.pageNumber)
 
         val paged = applicationRepository.findAll(effectiveFilter, pageQuery)
-        val mappedItems = paged.items.map { assembleDetails(it) }
-
-        return PageResult(
-            items = mappedItems,
-            totalElements = paged.totalElements,
-            pageNumber = paged.pageNumber,
-            totalPages = paged.totalPages,
-        )
+        return paged.map { assembleDetails(it) }
     }
 
     fun getApplication(

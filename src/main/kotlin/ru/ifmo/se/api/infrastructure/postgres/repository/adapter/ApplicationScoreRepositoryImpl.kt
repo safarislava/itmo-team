@@ -60,12 +60,7 @@ class ApplicationScoreRepositoryImpl(
 
         val totalElements = entityManager.createQuery(countQuery).singleResult ?: 0L
         if (totalElements == 0L) {
-            return PageResult(
-                items = emptyList(),
-                totalElements = 0,
-                pageNumber = pageQuery.pageNumber,
-                totalPages = 0,
-            )
+            return PageResult.empty(pageQuery.pageNumber)
         }
 
         val query = cb.createQuery(Tuple::class.java)
