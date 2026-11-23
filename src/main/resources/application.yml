@@ -27,3 +27,11 @@ security:
     expiration-seconds: 600
   refresh-token:
     expiration-seconds: 1209600
+
+app:
+  ai-detector:
+    enabled: true
+    gemini:
+      api-key: "${GEMINI_API_KEY}"
+      model: "gemini-3.5-flash-lite"
+

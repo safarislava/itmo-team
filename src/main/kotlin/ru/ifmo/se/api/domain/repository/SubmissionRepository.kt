@@ -19,6 +19,11 @@ interface SubmissionRepository {
 
     fun save(submission: Submission): Submission
 
+    fun updateAiScore(
+        id: SubmissionId,
+        aiScore: Short,
+    )
+
     fun countAttempts(
         senderId: PersonId,
         contestId: ContestId,
