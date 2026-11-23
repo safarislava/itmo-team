@@ -12,6 +12,7 @@ import ru.ifmo.se.api.domain.exception.ApplicationNotFoundException
 import ru.ifmo.se.api.domain.exception.ApplicationNotInReviewStatusException
 import ru.ifmo.se.api.domain.exception.ApplicationResponseNotFoundException
 import ru.ifmo.se.api.domain.exception.PersonNotFoundException
+import ru.ifmo.se.api.domain.exception.TeamNotFoundException
 import ru.ifmo.se.api.domain.exception.VacancyNotFoundException
 import ru.ifmo.se.api.domain.model.ApplicationId
 import ru.ifmo.se.api.domain.model.ApplicationResponse
@@ -21,6 +22,7 @@ import ru.ifmo.se.api.domain.model.Person
 import ru.ifmo.se.api.domain.repository.ApplicationRepository
 import ru.ifmo.se.api.domain.repository.ApplicationResponseRepository
 import ru.ifmo.se.api.domain.repository.PersonRepository
+import ru.ifmo.se.api.domain.repository.TeamRepository
 import ru.ifmo.se.api.domain.repository.VacancyRepository
 
 @Service
@@ -28,6 +30,7 @@ class ApplicationResponseService(
     private val applicationResponseRepository: ApplicationResponseRepository,
     private val applicationRepository: ApplicationRepository,
     private val vacancyRepository: VacancyRepository,
+    private val teamRepository: TeamRepository,
     private val personRepository: PersonRepository,
     private val applicationService: ApplicationService,
     private val applicationResponsePolicy: ApplicationResponsePolicy,
@@ -57,10 +60,14 @@ class ApplicationResponseService(
                 ?: throw ApplicationNotFoundException()
 
         val vacancy =
-            vacancyRepository.findEntityById(application.vacancyId)
+            vacancyRepository.findById(application.vacancyId)
                 ?: throw VacancyNotFoundException()
 
-        applicationResponsePolicy.checkCanView(currentPerson, vacancy)
+        val team =
+            teamRepository.findById(vacancy.teamId)
+                ?: throw TeamNotFoundException()
+
+        applicationResponsePolicy.checkCanView(currentPerson, vacancy, team)
 
         val responses = applicationResponseRepository.findAllByApplicationId(applicationId)
         return responses.map { resp ->
@@ -80,10 +87,14 @@ class ApplicationResponseService(
                 ?: throw ApplicationNotFoundException()
 
         val vacancy =
-            vacancyRepository.findEntityById(application.vacancyId)
+            vacancyRepository.findById(application.vacancyId)
                 ?: throw VacancyNotFoundException()
 
-        applicationResponsePolicy.checkCanCreate(currentPerson, vacancy)
+        val team =
+            teamRepository.findById(vacancy.teamId)
+                ?: throw TeamNotFoundException()
+
+        applicationResponsePolicy.checkCanCreate(currentPerson, vacancy, team)
 
         if (application.status != ApplicationStatus.REVIEW) {
             throw ApplicationNotInReviewStatusException()

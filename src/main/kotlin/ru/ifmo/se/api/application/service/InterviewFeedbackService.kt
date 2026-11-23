@@ -8,6 +8,7 @@ import ru.ifmo.se.api.domain.exception.ApplicationNotFoundException
 import ru.ifmo.se.api.domain.exception.InterviewBadRequestException
 import ru.ifmo.se.api.domain.exception.InterviewFeedbackNotFoundException
 import ru.ifmo.se.api.domain.exception.InterviewNotFoundException
+import ru.ifmo.se.api.domain.exception.TeamNotFoundException
 import ru.ifmo.se.api.domain.exception.VacancyNotFoundException
 import ru.ifmo.se.api.domain.model.ApplicationStatus
 import ru.ifmo.se.api.domain.model.InterviewDecision
@@ -19,6 +20,7 @@ import ru.ifmo.se.api.domain.model.Person
 import ru.ifmo.se.api.domain.repository.ApplicationRepository
 import ru.ifmo.se.api.domain.repository.InterviewFeedbackRepository
 import ru.ifmo.se.api.domain.repository.InterviewRepository
+import ru.ifmo.se.api.domain.repository.TeamRepository
 import ru.ifmo.se.api.domain.repository.VacancyRepository
 
 @Service
@@ -27,6 +29,7 @@ class InterviewFeedbackService(
     private val interviewFeedbackRepository: InterviewFeedbackRepository,
     private val applicationRepository: ApplicationRepository,
     private val vacancyRepository: VacancyRepository,
+    private val teamRepository: TeamRepository,
     private val interviewFeedbackPolicy: InterviewFeedbackPolicy,
 ) {
     fun getInterviewFeedback(
@@ -38,10 +41,14 @@ class InterviewFeedbackService(
                 ?: throw InterviewNotFoundException()
 
         val vacancy =
-            vacancyRepository.findEntityById(interview.vacancyId)
+            vacancyRepository.findById(interview.vacancyId)
                 ?: throw VacancyNotFoundException()
 
-        interviewFeedbackPolicy.checkCanView(currentPerson, interview, vacancy)
+        val team =
+            teamRepository.findById(vacancy.teamId)
+                ?: throw TeamNotFoundException()
+
+        interviewFeedbackPolicy.checkCanView(currentPerson, interview, vacancy, team)
 
         return interviewFeedbackRepository.findByInterviewId(interviewId)
             ?: throw InterviewFeedbackNotFoundException()

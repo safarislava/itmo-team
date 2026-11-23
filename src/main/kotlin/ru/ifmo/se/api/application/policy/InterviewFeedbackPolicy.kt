@@ -5,14 +5,16 @@ import org.springframework.stereotype.Component
 import ru.ifmo.se.api.domain.model.Interview
 import ru.ifmo.se.api.domain.model.Person
 import ru.ifmo.se.api.domain.model.PersonRole
-import ru.ifmo.se.api.infrastructure.postgres.entity.VacancyEntity
+import ru.ifmo.se.api.domain.model.Team
+import ru.ifmo.se.api.domain.model.Vacancy
 
 @Component
 class InterviewFeedbackPolicy {
     fun checkCanView(
         caller: Person,
         interview: Interview,
-        vacancy: VacancyEntity,
+        vacancy: Vacancy,
+        team: Team,
     ) {
         if (caller.role == PersonRole.ADMIN) {
             return
@@ -25,14 +27,14 @@ class InterviewFeedbackPolicy {
         val companyId = caller.companyId
         if ((caller.role == PersonRole.HR || caller.role == PersonRole.MANAGER) &&
             companyId != null &&
-            vacancy.team.company.id == companyId.value
+            team.companyId == companyId
         ) {
             return
         }
 
         val teamId = caller.teamId
         if (caller.role == PersonRole.TEAM_LEAD &&
-            (interview.teamleadId == caller.id || (teamId != null && vacancy.team.id == teamId.value))
+            (interview.teamleadId == caller.id || (teamId != null && vacancy.teamId == teamId))
         ) {
             return
         }
