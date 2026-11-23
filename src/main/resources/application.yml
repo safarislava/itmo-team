@@ -34,4 +34,7 @@ app:
     gemini:
       api-key: "${GEMINI_API_KEY}"
       model: "gemini-3.5-flash-lite"
+  github:
+    token: "${GITHUB_TOKEN}"
+    base-url: "https://api.github.com"
 
