@@ -2,6 +2,8 @@ package ru.ifmo.se.api.application.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.transaction.support.TransactionSynchronization
+import org.springframework.transaction.support.TransactionSynchronizationManager
 import ru.ifmo.se.api.application.dto.CreateSubmissionCommand
 import ru.ifmo.se.api.application.dto.SubmissionDetails
 import ru.ifmo.se.api.application.policy.SubmissionPolicy
@@ -41,6 +43,7 @@ class SubmissionService(
     private val personRepository: PersonRepository,
     private val submissionPolicy: SubmissionPolicy,
     private val fileStorage: FileStorage,
+    private val submissionAiScoreService: SubmissionAiScoreService,
 ) {
     fun listSubmissions(
         caller: Person,
@@ -171,6 +174,12 @@ class SubmissionService(
             )
 
         val saved = submissionRepository.save(submission)
+
+        submissionAiScoreService.checkAndSaveAiScore(
+            submissionId = saved.id,
+            sourceCode = command.sourceCode,
+            languageName = language.name,
+        )
 
         return SubmissionDetails(
             submission = saved,
