@@ -9,7 +9,7 @@ value class RefreshTokenId(
     override fun toString(): String = value.toString()
 
     companion object {
-        fun generate(): RefreshTokenId = RefreshTokenId(UUID.randomUUID())
+        fun generate(): RefreshTokenId = RefreshTokenId(uuidV7())
 
         fun from(raw: String): RefreshTokenId = RefreshTokenId(UUID.fromString(raw))
 

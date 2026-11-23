@@ -9,7 +9,7 @@ value class TaskId(
     override fun toString(): String = value.toString()
 
     companion object {
-        fun generate(): TaskId = TaskId(UUID.randomUUID())
+        fun generate(): TaskId = TaskId(uuidV7())
 
         fun from(raw: String): TaskId = TaskId(UUID.fromString(raw))
 

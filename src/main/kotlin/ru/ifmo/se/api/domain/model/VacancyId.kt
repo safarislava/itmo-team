@@ -9,7 +9,7 @@ value class VacancyId(
     override fun toString(): String = value.toString()
 
     companion object {
-        fun generate(): VacancyId = VacancyId(UUID.randomUUID())
+        fun generate(): VacancyId = VacancyId(uuidV7())
 
         fun from(raw: String): VacancyId = VacancyId(UUID.fromString(raw))
 

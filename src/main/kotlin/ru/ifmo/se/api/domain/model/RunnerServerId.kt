@@ -9,7 +9,7 @@ value class RunnerServerId(
     override fun toString(): String = value.toString()
 
     companion object {
-        fun generate(): RunnerServerId = RunnerServerId(UUID.randomUUID())
+        fun generate(): RunnerServerId = RunnerServerId(uuidV7())
 
         fun from(raw: String): RunnerServerId = RunnerServerId(UUID.fromString(raw))
 

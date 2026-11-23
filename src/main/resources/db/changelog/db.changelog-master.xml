@@ -16,5 +16,6 @@
     <include file="db/changelog/changesets/09-contest-task-max-attempts.sql"/>
     <include file="db/changelog/changesets/10-language-commands.sql"/>
     <include file="db/changelog/changesets/11-person-github-username.sql"/>
+    <include file="db/changelog/changesets/12-uuid-v7.sql"/>
 
 </databaseChangeLog>

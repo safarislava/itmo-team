@@ -3,6 +3,7 @@ package ru.ifmo.se.api.infrastructure.storage
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import ru.ifmo.se.api.application.port.out.FileStorage
+import ru.ifmo.se.api.domain.model.uuidV7
 import software.amazon.awssdk.core.sync.RequestBody
 import software.amazon.awssdk.services.s3.S3Client
 import software.amazon.awssdk.services.s3.model.DeleteObjectRequest
@@ -12,7 +13,6 @@ import software.amazon.awssdk.services.s3.model.PutObjectRequest
 import software.amazon.awssdk.services.s3.presigner.S3Presigner
 import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest
 import java.time.Duration
-import java.util.UUID
 
 @Service
 class S3FileStorage(
@@ -25,7 +25,7 @@ class S3FileStorage(
         filename: String,
         bytes: ByteArray,
     ): String {
-        val s3key = "${UUID.randomUUID()}_$filename"
+        val s3key = "${uuidV7()}_$filename"
         storeWithKey(s3key, bytes)
         return s3key
     }

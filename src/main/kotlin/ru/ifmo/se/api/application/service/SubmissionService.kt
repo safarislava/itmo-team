@@ -23,6 +23,7 @@ import ru.ifmo.se.api.domain.model.SubmissionFilter
 import ru.ifmo.se.api.domain.model.SubmissionId
 import ru.ifmo.se.api.domain.model.SubmissionStatus
 import ru.ifmo.se.api.domain.model.map
+import ru.ifmo.se.api.domain.model.uuidV7
 import ru.ifmo.se.api.domain.repository.ContestRepository
 import ru.ifmo.se.api.domain.repository.ContestTaskRepository
 import ru.ifmo.se.api.domain.repository.LanguageRepository
@@ -30,7 +31,6 @@ import ru.ifmo.se.api.domain.repository.PersonRepository
 import ru.ifmo.se.api.domain.repository.SubmissionRepository
 import ru.ifmo.se.api.domain.repository.TaskRepository
 import java.time.Instant
-import java.util.UUID
 
 @Service
 class SubmissionService(
@@ -145,7 +145,7 @@ class SubmissionService(
             throw SubmissionAttemptsExhaustedException()
         }
 
-        val snapshotKey = fileStorage.store("submission_${UUID.randomUUID()}.txt", sourceBytes)
+        val snapshotKey = fileStorage.store("submission_${uuidV7()}.txt", sourceBytes)
 
         val submission =
             Submission(

@@ -25,6 +25,7 @@ dependencies {
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.6")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("software.amazon.awssdk:s3:2.29.52")
+    implementation("com.github.f4b6a3:uuid-creator:6.1.1")
     runtimeOnly("org.postgresql:postgresql")
 }
 
