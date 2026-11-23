@@ -5,6 +5,7 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Repository
+import org.springframework.transaction.annotation.Transactional
 import ru.ifmo.se.api.domain.model.ContestId
 import ru.ifmo.se.api.domain.model.PageQuery
 import ru.ifmo.se.api.domain.model.PageResult
@@ -86,6 +87,12 @@ class SubmissionRepositoryImpl(
     }
 
     override fun save(submission: Submission): Submission = mapper.toDomain(repo.save(mapper.toEntity(submission)))
+
+    @Transactional
+    override fun updateAiScore(
+        id: SubmissionId,
+        aiScore: Short,
+    ) = repo.updateAiScore(id.value, aiScore)
 
     override fun countAttempts(
         senderId: PersonId,

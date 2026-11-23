@@ -6,6 +6,9 @@ import org.springframework.data.jpa.domain.Specification
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor
+import org.springframework.data.jpa.repository.Modifying
+import org.springframework.data.jpa.repository.Query
+import org.springframework.data.repository.query.Param
 import ru.ifmo.se.api.infrastructure.postgres.entity.SubmissionEntity
 import java.util.Optional
 import java.util.UUID
@@ -27,4 +30,11 @@ interface JpaSubmissionRepository :
         contestId: UUID,
         taskId: UUID,
     ): Long
+
+    @Modifying
+    @Query("UPDATE SubmissionEntity s SET s.aiScore = :aiScore WHERE s.id = :id")
+    fun updateAiScore(
+        @Param("id") id: UUID,
+        @Param("aiScore") aiScore: Short,
+    )
 }
