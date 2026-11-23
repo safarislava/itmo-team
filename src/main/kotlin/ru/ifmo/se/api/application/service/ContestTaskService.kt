@@ -2,6 +2,8 @@ package ru.ifmo.se.api.application.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import ru.ifmo.se.api.application.annotation.ReadOnlyDataAccess
+import ru.ifmo.se.api.application.annotation.WriteDataAccess
 import ru.ifmo.se.api.application.dto.TaskDetails
 import ru.ifmo.se.api.application.policy.ContestTaskPolicy
 import ru.ifmo.se.api.domain.exception.ContestAlreadyStartedException
@@ -25,6 +27,7 @@ class ContestTaskService(
     private val personRepository: PersonRepository,
     private val contestTaskPolicy: ContestTaskPolicy,
 ) {
+    @ReadOnlyDataAccess
     fun listContestTasks(
         caller: Person,
         contestId: ContestId,
@@ -40,6 +43,7 @@ class ContestTaskService(
         }
     }
 
+    @WriteDataAccess
     @Transactional
     fun addTaskToContest(
         caller: Person,
@@ -66,6 +70,7 @@ class ContestTaskService(
         )
     }
 
+    @WriteDataAccess
     @Transactional
     fun removeTaskFromContest(
         caller: Person,

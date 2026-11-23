@@ -2,6 +2,8 @@ package ru.ifmo.se.api.application.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import ru.ifmo.se.api.application.annotation.ReadOnlyDataAccess
+import ru.ifmo.se.api.application.annotation.WriteDataAccess
 import ru.ifmo.se.api.application.dto.CreateTeamCommand
 import ru.ifmo.se.api.application.dto.TeamDetails
 import ru.ifmo.se.api.application.dto.UpdateTeamCommand
@@ -30,6 +32,7 @@ class TeamService(
     private val personRepository: PersonRepository,
     private val teamPolicy: TeamPolicy,
 ) {
+    @ReadOnlyDataAccess
     fun listTeams(
         caller: Person,
         filter: TeamFilter,
@@ -48,6 +51,7 @@ class TeamService(
         }
     }
 
+    @ReadOnlyDataAccess
     fun getTeam(
         caller: Person,
         id: TeamId,
@@ -59,6 +63,7 @@ class TeamService(
         return TeamDetails(team = team, company = company, teamlead = teamlead)
     }
 
+    @WriteDataAccess
     @Transactional
     fun createTeam(
         caller: Person,
@@ -96,6 +101,7 @@ class TeamService(
         return TeamDetails(team = savedTeam, company = company, teamlead = savedTeamlead)
     }
 
+    @WriteDataAccess
     @Transactional
     fun updateTeam(
         caller: Person,
@@ -136,6 +142,7 @@ class TeamService(
         return TeamDetails(team = updatedTeam, company = company, teamlead = teamlead)
     }
 
+    @WriteDataAccess
     @Transactional
     fun deleteTeam(
         caller: Person,

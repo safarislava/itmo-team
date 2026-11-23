@@ -2,6 +2,8 @@ package ru.ifmo.se.api.application.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import ru.ifmo.se.api.application.annotation.ReadOnlyDataAccess
+import ru.ifmo.se.api.application.annotation.WriteDataAccess
 import ru.ifmo.se.api.application.dto.CreateSubmissionCommand
 import ru.ifmo.se.api.application.dto.SubmissionDetails
 import ru.ifmo.se.api.application.policy.SubmissionPolicy
@@ -44,6 +46,7 @@ class SubmissionService(
     private val fileStorage: FileStorage,
     private val submissionAiScoreService: SubmissionAiScoreService,
 ) {
+    @ReadOnlyDataAccess
     fun listSubmissions(
         caller: Person,
         pageQuery: PageQuery,
@@ -70,6 +73,7 @@ class SubmissionService(
         }
     }
 
+    @ReadOnlyDataAccess
     fun getSubmission(
         caller: Person,
         id: SubmissionId,
@@ -92,6 +96,7 @@ class SubmissionService(
         )
     }
 
+    @ReadOnlyDataAccess
     fun getSubmissionSource(
         caller: Person,
         id: SubmissionId,
@@ -104,6 +109,7 @@ class SubmissionService(
         return bytes.toString(Charsets.UTF_8)
     }
 
+    @WriteDataAccess
     @Transactional
     fun createSubmission(
         caller: Person,

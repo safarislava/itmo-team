@@ -2,6 +2,8 @@ package ru.ifmo.se.api.application.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import ru.ifmo.se.api.application.annotation.ReadOnlyDataAccess
+import ru.ifmo.se.api.application.annotation.WriteDataAccess
 import ru.ifmo.se.api.application.dto.CreateFormCommand
 import ru.ifmo.se.api.application.dto.UpdateFormCommand
 import ru.ifmo.se.api.application.policy.FormPolicy
@@ -20,6 +22,7 @@ class FormService(
     private val formPolicy: FormPolicy,
     private val applicationRepository: ApplicationRepository,
 ) {
+    @WriteDataAccess
     @Transactional
     fun createForm(
         currentPerson: Person,
@@ -39,6 +42,7 @@ class FormService(
         return formRepository.save(form)
     }
 
+    @ReadOnlyDataAccess
     fun getForm(
         currentPerson: Person,
         formId: FormId,
@@ -48,6 +52,7 @@ class FormService(
         return form
     }
 
+    @WriteDataAccess
     @Transactional
     fun updateForm(
         currentPerson: Person,

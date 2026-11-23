@@ -2,6 +2,7 @@ package ru.ifmo.se.api.application.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import ru.ifmo.se.api.application.annotation.ReadOnlyDataAccess
 import ru.ifmo.se.api.application.policy.PersonAnalyticsPolicy
 import ru.ifmo.se.api.domain.exception.AnalyticsNotFoundException
 import ru.ifmo.se.api.domain.model.ActivityMetrics
@@ -21,6 +22,7 @@ import java.time.temporal.TemporalAdjusters
 
 @Service
 @Transactional(readOnly = true)
+@ReadOnlyDataAccess
 class PersonAnalyticsService(
     private val personAnalyticsPolicy: PersonAnalyticsPolicy,
     private val personRepository: PersonRepository,

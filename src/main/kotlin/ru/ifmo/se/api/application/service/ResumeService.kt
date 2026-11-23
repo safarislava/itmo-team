@@ -2,6 +2,8 @@ package ru.ifmo.se.api.application.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import ru.ifmo.se.api.application.annotation.ReadOnlyDataAccess
+import ru.ifmo.se.api.application.annotation.WriteDataAccess
 import ru.ifmo.se.api.application.dto.UploadResumeCommand
 import ru.ifmo.se.api.application.policy.ResumePolicy
 import ru.ifmo.se.api.application.port.out.FileStorage
@@ -21,6 +23,7 @@ class ResumeService(
     private val resumePolicy: ResumePolicy,
     private val applicationRepository: ApplicationRepository,
 ) {
+    @WriteDataAccess
     @Transactional
     fun uploadResume(
         currentPerson: Person,
@@ -37,6 +40,7 @@ class ResumeService(
         return resumeRepository.save(resume)
     }
 
+    @WriteDataAccess
     @Transactional
     fun updateResume(
         currentPerson: Person,
@@ -67,6 +71,7 @@ class ResumeService(
         return resumeRepository.save(updated)
     }
 
+    @ReadOnlyDataAccess
     fun getResume(
         currentPerson: Person,
         resumeId: ResumeId,
@@ -76,6 +81,7 @@ class ResumeService(
         return resume
     }
 
+    @ReadOnlyDataAccess
     fun downloadResume(
         currentPerson: Person,
         resumeId: ResumeId,

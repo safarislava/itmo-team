@@ -2,6 +2,8 @@ package ru.ifmo.se.api.application.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import ru.ifmo.se.api.application.annotation.ReadOnlyDataAccess
+import ru.ifmo.se.api.application.annotation.WriteDataAccess
 import ru.ifmo.se.api.application.dto.CreateTaskCommand
 import ru.ifmo.se.api.application.dto.TaskDetails
 import ru.ifmo.se.api.application.dto.UpdateTaskCommand
@@ -30,6 +32,7 @@ class TaskService(
     private val taskPolicy: TaskPolicy,
     private val testStorage: TestStorage,
 ) {
+    @ReadOnlyDataAccess
     fun getTasks(
         caller: Person,
         pageQuery: PageQuery,
@@ -43,6 +46,7 @@ class TaskService(
         }
     }
 
+    @ReadOnlyDataAccess
     fun getTask(
         caller: Person,
         taskId: TaskId,
@@ -60,6 +64,7 @@ class TaskService(
         return TaskDetails(task = task, author = author)
     }
 
+    @WriteDataAccess
     @Transactional
     fun createTask(
         caller: Person,
@@ -78,6 +83,7 @@ class TaskService(
         return TaskDetails(task = saved, author = caller)
     }
 
+    @WriteDataAccess
     @Transactional
     fun updateTask(
         caller: Person,
@@ -99,6 +105,7 @@ class TaskService(
         return TaskDetails(task = saved, author = author)
     }
 
+    @WriteDataAccess
     @Transactional
     fun deleteTask(
         caller: Person,

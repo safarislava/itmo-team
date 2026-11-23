@@ -2,6 +2,8 @@ package ru.ifmo.se.api.application.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import ru.ifmo.se.api.application.annotation.ReadOnlyDataAccess
+import ru.ifmo.se.api.application.annotation.WriteDataAccess
 import ru.ifmo.se.api.application.dto.CreateTestCommand
 import ru.ifmo.se.api.application.dto.ReplaceTestsCommand
 import ru.ifmo.se.api.application.dto.TestDetails
@@ -30,6 +32,7 @@ class TestService(
     private val testStorage: TestStorage,
     private val testArchiveExtractor: TestArchiveExtractor,
 ) {
+    @ReadOnlyDataAccess
     fun listTests(
         caller: Person,
         taskId: TaskId,
@@ -61,6 +64,7 @@ class TestService(
         }
     }
 
+    @WriteDataAccess
     @Transactional
     fun createTest(
         caller: Person,
@@ -92,6 +96,7 @@ class TestService(
         )
     }
 
+    @WriteDataAccess
     @Transactional
     fun updateTest(
         caller: Person,
@@ -126,6 +131,7 @@ class TestService(
         )
     }
 
+    @WriteDataAccess
     @Transactional
     fun deleteTest(
         caller: Person,
@@ -144,6 +150,7 @@ class TestService(
         testRepository.delete(testId)
     }
 
+    @WriteDataAccess
     @Transactional
     fun replaceTests(
         caller: Person,

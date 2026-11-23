@@ -2,6 +2,8 @@ package ru.ifmo.se.api.application.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import ru.ifmo.se.api.application.annotation.ReadOnlyDataAccess
+import ru.ifmo.se.api.application.annotation.WriteDataAccess
 import ru.ifmo.se.api.application.dto.ApplicationDetails
 import ru.ifmo.se.api.application.dto.CreateApplicationCommand
 import ru.ifmo.se.api.application.dto.UpdateApplicationStatusCommand
@@ -38,6 +40,7 @@ class ApplicationService(
     private val formRepository: FormRepository,
     private val applicationPolicy: ApplicationPolicy,
 ) {
+    @WriteDataAccess
     @Transactional
     fun createApplication(
         currentPerson: Person,
@@ -100,6 +103,7 @@ class ApplicationService(
         return assembleDetails(saved)
     }
 
+    @ReadOnlyDataAccess
     fun getApplications(
         currentPerson: Person,
         pageQuery: PageQuery,
@@ -113,6 +117,7 @@ class ApplicationService(
         return paged.map { assembleDetails(it) }
     }
 
+    @ReadOnlyDataAccess
     fun getApplication(
         currentPerson: Person,
         applicationId: ApplicationId,
@@ -134,6 +139,7 @@ class ApplicationService(
         return assembleDetails(application)
     }
 
+    @WriteDataAccess
     @Transactional
     fun updateStatus(
         currentPerson: Person,

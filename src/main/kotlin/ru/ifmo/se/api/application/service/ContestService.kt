@@ -2,6 +2,8 @@ package ru.ifmo.se.api.application.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import ru.ifmo.se.api.application.annotation.ReadOnlyDataAccess
+import ru.ifmo.se.api.application.annotation.WriteDataAccess
 import ru.ifmo.se.api.application.dto.CreateContestCommand
 import ru.ifmo.se.api.application.dto.UpdateContestCommand
 import ru.ifmo.se.api.application.policy.ContestPolicy
@@ -21,6 +23,7 @@ class ContestService(
     private val contestRepository: ContestRepository,
     private val contestPolicy: ContestPolicy,
 ) {
+    @ReadOnlyDataAccess
     fun getContests(
         caller: Person,
         pageQuery: PageQuery,
@@ -31,6 +34,7 @@ class ContestService(
         return contestRepository.findAll(scopedFilter, pageQuery)
     }
 
+    @ReadOnlyDataAccess
     fun getContest(
         caller: Person,
         contestId: ContestId,
@@ -42,6 +46,7 @@ class ContestService(
         return contest
     }
 
+    @WriteDataAccess
     @Transactional
     fun createContest(
         caller: Person,
@@ -57,6 +62,7 @@ class ContestService(
         return contestRepository.save(contest)
     }
 
+    @WriteDataAccess
     @Transactional
     fun updateContest(
         caller: Person,
@@ -81,6 +87,7 @@ class ContestService(
         return contestRepository.save(updated)
     }
 
+    @WriteDataAccess
     @Transactional
     fun deleteContest(
         caller: Person,

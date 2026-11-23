@@ -2,6 +2,8 @@ package ru.ifmo.se.api.application.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import ru.ifmo.se.api.application.annotation.ReadOnlyDataAccess
+import ru.ifmo.se.api.application.annotation.WriteDataAccess
 import ru.ifmo.se.api.application.policy.TeamMemberPolicy
 import ru.ifmo.se.api.domain.exception.InvalidTeamMemberException
 import ru.ifmo.se.api.domain.exception.PersonNotFoundException
@@ -20,6 +22,7 @@ class TeamMemberService(
     private val personRepository: PersonRepository,
     private val teamMemberPolicy: TeamMemberPolicy,
 ) {
+    @ReadOnlyDataAccess
     fun listTeamMembers(
         caller: Person,
         teamId: TeamId,
@@ -34,6 +37,7 @@ class TeamMemberService(
             .sortedBy { it.name }
     }
 
+    @WriteDataAccess
     @Transactional
     fun addTeamMember(
         caller: Person,
@@ -60,6 +64,7 @@ class TeamMemberService(
         return personRepository.save(person.copy(companyId = team.companyId, teamId = team.id))
     }
 
+    @WriteDataAccess
     @Transactional
     fun removeTeamMember(
         caller: Person,

@@ -2,6 +2,8 @@ package ru.ifmo.se.api.application.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import ru.ifmo.se.api.application.annotation.ReadOnlyDataAccess
+import ru.ifmo.se.api.application.annotation.WriteDataAccess
 import ru.ifmo.se.api.application.policy.VacancyContestPolicy
 import ru.ifmo.se.api.domain.exception.ContestNotFoundException
 import ru.ifmo.se.api.domain.exception.TeamNotFoundException
@@ -26,6 +28,7 @@ class VacancyContestService(
     private val applicationRepository: ApplicationRepository,
     private val vacancyContestPolicy: VacancyContestPolicy,
 ) {
+    @ReadOnlyDataAccess
     fun listVacancyContests(
         caller: Person?,
         vacancyId: VacancyId,
@@ -39,6 +42,7 @@ class VacancyContestService(
         return contestRepository.findByVacancyId(vacancyId)
     }
 
+    @WriteDataAccess
     @Transactional
     fun attachContestToVacancy(
         caller: Person,
@@ -59,6 +63,7 @@ class VacancyContestService(
         }
     }
 
+    @WriteDataAccess
     @Transactional
     fun detachContestFromVacancy(
         caller: Person,
