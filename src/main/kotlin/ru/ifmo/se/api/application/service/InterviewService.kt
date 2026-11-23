@@ -2,6 +2,8 @@ package ru.ifmo.se.api.application.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import ru.ifmo.se.api.application.annotation.ReadOnlyDataAccess
+import ru.ifmo.se.api.application.annotation.WriteDataAccess
 import ru.ifmo.se.api.application.dto.InterviewDetails
 import ru.ifmo.se.api.application.dto.ScheduleInterviewCommand
 import ru.ifmo.se.api.application.dto.UpdateInterviewStatusCommand
@@ -49,6 +51,7 @@ class InterviewService(
     private val liveCodingSessionProvider: LiveCodingSessionProvider,
     private val fileStorage: FileStorage,
 ) {
+    @WriteDataAccess
     @Transactional
     fun scheduleInterview(
         currentPerson: Person,
@@ -115,6 +118,7 @@ class InterviewService(
         )
     }
 
+    @ReadOnlyDataAccess
     fun getInterviews(
         currentPerson: Person,
         pageQuery: PageQuery,
@@ -128,6 +132,7 @@ class InterviewService(
         return paged.map { interview -> assembleDetails(currentPerson, interview) }
     }
 
+    @ReadOnlyDataAccess
     fun getInterview(
         currentPerson: Person,
         interviewId: InterviewId,
@@ -148,6 +153,7 @@ class InterviewService(
         return assembleDetails(currentPerson, interview)
     }
 
+    @ReadOnlyDataAccess
     fun joinInterview(
         currentPerson: Person,
         interviewId: InterviewId,
@@ -172,6 +178,7 @@ class InterviewService(
         return liveCodingSessionProvider.createSession(interviewId, interview.scheduledEnd)
     }
 
+    @WriteDataAccess
     @Transactional
     fun updateInterviewStatus(
         currentPerson: Person,
@@ -207,6 +214,7 @@ class InterviewService(
         return assembleDetails(currentPerson, saved)
     }
 
+    @ReadOnlyDataAccess
     fun getInterviewRecordingUrl(
         currentPerson: Person,
         interviewId: InterviewId,

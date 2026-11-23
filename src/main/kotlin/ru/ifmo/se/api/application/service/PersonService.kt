@@ -3,6 +3,8 @@ package ru.ifmo.se.api.application.service
 import org.springframework.security.access.AccessDeniedException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import ru.ifmo.se.api.application.annotation.ReadOnlyDataAccess
+import ru.ifmo.se.api.application.annotation.WriteDataAccess
 import ru.ifmo.se.api.application.dto.ChangePasswordCommand
 import ru.ifmo.se.api.application.dto.CreatePersonCommand
 import ru.ifmo.se.api.application.dto.UpdatePersonCommand
@@ -40,6 +42,7 @@ class PersonService(
     private val random = SecureRandom()
     private val passwordChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*"
 
+    @ReadOnlyDataAccess
     fun getPersons(
         caller: Person,
         filter: PersonFilter,
@@ -52,6 +55,7 @@ class PersonService(
         return personRepository.findByFilter(effectiveFilter, page)
     }
 
+    @ReadOnlyDataAccess
     fun getPerson(
         caller: Person,
         targetPersonId: PersonId,
@@ -61,6 +65,7 @@ class PersonService(
         return target
     }
 
+    @WriteDataAccess
     @Transactional
     fun createPerson(
         caller: Person,
@@ -172,6 +177,7 @@ class PersonService(
         }
     }
 
+    @WriteDataAccess
     @Transactional
     fun updatePerson(
         caller: Person,
@@ -243,6 +249,7 @@ class PersonService(
         return companyId to command.teamId
     }
 
+    @WriteDataAccess
     @Transactional
     fun updateCurrentPerson(
         currentPerson: Person,
@@ -258,6 +265,7 @@ class PersonService(
         return personRepository.save(updated)
     }
 
+    @WriteDataAccess
     @Transactional
     fun changePassword(
         currentPerson: Person,
@@ -276,6 +284,7 @@ class PersonService(
         refreshTokenRepository.revokeAllByPersonId(person.id)
     }
 
+    @WriteDataAccess
     @Transactional
     fun deletePerson(
         caller: Person,
@@ -288,6 +297,7 @@ class PersonService(
         personRepository.delete(target)
     }
 
+    @WriteDataAccess
     @Transactional
     fun dismissPerson(
         caller: Person,

@@ -2,6 +2,7 @@ package ru.ifmo.se.api.application.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import ru.ifmo.se.api.application.annotation.WriteDataAccess
 import ru.ifmo.se.api.application.port.out.GitHubActivityProvider
 import ru.ifmo.se.api.domain.model.ActivityMetrics
 import ru.ifmo.se.api.domain.model.CoderReport
@@ -14,6 +15,7 @@ import java.time.ZoneId
 import java.time.ZoneOffset
 
 @Service
+@WriteDataAccess
 class CoderReportGenerationService(
     private val personRepository: PersonRepository,
     private val coderReportRepository: CoderReportRepository,

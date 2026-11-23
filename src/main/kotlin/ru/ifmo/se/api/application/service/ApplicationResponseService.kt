@@ -2,6 +2,8 @@ package ru.ifmo.se.api.application.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import ru.ifmo.se.api.application.annotation.ReadOnlyDataAccess
+import ru.ifmo.se.api.application.annotation.WriteDataAccess
 import ru.ifmo.se.api.application.dto.ApplicationDetails
 import ru.ifmo.se.api.application.dto.ApplicationResponseDetails
 import ru.ifmo.se.api.application.dto.CreateApplicationResponseCommand
@@ -36,6 +38,7 @@ class ApplicationResponseService(
     private val applicationResponsePolicy: ApplicationResponsePolicy,
     private val reservationService: ApplicationReservationService,
 ) {
+    @WriteDataAccess
     @Transactional
     fun takeNextApplication(currentPerson: Person): ApplicationDetails? {
         val companyId = currentPerson.companyId ?: return null
@@ -51,6 +54,7 @@ class ApplicationResponseService(
         return applicationService.getApplication(currentPerson, nextAppId)
     }
 
+    @ReadOnlyDataAccess
     fun getApplicationResponses(
         currentPerson: Person,
         applicationId: ApplicationId,
@@ -77,6 +81,7 @@ class ApplicationResponseService(
         }
     }
 
+    @WriteDataAccess
     @Transactional
     fun createApplicationResponse(
         currentPerson: Person,
@@ -124,6 +129,7 @@ class ApplicationResponseService(
         return ApplicationResponseDetails(response = saved, hr = currentPerson)
     }
 
+    @WriteDataAccess
     @Transactional
     fun updateApplicationResponse(
         currentPerson: Person,
@@ -156,6 +162,7 @@ class ApplicationResponseService(
         return ApplicationResponseDetails(response = saved, hr = hr)
     }
 
+    @WriteDataAccess
     @Transactional
     fun deleteApplicationResponse(
         currentPerson: Person,

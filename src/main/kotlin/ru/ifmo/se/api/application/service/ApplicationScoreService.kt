@@ -2,6 +2,7 @@ package ru.ifmo.se.api.application.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import ru.ifmo.se.api.application.annotation.ReadOnlyDataAccess
 import ru.ifmo.se.api.application.policy.ApplicationScorePolicy
 import ru.ifmo.se.api.domain.exception.ApplicationNotFoundException
 import ru.ifmo.se.api.domain.exception.ApplicationScoreExceptions
@@ -19,6 +20,7 @@ import ru.ifmo.se.api.domain.repository.TeamRepository
 import ru.ifmo.se.api.domain.repository.VacancyRepository
 
 @Service
+@ReadOnlyDataAccess
 class ApplicationScoreService(
     private val applicationScoreRepository: ApplicationScoreRepository,
     private val applicationRepository: ApplicationRepository,

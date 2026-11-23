@@ -2,6 +2,8 @@ package ru.ifmo.se.api.application.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import ru.ifmo.se.api.application.annotation.ReadOnlyDataAccess
+import ru.ifmo.se.api.application.annotation.WriteDataAccess
 import ru.ifmo.se.api.application.dto.CreateVacancyCommand
 import ru.ifmo.se.api.application.dto.UpdateVacancyCommand
 import ru.ifmo.se.api.application.dto.UpdateVacancyStatusCommand
@@ -41,6 +43,7 @@ class VacancyService(
     private val emailService: EmailService,
     private val vacancyPolicy: VacancyPolicy,
 ) {
+    @ReadOnlyDataAccess
     fun listVacancies(
         caller: Person?,
         filter: VacancyFilter,
@@ -53,6 +56,7 @@ class VacancyService(
         return pagedVacancies.map { assembleDetails(it) }
     }
 
+    @ReadOnlyDataAccess
     fun getVacancy(
         caller: Person?,
         id: VacancyId,
@@ -63,6 +67,7 @@ class VacancyService(
         return assembleDetails(vacancy)
     }
 
+    @WriteDataAccess
     @Transactional
     fun createVacancy(
         caller: Person,
@@ -94,6 +99,7 @@ class VacancyService(
         return VacancyDetails(vacancy = saved, team = team, company = company, skills = skills)
     }
 
+    @WriteDataAccess
     @Transactional
     fun updateVacancy(
         caller: Person,
@@ -119,6 +125,7 @@ class VacancyService(
         return assembleDetails(saved)
     }
 
+    @WriteDataAccess
     @Transactional
     fun deleteVacancy(
         caller: Person,
@@ -131,6 +138,7 @@ class VacancyService(
         vacancyRepository.delete(id)
     }
 
+    @WriteDataAccess
     @Transactional
     fun updateStatus(
         caller: Person,

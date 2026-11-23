@@ -2,6 +2,7 @@ package ru.ifmo.se.api.application.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import ru.ifmo.se.api.application.annotation.WriteDataAccess
 import ru.ifmo.se.api.domain.model.ApplicationId
 import ru.ifmo.se.api.domain.model.ApplicationReservation
 import ru.ifmo.se.api.domain.model.PersonId
@@ -10,6 +11,7 @@ import java.time.Instant
 import java.time.temporal.ChronoUnit
 
 @Service
+@WriteDataAccess
 class ApplicationReservationService(
     private val reservationRepository: ApplicationReservationRepository,
 ) {

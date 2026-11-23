@@ -2,6 +2,8 @@ package ru.ifmo.se.api.application.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import ru.ifmo.se.api.application.annotation.ReadOnlyDataAccess
+import ru.ifmo.se.api.application.annotation.WriteDataAccess
 import ru.ifmo.se.api.application.dto.SkillCommand
 import ru.ifmo.se.api.application.policy.SkillPolicy
 import ru.ifmo.se.api.domain.exception.SkillNotFoundException
@@ -15,10 +17,13 @@ class SkillService(
     private val skillRepository: SkillRepository,
     private val skillPolicy: SkillPolicy,
 ) {
+    @ReadOnlyDataAccess
     fun listSkills(search: String?): List<Skill> = skillRepository.findAll(search)
 
+    @ReadOnlyDataAccess
     fun getSkill(id: SkillId): Skill = skillRepository.findById(id) ?: throw SkillNotFoundException()
 
+    @WriteDataAccess
     @Transactional
     fun createSkill(
         caller: Person,
@@ -34,6 +39,7 @@ class SkillService(
         return skillRepository.save(skill)
     }
 
+    @WriteDataAccess
     @Transactional
     fun updateSkill(
         caller: Person,
@@ -50,6 +56,7 @@ class SkillService(
         return skillRepository.save(updated)
     }
 
+    @WriteDataAccess
     @Transactional
     fun deleteSkill(
         caller: Person,

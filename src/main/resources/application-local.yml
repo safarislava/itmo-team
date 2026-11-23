@@ -1,8 +1,15 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/dev
-    username: postgres
-    password: postgres
+    master:
+      jdbc-url: jdbc:postgresql://localhost:5432/dev
+      username: postgres
+      password: postgres
+      pool-name: HikariPool-Master
+    slave:
+      jdbc-url: jdbc:postgresql://localhost:5432/dev
+      username: postgres
+      password: postgres
+      pool-name: HikariPool-Slave
 
   mail:
     host: localhost
@@ -15,13 +22,6 @@ spring:
           auth: false
           starttls:
             enable: false
-
-app:
-  datasource:
-    replica:
-      url: jdbc:postgresql://localhost:5432/dev
-      username: postgres
-      password: postgres
 
   live-coding:
     ws-url-template: wss://localhost/ws/interviews/%s

@@ -2,6 +2,8 @@ package ru.ifmo.se.api.application.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import ru.ifmo.se.api.application.annotation.ReadOnlyDataAccess
+import ru.ifmo.se.api.application.annotation.WriteDataAccess
 import ru.ifmo.se.api.application.dto.LanguageCommand
 import ru.ifmo.se.api.application.policy.LanguagePolicy
 import ru.ifmo.se.api.domain.exception.LanguageNotFoundException
@@ -15,10 +17,13 @@ class LanguageService(
     private val languageRepository: LanguageRepository,
     private val languagePolicy: LanguagePolicy,
 ) {
+    @ReadOnlyDataAccess
     fun listLanguages(): List<Language> = languageRepository.findAll()
 
+    @ReadOnlyDataAccess
     fun getLanguage(id: LanguageId): Language = languageRepository.findById(id) ?: throw LanguageNotFoundException()
 
+    @WriteDataAccess
     @Transactional
     fun createLanguage(
         caller: Person,
@@ -37,6 +42,7 @@ class LanguageService(
         return languageRepository.save(language)
     }
 
+    @WriteDataAccess
     @Transactional
     fun updateLanguage(
         caller: Person,
@@ -56,6 +62,7 @@ class LanguageService(
         return languageRepository.save(updated)
     }
 
+    @WriteDataAccess
     @Transactional
     fun deleteLanguage(
         caller: Person,

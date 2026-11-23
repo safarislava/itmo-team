@@ -2,6 +2,8 @@ package ru.ifmo.se.api.application.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import ru.ifmo.se.api.application.annotation.ReadOnlyDataAccess
+import ru.ifmo.se.api.application.annotation.WriteDataAccess
 import ru.ifmo.se.api.application.dto.SaveInterviewFeedbackCommand
 import ru.ifmo.se.api.application.policy.InterviewFeedbackPolicy
 import ru.ifmo.se.api.domain.exception.ApplicationNotFoundException
@@ -32,6 +34,7 @@ class InterviewFeedbackService(
     private val teamRepository: TeamRepository,
     private val interviewFeedbackPolicy: InterviewFeedbackPolicy,
 ) {
+    @ReadOnlyDataAccess
     fun getInterviewFeedback(
         currentPerson: Person,
         interviewId: InterviewId,
@@ -54,6 +57,7 @@ class InterviewFeedbackService(
             ?: throw InterviewFeedbackNotFoundException()
     }
 
+    @WriteDataAccess
     @Transactional
     fun saveInterviewFeedback(
         currentPerson: Person,

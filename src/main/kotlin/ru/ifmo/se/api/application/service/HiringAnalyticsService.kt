@@ -2,6 +2,7 @@ package ru.ifmo.se.api.application.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import ru.ifmo.se.api.application.annotation.ReadOnlyDataAccess
 import ru.ifmo.se.api.application.policy.HiringAnalyticsPolicy
 import ru.ifmo.se.api.domain.exception.AnalyticsNotFoundException
 import ru.ifmo.se.api.domain.model.HiringStatistics
@@ -14,6 +15,7 @@ import java.time.Instant
 
 @Service
 @Transactional(readOnly = true)
+@ReadOnlyDataAccess
 class HiringAnalyticsService(
     private val hiringAnalyticsRepository: HiringAnalyticsRepository,
     private val companyRepository: CompanyRepository,

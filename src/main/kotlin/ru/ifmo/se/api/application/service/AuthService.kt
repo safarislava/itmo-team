@@ -2,6 +2,7 @@ package ru.ifmo.se.api.application.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import ru.ifmo.se.api.application.annotation.WriteDataAccess
 import ru.ifmo.se.api.application.dto.AuthResult
 import ru.ifmo.se.api.application.dto.LoginCommand
 import ru.ifmo.se.api.application.dto.RegisterCommand
@@ -22,6 +23,7 @@ import ru.ifmo.se.api.domain.repository.RefreshTokenRepository
 import java.time.Instant
 
 @Service
+@WriteDataAccess
 class AuthService(
     private val personRepository: PersonRepository,
     private val refreshTokenRepository: RefreshTokenRepository,
