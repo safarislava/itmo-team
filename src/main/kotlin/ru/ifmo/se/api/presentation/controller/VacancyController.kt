@@ -39,6 +39,7 @@ import ru.ifmo.se.api.presentation.dto.request.VacancyRequest
 import ru.ifmo.se.api.presentation.dto.request.VacancyStatusRequest
 import ru.ifmo.se.api.presentation.dto.response.LeaderboardEntryResponse
 import ru.ifmo.se.api.presentation.dto.response.PageResponse
+import ru.ifmo.se.api.presentation.dto.response.VacancyListItemResponse
 import ru.ifmo.se.api.presentation.dto.response.VacancyResponse
 import ru.ifmo.se.api.presentation.dto.response.VacancyStatusResponse
 import ru.ifmo.se.api.presentation.extension.toPageResponse
@@ -70,7 +71,7 @@ class VacancyController(
         @RequestParam(required = false) status: VacancyStatus?,
         @RequestParam(required = false) companyId: UUID?,
         @RequestParam(required = false) teamId: UUID?,
-    ): ResponseEntity<PageResponse<VacancyResponse>> {
+    ): ResponseEntity<PageResponse<VacancyListItemResponse>> {
         val allowedSorts = setOf("id", "title", "salary", "createdAt")
         if (sort !in allowedSorts) {
             throw VacancyBadRequestException("Invalid sort field '$sort'. Allowed values: ${allowedSorts.joinToString()}")
@@ -92,7 +93,7 @@ class VacancyController(
             )
 
         val pageResult = vacancyService.listVacancies(currentPerson, filter, PageQuery(page, size, sort, sortDirection))
-        return ResponseEntity.ok(pageResult.toPageResponse(size, vacancyResponseMapper::toResponse))
+        return ResponseEntity.ok(pageResult.toPageResponse(size, vacancyResponseMapper::toSummaryResponse))
     }
 
     @PostMapping
