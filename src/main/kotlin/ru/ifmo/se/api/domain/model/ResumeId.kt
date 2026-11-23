@@ -9,7 +9,7 @@ value class ResumeId(
     override fun toString(): String = value.toString()
 
     companion object {
-        fun generate(): ResumeId = ResumeId(UUID.randomUUID())
+        fun generate(): ResumeId = ResumeId(uuidV7())
 
         fun from(raw: String): ResumeId = ResumeId(UUID.fromString(raw))
 

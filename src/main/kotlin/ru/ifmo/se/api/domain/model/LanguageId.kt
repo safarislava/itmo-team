@@ -9,7 +9,7 @@ value class LanguageId(
     override fun toString(): String = value.toString()
 
     companion object {
-        fun generate(): LanguageId = LanguageId(UUID.randomUUID())
+        fun generate(): LanguageId = LanguageId(uuidV7())
 
         fun from(raw: String): LanguageId = LanguageId(UUID.fromString(raw))
 

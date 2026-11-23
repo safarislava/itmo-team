@@ -9,7 +9,7 @@ value class ApplicationId(
     override fun toString(): String = value.toString()
 
     companion object {
-        fun generate(): ApplicationId = ApplicationId(UUID.randomUUID())
+        fun generate(): ApplicationId = ApplicationId(uuidV7())
 
         fun from(raw: String): ApplicationId = ApplicationId(UUID.fromString(raw))
 

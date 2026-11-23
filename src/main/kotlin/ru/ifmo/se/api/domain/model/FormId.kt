@@ -9,7 +9,7 @@ value class FormId(
     override fun toString(): String = value.toString()
 
     companion object {
-        fun generate(): FormId = FormId(UUID.randomUUID())
+        fun generate(): FormId = FormId(uuidV7())
 
         fun from(raw: String): FormId = FormId(UUID.fromString(raw))
 

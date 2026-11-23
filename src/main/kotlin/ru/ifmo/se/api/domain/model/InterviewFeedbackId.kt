@@ -9,7 +9,7 @@ value class InterviewFeedbackId(
     override fun toString(): String = value.toString()
 
     companion object {
-        fun generate(): InterviewFeedbackId = InterviewFeedbackId(UUID.randomUUID())
+        fun generate(): InterviewFeedbackId = InterviewFeedbackId(uuidV7())
 
         fun from(raw: String): InterviewFeedbackId = InterviewFeedbackId(UUID.fromString(raw))
 

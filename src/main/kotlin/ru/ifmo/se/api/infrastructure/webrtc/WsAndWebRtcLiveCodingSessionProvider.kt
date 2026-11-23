@@ -7,7 +7,7 @@ import ru.ifmo.se.api.application.port.out.LiveCodingSessionCredentials
 import ru.ifmo.se.api.application.port.out.LiveCodingSessionProvider
 import ru.ifmo.se.api.domain.model.InterviewId
 import java.time.Instant
-import java.util.UUID
+import ru.ifmo.se.api.domain.model.uuidV7
 
 @Service
 @ConfigurationProperties(prefix = "app.live-coding")
@@ -19,7 +19,7 @@ class WsAndWebRtcLiveCodingSessionProvider : LiveCodingSessionProvider {
         interviewId: InterviewId,
         expiresAt: Instant,
     ): LiveCodingSessionCredentials {
-        val token = UUID.randomUUID().toString()
+        val token = uuidV7().toString()
         val websocketUrl = wsUrlTemplate.format(interviewId.value)
         val serverConfigs =
             iceServers.map {

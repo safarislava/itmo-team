@@ -9,7 +9,7 @@ value class SubmissionId(
     override fun toString(): String = value.toString()
 
     companion object {
-        fun generate(): SubmissionId = SubmissionId(UUID.randomUUID())
+        fun generate(): SubmissionId = SubmissionId(uuidV7())
 
         fun from(raw: String): SubmissionId = SubmissionId(UUID.fromString(raw))
 
