@@ -96,7 +96,7 @@ interface JpaVacancyRepository :
             v.team.company.id, v.team.company.name
         )
         FROM VacancyEntity v
-        """
+        """,
     )
     fun findAllSummaries(
         spec: Specification<VacancyEntity>,
