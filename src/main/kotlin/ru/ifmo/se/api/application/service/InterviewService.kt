@@ -129,10 +129,7 @@ class InterviewService(
                 )
 
         val paged = interviewRepository.findAll(scopedFilter, pageQuery)
-        val items =
-            paged.items.map { interview ->
-                assembleDetails(currentPerson, interview)
-            }
+        val items = paged.items.map { interview -> assembleDetails(currentPerson, interview) }
 
         return PageResult(
             items = items,

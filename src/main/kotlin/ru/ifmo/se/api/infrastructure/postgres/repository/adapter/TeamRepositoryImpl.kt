@@ -27,6 +27,9 @@ class TeamRepositoryImpl(
 ) : TeamRepository {
     override fun findById(id: TeamId): Team? = repo.findById(id.value).map(mapper::toDomain).orElse(null)
 
+    override fun findAllById(ids: Iterable<TeamId>): List<Team> =
+        ids.map { it.value }.takeIf { it.isNotEmpty() }?.let { repo.findAllById(it).map(mapper::toDomain) } ?: emptyList()
+
     override fun findByTeamleadId(teamleadId: PersonId): Team? = repo.findByTeamleadId(teamleadId.value).map(mapper::toDomain).orElse(null)
 
     override fun findAll(

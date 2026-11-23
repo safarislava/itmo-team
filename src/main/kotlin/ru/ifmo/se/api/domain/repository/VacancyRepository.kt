@@ -10,6 +10,8 @@ import ru.ifmo.se.api.domain.model.VacancyId
 interface VacancyRepository {
     fun findById(id: VacancyId): Vacancy?
 
+    fun findAllById(ids: Iterable<VacancyId>): List<Vacancy>
+
     fun findAll(
         filter: VacancyFilter,
         pageQuery: PageQuery,

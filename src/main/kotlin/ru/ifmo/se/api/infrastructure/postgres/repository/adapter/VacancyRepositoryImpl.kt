@@ -28,6 +28,9 @@ class VacancyRepositoryImpl(
 ) : VacancyRepository {
     override fun findById(id: VacancyId): Vacancy? = repo.findById(id.value).map(mapper::toDomain).orElse(null)
 
+    override fun findAllById(ids: Iterable<VacancyId>): List<Vacancy> =
+        ids.map { it.value }.takeIf { it.isNotEmpty() }?.let { repo.findAllById(it).map(mapper::toDomain) } ?: emptyList()
+
     override fun findAll(
         filter: VacancyFilter,
         pageQuery: PageQuery,

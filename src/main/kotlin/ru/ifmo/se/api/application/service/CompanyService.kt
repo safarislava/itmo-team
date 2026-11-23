@@ -56,15 +56,15 @@ class CompanyService(
         val target = companyRepository.findById(companyId) ?: throw CompanyNotFoundException()
 
         val employees = personRepository.findAllByCompanyId(companyId)
-        for (employee in employees) {
+        employees.forEach { employee ->
             refreshTokenRepository.revokeAllByPersonId(employee.id)
-            val dismissedEmployee =
+            personRepository.save(
                 employee.copy(
                     role = PersonRole.CANDIDATE,
                     companyId = null,
                     teamId = null,
-                )
-            personRepository.save(dismissedEmployee)
+                ),
+            )
         }
 
         companyRepository.delete(target)

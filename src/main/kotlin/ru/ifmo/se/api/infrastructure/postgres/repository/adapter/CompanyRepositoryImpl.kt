@@ -23,6 +23,9 @@ class CompanyRepositoryImpl(
 ) : CompanyRepository {
     override fun findById(id: CompanyId): Company? = repo.findById(id.value).map(mapper::toDomain).orElse(null)
 
+    override fun findAllById(ids: Iterable<CompanyId>): List<Company> =
+        ids.map { it.value }.takeIf { it.isNotEmpty() }?.let { repo.findAllById(it).map(mapper::toDomain) } ?: emptyList()
+
     override fun findAll(
         filter: CompanyFilter,
         pageQuery: PageQuery,

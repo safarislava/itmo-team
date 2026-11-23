@@ -19,6 +19,9 @@ class SkillRepositoryImpl(
 ) : SkillRepository {
     override fun findById(id: SkillId): Skill? = repo.findById(id.value).map(mapper::toDomain).orElse(null)
 
+    override fun findAllById(ids: Iterable<SkillId>): List<Skill> =
+        ids.map { it.value }.takeIf { it.isNotEmpty() }?.let { repo.findAllById(it).map(mapper::toDomain) } ?: emptyList()
+
     override fun findAll(search: String?): List<Skill> {
         val trimmedSearch = search?.trim()
         val entities =

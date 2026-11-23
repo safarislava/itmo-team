@@ -161,33 +161,30 @@ class TestService(
         }
         testRepository.deleteAllByTaskId(taskId)
 
-        val domainTests = mutableListOf<Test>()
-        val detailsList = mutableListOf<TestDetails>()
+        val savedTests =
+            archiveTests.map { (input, output) ->
+                val testId = TestId.generate()
+                val keys = testStorage.save(testId, input, output)
+                val domainTest =
+                    Test(
+                        id = testId,
+                        taskId = taskId,
+                        inputS3key = keys.inputKey,
+                        outputS3key = keys.outputKey,
+                        isHidden = true,
+                    )
+                val details =
+                    TestDetails(
+                        id = testId,
+                        taskId = taskId,
+                        input = input,
+                        output = output,
+                        hidden = true,
+                    )
+                domainTest to details
+            }
 
-        for ((input, output) in archiveTests) {
-            val testId = TestId.generate()
-            val keys = testStorage.save(testId, input, output)
-            domainTests.add(
-                Test(
-                    id = testId,
-                    taskId = taskId,
-                    inputS3key = keys.inputKey,
-                    outputS3key = keys.outputKey,
-                    isHidden = true,
-                ),
-            )
-            detailsList.add(
-                TestDetails(
-                    id = testId,
-                    taskId = taskId,
-                    input = input,
-                    output = output,
-                    hidden = true,
-                ),
-            )
-        }
-
-        testRepository.saveAll(domainTests)
-        return detailsList
+        testRepository.saveAll(savedTests.map { it.first })
+        return savedTests.map { it.second }
     }
 }

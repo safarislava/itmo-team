@@ -60,11 +60,14 @@ class SubmissionService(
                 )
 
         val page = submissionRepository.findAll(scopedFilter, pageQuery)
+        val sendersById = personRepository.findAllById(page.items.map { it.senderId }).associateBy { it.id }
+        val languagesById = languageRepository.findAllById(page.items.map { it.languageId }).associateBy { it.id }
+
         val items =
             page.items.map { submission ->
-                val sender = personRepository.findById(submission.senderId) ?: caller
+                val sender = sendersById[submission.senderId] ?: caller
                 val language =
-                    languageRepository.findById(submission.languageId)
+                    languagesById[submission.languageId]
                         ?: throw LanguageNotFoundException()
                 SubmissionDetails(
                     submission = submission,

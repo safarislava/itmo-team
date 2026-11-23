@@ -27,6 +27,9 @@ class PersonRepositoryImpl(
 ) : PersonRepository {
     override fun findById(id: PersonId): Person? = repo.findById(id.value).map(mapper::toDomain).orElse(null)
 
+    override fun findAllById(ids: Iterable<PersonId>): List<Person> =
+        ids.map { it.value }.takeIf { it.isNotEmpty() }?.let { repo.findAllById(it).map(mapper::toDomain) } ?: emptyList()
+
     override fun save(person: Person): Person = mapper.toDomain(repo.save(mapper.toEntity(person)))
 
     override fun delete(person: Person) {

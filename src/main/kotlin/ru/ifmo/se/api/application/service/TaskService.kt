@@ -35,9 +35,10 @@ class TaskService(
         filter: TaskFilter,
     ): PageResult<TaskDetails> {
         val paged = taskRepository.findAll(filter, pageQuery)
+        val authorsById = personRepository.findAllById(paged.items.map { it.authorId }).associateBy { it.id }
         val items =
             paged.items.map { task ->
-                val author = personRepository.findById(task.authorId) ?: caller
+                val author = authorsById[task.authorId] ?: caller
                 TaskDetails(task = task, author = author)
             }
         return PageResult(

@@ -102,7 +102,7 @@ class VacancyService(
             )
 
         val saved = vacancyRepository.save(vacancy)
-        val skills = command.skillIds.mapNotNull { skillRepository.findById(it) }
+        val skills = skillRepository.findAllById(command.skillIds)
         return VacancyDetails(vacancy = saved, team = team, company = company, skills = skills)
     }
 
@@ -165,15 +165,19 @@ class VacancyService(
                 val now = Instant.now()
                 val saved = vacancyRepository.save(existing.copy(status = VacancyStatus.CLOSED, closedAt = now))
                 val applications = applicationRepository.findAllByVacancyId(id)
-                val rejectedAppIds = mutableListOf<ApplicationId>()
+                val appsToReject =
+                    applications.filter {
+                        it.status != ApplicationStatus.OFFER && it.status != ApplicationStatus.REJECTED
+                    }
 
-                for (app in applications) {
-                    if (app.status != ApplicationStatus.OFFER && app.status != ApplicationStatus.REJECTED) {
+                if (appsToReject.isNotEmpty()) {
+                    appsToReject.forEach { app ->
                         applicationRepository.save(app.copy(status = ApplicationStatus.REJECTED))
-                        rejectedAppIds.add(app.id)
-
-                        val candidate = personRepository.findById(app.candidateId)
-                        if (candidate != null) {
+                    }
+                    val candidatesById =
+                        personRepository.findAllById(appsToReject.map { it.candidateId }).associateBy { it.id }
+                    appsToReject.forEach { app ->
+                        candidatesById[app.candidateId]?.let { candidate ->
                             runCatching {
                                 emailService.sendApplicationRejection(candidate.email, existing.title)
                             }
@@ -181,6 +185,7 @@ class VacancyService(
                     }
                 }
 
+                val rejectedAppIds = appsToReject.map { it.id }
                 VacancyStatusResultDto(details = assembleDetails(saved), rejectedApplicationIds = rejectedAppIds)
             }
 
@@ -193,15 +198,16 @@ class VacancyService(
     private fun assembleDetails(vacancy: Vacancy): VacancyDetails {
         val team = teamRepository.findById(vacancy.teamId) ?: throw TeamNotFoundException()
         val company = companyRepository.findById(team.companyId) ?: throw CompanyNotFoundException()
-        val skills = vacancy.skillIds.mapNotNull { skillRepository.findById(it) }
+        val skills = skillRepository.findAllById(vacancy.skillIds)
         return VacancyDetails(vacancy = vacancy, team = team, company = company, skills = skills)
     }
 
     private fun validateSkillIds(skillIds: List<ru.ifmo.se.api.domain.model.SkillId>) {
-        skillIds.forEach { skillId ->
-            if (skillRepository.findById(skillId) == null) {
-                throw VacancyBadRequestException("Skill with id ${skillId.value} does not exist.")
-            }
+        if (skillIds.isEmpty()) return
+        val existingSkillIds = skillRepository.findAllById(skillIds).map { it.id }.toSet()
+        val missingSkillId = skillIds.firstOrNull { it !in existingSkillIds }
+        if (missingSkillId != null) {
+            throw VacancyBadRequestException("Skill with id ${missingSkillId.value} does not exist.")
         }
     }
 }

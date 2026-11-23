@@ -42,11 +42,13 @@ class TeamService(
                 totalPages = 0,
             )
         val pagedTeams = teamRepository.findAll(scopedFilter, pageQuery)
+        val companiesById = companyRepository.findAllById(pagedTeams.items.map { it.companyId }).associateBy { it.id }
+        val teamleadsById = personRepository.findAllById(pagedTeams.items.map { it.teamleadId }).associateBy { it.id }
 
         val items =
             pagedTeams.items.map { team ->
-                val company = companyRepository.findById(team.companyId) ?: throw CompanyNotFoundException()
-                val teamlead = personRepository.findById(team.teamleadId) ?: throw PersonNotFoundException()
+                val company = companiesById[team.companyId] ?: throw CompanyNotFoundException()
+                val teamlead = teamleadsById[team.teamleadId] ?: throw PersonNotFoundException()
                 TeamDetails(team = team, company = company, teamlead = teamlead)
             }
 

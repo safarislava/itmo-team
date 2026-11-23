@@ -70,8 +70,9 @@ class ApplicationResponseService(
         applicationResponsePolicy.checkCanView(currentPerson, vacancy, team)
 
         val responses = applicationResponseRepository.findAllByApplicationId(applicationId)
+        val hrsById = personRepository.findAllById(responses.map { it.hrId }).associateBy { it.id }
         return responses.map { resp ->
-            val hr = personRepository.findById(resp.hrId) ?: throw PersonNotFoundException()
+            val hr = hrsById[resp.hrId] ?: throw PersonNotFoundException()
             ApplicationResponseDetails(response = resp, hr = hr)
         }
     }
