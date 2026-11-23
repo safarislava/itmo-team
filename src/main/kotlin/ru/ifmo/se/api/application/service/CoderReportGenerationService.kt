@@ -1,0 +1,50 @@
+package ru.ifmo.se.api.application.service
+
+import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
+import ru.ifmo.se.api.application.port.out.GitHubActivityProvider
+import ru.ifmo.se.api.domain.model.ActivityMetrics
+import ru.ifmo.se.api.domain.model.CoderReport
+import ru.ifmo.se.api.domain.model.CoderReportId
+import ru.ifmo.se.api.domain.model.PersonRole
+import ru.ifmo.se.api.domain.repository.CoderReportRepository
+import ru.ifmo.se.api.domain.repository.PersonRepository
+import java.time.LocalDate
+import java.time.ZoneId
+import java.time.ZoneOffset
+
+@Service
+class CoderReportGenerationService(
+    private val personRepository: PersonRepository,
+    private val coderReportRepository: CoderReportRepository,
+    private val gitHubActivityProvider: GitHubActivityProvider,
+) {
+    @Transactional
+    fun generateDailyReports(date: LocalDate): List<CoderReport> {
+        val reportDate = date.atStartOfDay(ZoneOffset.UTC).toInstant()
+
+        return personRepository.findAllByRole(PersonRole.DEVELOPER).map { dev ->
+            val metrics =
+                dev.githubId?.let { githubId ->
+                    runCatching {
+                        gitHubActivityProvider.fetchDailyActivity(githubId, date)
+                    }.getOrElse {
+                        ActivityMetrics.ZERO
+                    }
+                } ?: ActivityMetrics.ZERO
+
+            val report =
+                CoderReport(
+                    id = CoderReportId.generate(),
+                    coderId = dev.id,
+                    metrics = metrics,
+                    reportDate = reportDate,
+                )
+            coderReportRepository.save(report)
+        }
+    }
+
+    companion object {
+        val ZONE_MOSCOW: ZoneId = ZoneId.of("Europe/Moscow")
+    }
+}
