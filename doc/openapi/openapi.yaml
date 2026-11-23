@@ -420,6 +420,9 @@ components:
     Vacancy:
       $ref: "./schemas/domain/Vacancy.yaml"
 
+    VacancyListItem:
+      $ref: "./schemas/domain/VacancyListItem.yaml"
+
     VacancyStatus:
       $ref: "./schemas/domain/VacancyStatus.yaml"
 
