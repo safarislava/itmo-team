@@ -6,16 +6,17 @@ import ru.ifmo.se.api.domain.model.PageResult
 import ru.ifmo.se.api.domain.model.Vacancy
 import ru.ifmo.se.api.domain.model.VacancyFilter
 import ru.ifmo.se.api.domain.model.VacancyId
+import ru.ifmo.se.api.domain.model.VacancySummary
 
 interface VacancyRepository {
     fun findById(id: VacancyId): Vacancy?
 
     fun findAllById(ids: Iterable<VacancyId>): List<Vacancy>
 
-    fun findAll(
+    fun findAllSummaries(
         filter: VacancyFilter,
         pageQuery: PageQuery,
-    ): PageResult<Vacancy>
+    ): PageResult<VacancySummary>
 
     fun save(vacancy: Vacancy): Vacancy
 

@@ -23,7 +23,7 @@ import ru.ifmo.se.api.domain.model.Vacancy
 import ru.ifmo.se.api.domain.model.VacancyFilter
 import ru.ifmo.se.api.domain.model.VacancyId
 import ru.ifmo.se.api.domain.model.VacancyStatus
-import ru.ifmo.se.api.domain.model.map
+import ru.ifmo.se.api.domain.model.VacancySummary
 import ru.ifmo.se.api.domain.repository.ApplicationRepository
 import ru.ifmo.se.api.domain.repository.CompanyRepository
 import ru.ifmo.se.api.domain.repository.PersonRepository
@@ -48,12 +48,10 @@ class VacancyService(
         caller: Person?,
         filter: VacancyFilter,
         pageQuery: PageQuery,
-    ): PageResult<VacancyDetails> {
+    ): PageResult<VacancySummary> {
         val scopedFilter =
             vacancyPolicy.applyFilterScope(caller, filter) ?: return PageResult.empty(pageQuery.pageNumber)
-
-        val pagedVacancies = vacancyRepository.findAll(scopedFilter, pageQuery)
-        return pagedVacancies.map { assembleDetails(it) }
+        return vacancyRepository.findAllSummaries(scopedFilter, pageQuery)
     }
 
     @ReadOnlyDataAccess

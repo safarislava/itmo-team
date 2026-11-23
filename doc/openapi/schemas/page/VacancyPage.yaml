@@ -6,4 +6,4 @@ allOf:
       content:
         type: array
         items:
-          $ref: "../../openapi.yaml#/components/schemas/Vacancy"
+          $ref: "../../openapi.yaml#/components/schemas/VacancyListItem"
