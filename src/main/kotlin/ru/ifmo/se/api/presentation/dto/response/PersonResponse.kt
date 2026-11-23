@@ -10,5 +10,5 @@ data class PersonResponse(
     val role: PersonRole,
     val company: CompanySummaryResponse? = null,
     val team: TeamSummaryResponse? = null,
-    val githubId: Long? = null,
+    val githubUsername: String? = null,
 )

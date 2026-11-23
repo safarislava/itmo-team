@@ -11,5 +11,6 @@ data class ProfileRequest(
     @field:NotBlank
     @field:Email
     val email: String,
-    val githubId: Long? = null,
+    @field:Size(max = 100)
+    val githubUsername: String? = null,
 )

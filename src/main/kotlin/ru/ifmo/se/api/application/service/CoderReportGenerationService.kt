@@ -25,9 +25,9 @@ class CoderReportGenerationService(
 
         return personRepository.findAllByRole(PersonRole.DEVELOPER).map { dev ->
             val metrics =
-                dev.githubId?.let { githubId ->
+                dev.githubUsername?.takeIf { it.isNotBlank() }?.let { username ->
                     runCatching {
-                        gitHubActivityProvider.fetchDailyActivity(githubId, date)
+                        gitHubActivityProvider.fetchDailyActivity(username, date)
                     }.getOrElse {
                         ActivityMetrics.ZERO
                     }

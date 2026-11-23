@@ -5,7 +5,7 @@ import java.time.LocalDate
 
 interface GitHubActivityProvider {
     fun fetchDailyActivity(
-        githubId: Long,
+        githubUsername: String,
         date: LocalDate,
     ): ActivityMetrics
 }

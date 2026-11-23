@@ -18,7 +18,7 @@ class PersonEntityMapper {
             role = entity.role,
             companyId = entity.companyId?.let { CompanyId(it) },
             teamId = entity.teamId?.let { TeamId(it) },
-            githubId = entity.githubId,
+            githubUsername = entity.githubUsername,
         )
 
     fun toEntity(domain: Person): PersonEntity =
@@ -30,6 +30,6 @@ class PersonEntityMapper {
             role = domain.role,
             companyId = domain.companyId?.value,
             teamId = domain.teamId?.value,
-            githubId = domain.githubId,
+            githubUsername = domain.githubUsername,
         )
 }

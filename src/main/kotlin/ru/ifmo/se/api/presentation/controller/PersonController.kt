@@ -127,7 +127,7 @@ class PersonController(
             UpdateProfileCommand(
                 name = request.name,
                 email = request.email,
-                githubId = request.githubId,
+                githubUsername = request.githubUsername,
             )
         val updated = personService.updateCurrentPerson(currentPerson, command)
         return ResponseEntity.ok(personResponseMapper.toResponse(updated))

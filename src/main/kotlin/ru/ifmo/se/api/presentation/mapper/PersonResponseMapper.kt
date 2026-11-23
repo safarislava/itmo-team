@@ -32,7 +32,7 @@ class PersonResponseMapper(
             role = person.role,
             company = company,
             team = team,
-            githubId = person.githubId,
+            githubUsername = person.githubUsername,
         )
     }
 
