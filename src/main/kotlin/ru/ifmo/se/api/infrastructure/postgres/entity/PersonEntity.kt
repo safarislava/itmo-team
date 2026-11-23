@@ -22,5 +22,5 @@ class PersonEntity(
     var role: PersonRole,
     var companyId: UUID?,
     var teamId: UUID?,
-    var githubId: Long?,
+    var githubUsername: String?,
 ) : BasicEntity()

@@ -49,6 +49,8 @@ class PersonRepositoryImpl(
 
     override fun findAllByCompanyId(companyId: CompanyId): List<Person> = repo.findAllByCompanyId(companyId.value).map(mapper::toDomain)
 
+    override fun findAllByRole(role: PersonRole): List<Person> = repo.findAllByRole(role).map(mapper::toDomain)
+
     override fun findByFilter(
         filter: PersonFilter,
         page: PageQuery,

@@ -21,7 +21,7 @@ data class UpdatePersonCommand(
 data class UpdateProfileCommand(
     val name: String,
     val email: String,
-    val githubId: Long?,
+    val githubUsername: String?,
 )
 
 data class ChangePasswordCommand(

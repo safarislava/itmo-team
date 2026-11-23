@@ -1,6 +1,6 @@
 # TODO: probably add phone number
 type: object
-required: [ id, name, email, role, company, team, githubId ]
+required: [ id, name, email, role, company, team, githubUsername ]
 properties:
   id:
     type: integer
@@ -27,7 +27,7 @@ properties:
     oneOf:
       - $ref: "../../openapi.yaml#/components/schemas/TeamSummary"
       - type: "null"
-  githubId:
-    type: [ integer, "null" ]
-    format: int64
-    description: Identifier of the GitHub account used to collect activity metrics.
+  githubUsername:
+    type: [ string, "null" ]
+    maxLength: 100
+    description: Username of the GitHub account used to collect activity metrics.

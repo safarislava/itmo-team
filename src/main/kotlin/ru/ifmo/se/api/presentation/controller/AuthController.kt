@@ -116,7 +116,7 @@ class AuthController(
             role = person.role,
             company = null,
             team = null,
-            githubId = person.githubId,
+            githubUsername = person.githubUsername,
         )
 
     private fun createAccessTokenCookie(

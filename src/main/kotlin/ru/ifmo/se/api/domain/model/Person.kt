@@ -8,5 +8,5 @@ data class Person(
     val role: PersonRole,
     val companyId: CompanyId?,
     val teamId: TeamId?,
-    val githubId: Long?,
+    val githubUsername: String?,
 )

@@ -84,7 +84,7 @@ class PersonService(
                 role = command.role,
                 companyId = companyId,
                 teamId = teamId,
-                githubId = null,
+                githubUsername = null,
             )
 
         val saved = personRepository.save(newPerson)
@@ -252,7 +252,7 @@ class PersonService(
             currentPerson.copy(
                 name = command.name,
                 email = command.email,
-                githubId = command.githubId,
+                githubUsername = command.githubUsername,
             )
 
         return personRepository.save(updated)

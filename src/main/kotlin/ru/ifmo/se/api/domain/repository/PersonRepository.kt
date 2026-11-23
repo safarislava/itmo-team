@@ -6,6 +6,7 @@ import ru.ifmo.se.api.domain.model.PageResult
 import ru.ifmo.se.api.domain.model.Person
 import ru.ifmo.se.api.domain.model.PersonFilter
 import ru.ifmo.se.api.domain.model.PersonId
+import ru.ifmo.se.api.domain.model.PersonRole
 import ru.ifmo.se.api.domain.model.TeamId
 
 interface PersonRepository {
@@ -24,6 +25,8 @@ interface PersonRepository {
     fun findAllByTeamId(teamId: TeamId): List<Person>
 
     fun findAllByCompanyId(companyId: CompanyId): List<Person>
+
+    fun findAllByRole(role: PersonRole): List<Person>
 
     fun findByFilter(
         filter: PersonFilter,

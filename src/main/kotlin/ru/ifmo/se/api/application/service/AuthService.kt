@@ -42,7 +42,7 @@ class AuthService(
                 role = PersonRole.CANDIDATE,
                 companyId = null,
                 teamId = null,
-                githubId = null,
+                githubUsername = null,
             )
 
         val savedPerson = personRepository.save(person)
