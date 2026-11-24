@@ -5,6 +5,10 @@ spring:
   profiles:
     default: dev
 
+  docker:
+    compose:
+      enabled: false
+
   datasource:
     driver-class-name: org.postgresql.Driver
 

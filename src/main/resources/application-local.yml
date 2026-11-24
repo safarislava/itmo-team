@@ -1,4 +1,9 @@
 spring:
+  docker:
+    compose:
+      enabled: true
+      file: docker-compose.local.yml
+
   datasource:
     master:
       jdbc-url: jdbc:postgresql://localhost:5432/dev
@@ -13,7 +18,7 @@ spring:
 
   mail:
     host: localhost
-    port: 587
+    port: 1025
     username: admin
     password: admin
     properties:
@@ -23,8 +28,14 @@ spring:
           starttls:
             enable: false
 
+app:
+  ai-detector:
+    gemini:
+      api-key: ${GEMINI_API_KEY:}
+  github:
+    token: ${GITHUB_TOKEN:}
   live-coding:
-    ws-url-template: wss://localhost/ws/interviews/%s
+    ws-url-template: ws://localhost:8080/ws/interviews/%s
     ice-servers:
       - urls:
           - "stun:stun.l.google.com:19302"
@@ -37,4 +48,3 @@ storage:
     access-key: minioadmin
     secret-key: minioadmin
     path-style-access-enabled: true
-

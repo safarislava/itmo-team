@@ -23,6 +23,7 @@ dependencies {
     implementation(libs.aws.s3)
     implementation(libs.uuid.creator)
     runtimeOnly(libs.postgresql)
+    developmentOnly(libs.spring.boot.docker.compose)
 }
 
 val javaVersion = libs.versions.java.get()

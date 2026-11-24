@@ -1,7 +1,30 @@
+# Local environment for development and manual testing.
+#
+# Started and stopped automatically by spring-boot-docker-compose on `bootRun` with the `local` profile
+#
+# docker compose -f docker-compose.local.yml up -d
+# | Service  | Address on the host                               | Purpose                      |
+# |----------|---------------------------------------------------|------------------------------|
+# | postgres | localhost:5432                                    | database with pg_cron        |
+# | minio    | localhost:9000 (S3 API), localhost:9001 (console) | S3 storage for files         |
+# | mailpit  | localhost:1025 (SMTP), localhost:8025 (web UI)    | catches every outgoing email |
+
 services:
   postgres:
-    image: postgres:16-alpine
+    build:
+      dockerfile_inline: |
+        FROM postgres:16.16-bookworm
+        RUN apt-get update \
+            && apt-get install -y --no-install-recommends postgresql-16-cron \
+            && rm -rf /var/lib/apt/lists/*
+    image: itmo-team/postgres-cron:16.16
     container_name: itmo-team-pg
+    command:
+      - postgres
+      - -c
+      - shared_preload_libraries=pg_cron
+      - -c
+      - cron.database_name=dev
     environment:
       POSTGRES_DB: dev
       POSTGRES_USER: postgres
@@ -10,6 +33,44 @@ services:
       - "5432:5432"
     volumes:
       - local_pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d dev" ]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  minio:
+    image: pgsty/minio:RELEASE.2026-08-04T00-00-00Z
+    container_name: itmo-team-minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${S3_ACCESS_KEY:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${S3_SECRET_KEY:-minioadmin}
+      MC_HOST_local: http://${S3_ACCESS_KEY:-minioadmin}:${S3_SECRET_KEY:-minioadmin}@localhost:9000
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - local_minio_data:/data
+    # Healthy means that the bucket exists. `mc mb` creates the bucket on first run.
+    healthcheck:
+      test: [ "CMD", "mc", "mb", "--ignore-existing", "local/${S3_BUCKET:-itmo-resumes}" ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+      start_interval: 1s
+
+  mailpit:
+    image: axllent/mailpit:v1.32.0
+    container_name: itmo-team-mailpit
+    environment:
+      MP_SMTP_AUTH_ACCEPT_ANY: "true"
+      MP_SMTP_AUTH_ALLOW_INSECURE: "true"
+    ports:
+      - "1025:1025"
+      - "8025:8025"
 
 volumes:
   local_pg_data:
+  local_minio_data:

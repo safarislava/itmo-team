@@ -17,6 +17,7 @@ spring-boot-starter-validation = { module = "org.springframework.boot:spring-boo
 spring-boot-starter-mail = { module = "org.springframework.boot:spring-boot-starter-mail" }
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect" }
 postgresql = { module = "org.postgresql:postgresql" }
+spring-boot-docker-compose = { module = "org.springframework.boot:spring-boot-docker-compose" }
 
 jjwt-api = { module = "io.jsonwebtoken:jjwt-api", version.ref = "jjwt" }
 jjwt-impl = { module = "io.jsonwebtoken:jjwt-impl", version.ref = "jjwt" }
