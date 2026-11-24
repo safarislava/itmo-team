@@ -1,7 +1,9 @@
 val ktlint = configurations.create("ktlint")
 
+val libs = the<VersionCatalogsExtension>().named("libs")
+
 dependencies {
-    ktlint("com.pinterest.ktlint:ktlint-cli:1.8.0:all")
+    ktlint(variantOf(libs.findLibrary("ktlint-cli").get()) { classifier("all") })
 }
 
 val ktlintCheck =
