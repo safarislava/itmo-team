@@ -14,8 +14,8 @@ class S3TestStorage(
         input: String,
         output: String,
     ): TestStorageKeys {
-        val inputKey = "${testId.value}.in"
-        val outputKey = "${testId.value}.out"
+        val inputKey = "tests/${testId.value}.in"
+        val outputKey = "tests/${testId.value}.out"
         s3FileStorage.storeWithKey(inputKey, input.toByteArray(Charsets.UTF_8))
         s3FileStorage.storeWithKey(outputKey, output.toByteArray(Charsets.UTF_8))
         return TestStorageKeys(inputKey, outputKey)

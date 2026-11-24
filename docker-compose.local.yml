@@ -6,7 +6,7 @@
 # | Service  | Address on the host                               | Purpose                      |
 # |----------|---------------------------------------------------|------------------------------|
 # | postgres | localhost:5432                                    | database with pg_cron        |
-# | minio    | localhost:9000 (S3 API), localhost:9001 (console) | S3 storage for files         |
+# | garage   | localhost:3900 (S3 API), localhost:3902 (web)     | S3 storage for files         |
 # | mailpit  | localhost:1025 (SMTP), localhost:8025 (web UI)    | catches every outgoing email |
 
 services:
@@ -39,27 +39,31 @@ services:
       timeout: 3s
       retries: 10
 
-  minio:
-    image: pgsty/minio:RELEASE.2026-08-04T00-00-00Z
-    container_name: itmo-team-minio
-    command: server /data --console-address ":9001"
+  garage:
+    image: dxflrs/garage:v2.5.0
+    container_name: itmo-team-garage
+    command: /garage server --single-node --default-bucket
     environment:
-      MINIO_ROOT_USER: ${S3_ACCESS_KEY:-minioadmin}
-      MINIO_ROOT_PASSWORD: ${S3_SECRET_KEY:-minioadmin}
-      MC_HOST_local: http://${S3_ACCESS_KEY:-minioadmin}:${S3_SECRET_KEY:-minioadmin}@localhost:9000
+      GARAGE_ALLOW_WORLD_READABLE_SECRETS: "true"
+      GARAGE_RPC_SECRET: "c8e268a7fbc266f81e3a1bc62b21762c94d137b03b22cfd86928e8d89e9f3b14"
+      GARAGE_DEFAULT_ACCESS_KEY: "GK00000000000000000000000000000001"
+      GARAGE_DEFAULT_SECRET_KEY: "0000000000000000000000000000000000000000000000000000000000000001"
+      GARAGE_DEFAULT_BUCKET: "itmo-team-files"
     ports:
-      - "9000:9000"
-      - "9001:9001"
+      - "3900:3900"
+      - "3902:3902"
+    configs:
+      - source: garage_config
+        target: /etc/garage.toml
     volumes:
-      - local_minio_data:/data
-    # Healthy means that the bucket exists. `mc mb` creates the bucket on first run.
+      - local_garage_meta:/var/lib/garage/meta
+      - local_garage_data:/var/lib/garage/data
     healthcheck:
-      test: [ "CMD", "mc", "mb", "--ignore-existing", "local/${S3_BUCKET:-itmo-resumes}" ]
-      interval: 30s
-      timeout: 5s
-      retries: 3
-      start_period: 30s
-      start_interval: 1s
+      test: [ "CMD", "/garage", "-c", "/etc/garage.toml", "status" ]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
 
   mailpit:
     image: axllent/mailpit:v1.32.0
@@ -71,6 +75,31 @@ services:
       - "1025:1025"
       - "8025:8025"
 
+configs:
+  garage_config:
+    content: |
+      metadata_dir = "/var/lib/garage/meta"
+      data_dir = "/var/lib/garage/data"
+      db_engine = "sqlite"
+      replication_factor = 1
+
+      rpc_bind_addr = "[::]:3901"
+      rpc_secret = "c8e268a7fbc266f81e3a1bc62b21762c94d137b03b22cfd86928e8d89e9f3b14"
+
+      [s3_api]
+      s3_region = "garage"
+      api_bind_addr = "[::]:3900"
+      root_domain = ".s3.garage.localhost"
+
+      [s3_web]
+      bind_addr = "[::]:3902"
+      root_domain = ".web.garage.localhost"
+
+      [admin]
+      api_bind_addr = "[::]:3903"
+      admin_token = "4e6f42c67da141b7ba9c719e7a2bcfc6"
+
 volumes:
   local_pg_data:
-  local_minio_data:
+  local_garage_meta:
+  local_garage_data:

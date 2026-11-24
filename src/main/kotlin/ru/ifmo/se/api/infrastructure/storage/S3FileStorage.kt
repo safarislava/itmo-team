@@ -2,8 +2,6 @@ package ru.ifmo.se.api.infrastructure.storage
 
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
-import ru.ifmo.se.api.application.port.out.FileStorage
-import ru.ifmo.se.api.domain.model.uuidV7
 import software.amazon.awssdk.core.sync.RequestBody
 import software.amazon.awssdk.services.s3.S3Client
 import software.amazon.awssdk.services.s3.model.DeleteObjectRequest
@@ -20,17 +18,8 @@ class S3FileStorage(
     private val s3Presigner: S3Presigner,
     @Value("\${storage.s3.bucket}")
     private val bucket: String,
-) : FileStorage {
-    override fun store(
-        filename: String,
-        bytes: ByteArray,
-    ): String {
-        val s3key = "${uuidV7()}_$filename"
-        storeWithKey(s3key, bytes)
-        return s3key
-    }
-
-    override fun storeWithKey(
+) {
+    fun storeWithKey(
         s3key: String,
         bytes: ByteArray,
     ) {
@@ -44,7 +33,7 @@ class S3FileStorage(
         s3Client.putObject(request, RequestBody.fromBytes(bytes))
     }
 
-    override fun load(s3key: String): ByteArray {
+    fun load(s3key: String): ByteArray {
         val request =
             GetObjectRequest
                 .builder()
@@ -59,7 +48,7 @@ class S3FileStorage(
         }
     }
 
-    override fun delete(s3key: String) {
+    fun delete(s3key: String) {
         val request =
             DeleteObjectRequest
                 .builder()
@@ -70,9 +59,9 @@ class S3FileStorage(
         s3Client.deleteObject(request)
     }
 
-    override fun getPresignedUrl(
+    fun getPresignedUrl(
         s3key: String,
-        duration: Duration,
+        duration: Duration = Duration.ofHours(1),
     ): String {
         val getObjectRequest =
             GetObjectRequest

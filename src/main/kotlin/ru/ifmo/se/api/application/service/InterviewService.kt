@@ -9,7 +9,7 @@ import ru.ifmo.se.api.application.dto.ScheduleInterviewCommand
 import ru.ifmo.se.api.application.dto.UpdateInterviewStatusCommand
 import ru.ifmo.se.api.application.policy.InterviewPolicy
 import ru.ifmo.se.api.application.port.out.EmailService
-import ru.ifmo.se.api.application.port.out.FileStorage
+import ru.ifmo.se.api.application.port.out.InterviewRecordingStorage
 import ru.ifmo.se.api.application.port.out.LiveCodingSessionCredentials
 import ru.ifmo.se.api.application.port.out.LiveCodingSessionProvider
 import ru.ifmo.se.api.domain.exception.ApplicationNotFoundException
@@ -49,7 +49,7 @@ class InterviewService(
     private val interviewPolicy: InterviewPolicy,
     private val emailService: EmailService,
     private val liveCodingSessionProvider: LiveCodingSessionProvider,
-    private val fileStorage: FileStorage,
+    private val interviewRecordingStorage: InterviewRecordingStorage,
 ) {
     @WriteDataAccess
     @Transactional
@@ -234,7 +234,7 @@ class InterviewService(
         interviewPolicy.checkCanViewRecording(currentPerson, interview, vacancy, team)
 
         val s3key = interview.videoS3key ?: throw InterviewRecordingNotFoundException()
-        return fileStorage.getPresignedUrl(s3key)
+        return interviewRecordingStorage.getPresignedUrl(s3key)
     }
 
     private fun assembleDetails(
