@@ -1,5 +1,5 @@
 --liquibase formatted sql
---changeset itmo-team:06-application-reservation
+--changeset itmo-team:06-application-reservation splitStatements:false
 
 CREATE TABLE application_reservation (
     application_id UUID PRIMARY KEY REFERENCES application(application_id) ON DELETE CASCADE,

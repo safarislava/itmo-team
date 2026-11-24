@@ -4,14 +4,15 @@ import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
+import jakarta.persistence.MapsId
 import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
-import org.hibernate.proxy.HibernateProxy
+import java.util.UUID
 
 @Entity
 @Table(name = "application_score")
 class ApplicationScoreEntity(
-    @Id
+    @MapsId
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "application_id")
     var application: ApplicationEntity,
@@ -21,18 +22,7 @@ class ApplicationScoreEntity(
     var jobExp: Short,
     var hardSkills: Short,
     var workFormat: Short,
-) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other == null) return false
-
-        val thisEffectiveClass = if (this is HibernateProxy) this.hibernateLazyInitializer.persistentClass else this.javaClass
-        val otherEffectiveClass = if (other is HibernateProxy) other.hibernateLazyInitializer.persistentClass else other.javaClass
-        if (thisEffectiveClass != otherEffectiveClass) return false
-
-        other as ApplicationScoreEntity
-        return application.id == other.application.id
-    }
-
-    override fun hashCode(): Int = application.id.hashCode()
+) : BasicEntity() {
+    @Id
+    override var id: UUID = application.id
 }
