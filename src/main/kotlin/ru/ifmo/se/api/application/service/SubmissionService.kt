@@ -7,7 +7,7 @@ import ru.ifmo.se.api.application.annotation.WriteDataAccess
 import ru.ifmo.se.api.application.dto.CreateSubmissionCommand
 import ru.ifmo.se.api.application.dto.SubmissionDetails
 import ru.ifmo.se.api.application.policy.SubmissionPolicy
-import ru.ifmo.se.api.application.port.out.FileStorage
+import ru.ifmo.se.api.application.port.out.SubmissionStorage
 import ru.ifmo.se.api.domain.exception.CandidateNotParticipantException
 import ru.ifmo.se.api.domain.exception.ContestNotFoundException
 import ru.ifmo.se.api.domain.exception.ContestNotRunningException
@@ -25,7 +25,6 @@ import ru.ifmo.se.api.domain.model.SubmissionFilter
 import ru.ifmo.se.api.domain.model.SubmissionId
 import ru.ifmo.se.api.domain.model.SubmissionStatus
 import ru.ifmo.se.api.domain.model.map
-import ru.ifmo.se.api.domain.model.uuidV7
 import ru.ifmo.se.api.domain.repository.ContestRepository
 import ru.ifmo.se.api.domain.repository.ContestTaskRepository
 import ru.ifmo.se.api.domain.repository.LanguageRepository
@@ -43,7 +42,7 @@ class SubmissionService(
     private val languageRepository: LanguageRepository,
     private val personRepository: PersonRepository,
     private val submissionPolicy: SubmissionPolicy,
-    private val fileStorage: FileStorage,
+    private val submissionStorage: SubmissionStorage,
     private val submissionAiScoreService: SubmissionAiScoreService,
 ) {
     @ReadOnlyDataAccess
@@ -105,7 +104,7 @@ class SubmissionService(
         val contestCompanyIds = contestRepository.findCompanyIdsByContestId(submission.contestId)
         submissionPolicy.checkCanView(caller, submission, contestCompanyIds)
 
-        val bytes = fileStorage.load(submission.snapshotS3key)
+        val bytes = submissionStorage.loadSnapshot(submission.snapshotS3key)
         return bytes.toString(Charsets.UTF_8)
     }
 
@@ -151,7 +150,7 @@ class SubmissionService(
             throw SubmissionAttemptsExhaustedException()
         }
 
-        val snapshotKey = fileStorage.store("submission_${uuidV7()}.txt", sourceBytes)
+        val snapshotKey = submissionStorage.storeSnapshot(sourceBytes)
 
         val submission =
             Submission(
