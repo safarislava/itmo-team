@@ -2,7 +2,6 @@ package ru.ifmo.se.api.infrastructure.datasource
 
 import com.zaxxer.hikari.HikariDataSource
 import liquibase.integration.spring.SpringLiquibase
-import org.springframework.beans.factory.ObjectProvider
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.jdbc.DataSourceBuilder
@@ -26,9 +25,9 @@ class DataSourceConfiguration {
     fun dynamicRoutingDataSource(
         @Qualifier("masterDataSource") master: DataSource,
         @Qualifier("slaveDataSource") slave: DataSource,
-        contextProvider: ObjectProvider<DataSourceContext>,
+        context: DataSourceContext,
     ): DynamicRoutingDataSource {
-        val routing = DynamicRoutingDataSource(contextProvider)
+        val routing = DynamicRoutingDataSource(context)
         routing.setTargetDataSources(
             mapOf(
                 DataSourceType.MASTER to master,
