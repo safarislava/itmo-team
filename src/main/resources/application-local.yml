@@ -42,9 +42,9 @@ app:
 
 storage:
   s3:
-    bucket: itmo-resumes
-    endpoint: http://localhost:9000
-    region: us-east-1
-    access-key: minioadmin
-    secret-key: minioadmin
+    bucket: itmo-team-files
+    endpoint: http://localhost:3900
+    region: garage
+    access-key: GK00000000000000000000000000000001
+    secret-key: 0000000000000000000000000000000000000000000000000000000000000001
     path-style-access-enabled: true
