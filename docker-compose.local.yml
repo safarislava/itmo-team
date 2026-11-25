@@ -8,6 +8,7 @@
 # | postgres | localhost:5432                                    | database with pg_cron        |
 # | garage   | localhost:3900 (S3 API), localhost:3902 (web)     | S3 storage for files         |
 # | mailpit  | localhost:1025 (SMTP), localhost:8025 (web UI)    | catches every outgoing email |
+# | redis    | localhost:6379                                    | in-memory data store / cache |
 
 services:
   postgres:
@@ -75,6 +76,19 @@ services:
       - "1025:1025"
       - "8025:8025"
 
+  redis:
+    image: redis:8.8.4-alpine
+    container_name: itmo-team-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - local_redis_data:/data
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
 configs:
   garage_config:
     content: |
@@ -103,3 +117,4 @@ volumes:
   local_pg_data:
   local_garage_meta:
   local_garage_data:
+  local_redis_data:

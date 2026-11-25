@@ -16,6 +16,11 @@ spring:
       password: postgres
       pool-name: HikariPool-Slave
 
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
   mail:
     host: localhost
     port: 1025
