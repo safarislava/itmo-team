@@ -2,6 +2,7 @@ package ru.ifmo.se.api.application.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import ru.ifmo.se.api.application.annotation.ReadOnlyDataAccess
 import ru.ifmo.se.api.application.annotation.WriteDataAccess
 import ru.ifmo.se.api.application.dto.AuthResult
 import ru.ifmo.se.api.application.dto.LoginCommand
@@ -17,13 +18,11 @@ import ru.ifmo.se.api.domain.model.Person
 import ru.ifmo.se.api.domain.model.PersonId
 import ru.ifmo.se.api.domain.model.PersonRole
 import ru.ifmo.se.api.domain.model.RefreshToken
-import ru.ifmo.se.api.domain.model.RefreshTokenId
 import ru.ifmo.se.api.domain.repository.PersonRepository
 import ru.ifmo.se.api.domain.repository.RefreshTokenRepository
 import java.time.Instant
 
 @Service
-@WriteDataAccess
 class AuthService(
     private val personRepository: PersonRepository,
     private val refreshTokenRepository: RefreshTokenRepository,
@@ -33,6 +32,7 @@ class AuthService(
     private val tokenHasher: TokenHasher,
     private val passwordHasher: PasswordHasher,
 ) {
+    @WriteDataAccess
     @Transactional
     fun register(command: RegisterCommand): AuthResult {
         val person =
@@ -51,7 +51,7 @@ class AuthService(
         return issueTokens(savedPerson)
     }
 
-    @Transactional
+    @ReadOnlyDataAccess
     fun login(command: LoginCommand): AuthResult {
         val person =
             personRepository.findByEmail(command.email)
@@ -64,11 +64,11 @@ class AuthService(
         return issueTokens(person)
     }
 
-    @Transactional
+    @ReadOnlyDataAccess
     fun refreshToken(refreshToken: String): AuthResult {
         val hash = tokenHasher.hash(refreshToken)
         val token =
-            refreshTokenRepository.findByTokenHash(hash)
+            refreshTokenRepository.consumeByTokenHash(hash)
                 ?: throw InvalidRefreshTokenException()
 
         if (!token.isValid()) {
@@ -79,11 +79,9 @@ class AuthService(
             personRepository.findById(token.personId)
                 ?: throw InvalidRefreshTokenException()
 
-        refreshTokenRepository.save(token.revoke())
         return issueTokens(person)
     }
 
-    @Transactional
     fun logout(refreshToken: String?) {
         if (refreshToken.isNullOrBlank()) {
             throw InvalidRefreshTokenException()
@@ -91,14 +89,12 @@ class AuthService(
 
         val hash = tokenHasher.hash(refreshToken)
         val token =
-            refreshTokenRepository.findByTokenHash(hash)
+            refreshTokenRepository.consumeByTokenHash(hash)
                 ?: throw InvalidRefreshTokenException()
 
         if (token.revoked) {
             throw InvalidRefreshTokenException()
         }
-
-        refreshTokenRepository.save(token.revoke())
     }
 
     private fun issueTokens(person: Person): AuthResult {
@@ -110,7 +106,6 @@ class AuthService(
 
         val token =
             RefreshToken(
-                id = RefreshTokenId.generate(),
                 personId = person.id,
                 tokenHash = hash,
                 expiresAt = expiresAt,
