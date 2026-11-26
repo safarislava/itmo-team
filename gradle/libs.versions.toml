@@ -18,6 +18,7 @@ spring-boot-starter-mail = { module = "org.springframework.boot:spring-boot-star
 spring-boot-starter-data-redis = { module = "org.springframework.boot:spring-boot-starter-data-redis" }
 spring-boot-starter-cache = { module = "org.springframework.boot:spring-boot-starter-cache" }
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect" }
+jackson-module-kotlin = { module = "tools.jackson.module:jackson-module-kotlin" }
 postgresql = { module = "org.postgresql:postgresql" }
 spring-boot-docker-compose = { module = "org.springframework.boot:spring-boot-docker-compose" }
 
