@@ -1,9 +1,5 @@
 package ru.ifmo.se.api.infrastructure.cache
 
-import java.time.Duration
+import ru.ifmo.se.api.infrastructure.redis.KeyResolver
 
-interface CacheKeyResolver {
-    fun resolveKey(key: Any): String
-
-    fun getTtl(): Duration
-}
+interface CacheKeyResolver : KeyResolver
