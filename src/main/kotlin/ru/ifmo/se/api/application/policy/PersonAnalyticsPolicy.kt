@@ -5,13 +5,13 @@ import org.springframework.stereotype.Component
 import ru.ifmo.se.api.domain.exception.AnalyticsBadRequestException
 import ru.ifmo.se.api.domain.model.Person
 import ru.ifmo.se.api.domain.model.PersonRole
-import java.time.Instant
+import java.time.LocalDate
 
 @Component
 class PersonAnalyticsPolicy {
     fun checkInterval(
-        from: Instant,
-        to: Instant,
+        from: LocalDate,
+        to: LocalDate,
     ) {
         if (!from.isBefore(to)) {
             throw AnalyticsBadRequestException("'from' must be strictly before 'to'.")

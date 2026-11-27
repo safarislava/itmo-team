@@ -16,7 +16,7 @@ import ru.ifmo.se.api.domain.model.PersonRole
 import ru.ifmo.se.api.infrastructure.security.annotation.RequiresRole
 import ru.ifmo.se.api.presentation.dto.response.PersonStatisticsResponse
 import ru.ifmo.se.api.presentation.mapper.AnalyticsResponseMapper
-import java.time.Instant
+import java.time.LocalDate
 import java.util.UUID
 
 @Validated
@@ -31,8 +31,8 @@ class PersonAnalyticsController(
     fun getPersonStatistics(
         @AuthenticationPrincipal currentPerson: Person,
         @PathVariable personId: UUID,
-        @RequestParam from: Instant,
-        @RequestParam to: Instant,
+        @RequestParam from: LocalDate,
+        @RequestParam to: LocalDate,
         @RequestParam(defaultValue = "DAY") granularity: Granularity,
     ): ResponseEntity<PersonStatisticsResponse> {
         val stats =
