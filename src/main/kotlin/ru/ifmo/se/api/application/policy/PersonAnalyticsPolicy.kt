@@ -13,8 +13,8 @@ class PersonAnalyticsPolicy {
         from: LocalDate,
         to: LocalDate,
     ) {
-        if (!from.isBefore(to)) {
-            throw AnalyticsBadRequestException("'from' must be strictly before 'to'.")
+        if (from.isAfter(to)) {
+            throw AnalyticsBadRequestException("'from' must not be after 'to'.")
         }
     }
 

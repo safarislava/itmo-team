@@ -6,25 +6,25 @@ import java.time.LocalDate
 import java.util.UUID
 
 interface JpaCoderReportRepository : JpaRepository<CoderReportEntity, UUID> {
-    fun findByCoderIdAndReportDateGreaterThanEqualAndReportDateLessThanOrderByReportDateAsc(
+    fun findByCoderIdAndReportDateGreaterThanEqualAndReportDateLessThanEqualOrderByReportDateAsc(
         coderId: UUID,
         from: LocalDate,
         to: LocalDate,
     ): List<CoderReportEntity>
 
-    fun findByCoderTeamIdAndReportDateGreaterThanEqualAndReportDateLessThanOrderByReportDateAsc(
+    fun findByCoderTeamIdAndReportDateGreaterThanEqualAndReportDateLessThanEqualOrderByReportDateAsc(
         teamId: UUID,
         from: LocalDate,
         to: LocalDate,
     ): List<CoderReportEntity>
 
-    fun findByCoderCompanyIdAndReportDateGreaterThanEqualAndReportDateLessThanOrderByReportDateAsc(
+    fun findByCoderCompanyIdAndReportDateGreaterThanEqualAndReportDateLessThanEqualOrderByReportDateAsc(
         companyId: UUID,
         from: LocalDate,
         to: LocalDate,
     ): List<CoderReportEntity>
 
-    fun findByReportDateGreaterThanEqualAndReportDateLessThanOrderByReportDateAsc(
+    fun findByReportDateGreaterThanEqualAndReportDateLessThanEqualOrderByReportDateAsc(
         from: LocalDate,
         to: LocalDate,
     ): List<CoderReportEntity>
