@@ -1,5 +1,6 @@
 package ru.ifmo.se.api.application.service
 
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import ru.ifmo.se.api.application.annotation.ReadOnlyDataAccess
@@ -8,6 +9,7 @@ import ru.ifmo.se.api.application.dto.CreateSubmissionCommand
 import ru.ifmo.se.api.application.dto.SubmissionDetails
 import ru.ifmo.se.api.application.policy.SubmissionPolicy
 import ru.ifmo.se.api.application.port.out.SubmissionStorage
+import ru.ifmo.se.api.domain.event.SubmissionCreatedEvent
 import ru.ifmo.se.api.domain.exception.CandidateNotParticipantException
 import ru.ifmo.se.api.domain.exception.ContestNotFoundException
 import ru.ifmo.se.api.domain.exception.ContestNotRunningException
@@ -43,7 +45,7 @@ class SubmissionService(
     private val personRepository: PersonRepository,
     private val submissionPolicy: SubmissionPolicy,
     private val submissionStorage: SubmissionStorage,
-    private val submissionAiScoreService: SubmissionAiScoreService,
+    private val eventPublisher: ApplicationEventPublisher,
 ) {
     @ReadOnlyDataAccess
     fun listSubmissions(
@@ -169,10 +171,12 @@ class SubmissionService(
 
         val saved = submissionRepository.save(submission)
 
-        submissionAiScoreService.checkAndSaveAiScore(
-            submissionId = saved.id,
-            sourceCode = command.sourceCode,
-            languageName = language.name,
+        eventPublisher.publishEvent(
+            SubmissionCreatedEvent(
+                submissionId = saved.id,
+                sourceCode = command.sourceCode,
+                languageName = language.name,
+            ),
         )
 
         return SubmissionDetails(
