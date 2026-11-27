@@ -19,5 +19,6 @@
     <include file="db/changelog/changesets/12-uuid-v7.sql"/>
     <include file="db/changelog/changesets/13-drop-refresh-token.sql"/>
     <include file="db/changelog/changesets/14-coder-report-date.sql"/>
+    <include file="db/changelog/changesets/15-submission-queue-index.sql"/>
 
 </databaseChangeLog>

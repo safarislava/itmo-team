@@ -1,6 +1,7 @@
 package ru.ifmo.se.api.infrastructure.postgres.repository.adapter
 
 import jakarta.persistence.criteria.JoinType
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
@@ -89,4 +90,11 @@ class SubmissionRepositoryImpl(
         contestId: ContestId,
         taskId: TaskId,
     ): Int = repo.countBySenderIdAndContestIdAndTaskId(senderId.value, contestId.value, taskId.value).toInt()
+
+    override fun findQueued(limit: Int): List<SubmissionId> =
+        repo
+            .findIdsByStatus(
+                status = SubmissionStatus.QUEUED,
+                pageable = PageRequest.of(0, limit),
+            ).map(::SubmissionId)
 }

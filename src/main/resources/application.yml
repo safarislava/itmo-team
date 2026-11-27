@@ -37,4 +37,11 @@ app:
   github:
     token: "${GITHUB_TOKEN}"
     base-url: "https://api.github.com"
+  submission-queue:
+    consumer-group: "runners-group"
+    max-len: 5000
+    reconcile:
+      enabled: true
+      delay-ms: 60000
+      batch-size: 500
 

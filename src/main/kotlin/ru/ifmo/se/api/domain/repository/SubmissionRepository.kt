@@ -29,4 +29,6 @@ interface SubmissionRepository {
         contestId: ContestId,
         taskId: TaskId,
     ): Int
+
+    fun findQueued(limit: Int): List<SubmissionId>
 }
