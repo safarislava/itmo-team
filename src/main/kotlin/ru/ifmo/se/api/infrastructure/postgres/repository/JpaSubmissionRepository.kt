@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
+import ru.ifmo.se.api.domain.model.SubmissionStatus
 import ru.ifmo.se.api.infrastructure.postgres.entity.SubmissionEntity
 import java.util.Optional
 import java.util.UUID
@@ -37,4 +38,17 @@ interface JpaSubmissionRepository :
         @Param("id") id: UUID,
         @Param("aiScore") aiScore: Short,
     )
+
+    @Query(
+        """
+        SELECT s.id
+        FROM SubmissionEntity s
+        WHERE s.status = :status
+        ORDER BY s.submittedAt ASC
+        """,
+    )
+    fun findIdsByStatus(
+        @Param("status") status: SubmissionStatus,
+        pageable: Pageable,
+    ): List<UUID>
 }
