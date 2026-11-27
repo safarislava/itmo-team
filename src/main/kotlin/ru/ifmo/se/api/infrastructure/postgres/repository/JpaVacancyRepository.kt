@@ -65,13 +65,13 @@ interface JpaVacancyRepository :
 
     fun findAllByContestsId(contestId: UUID): List<VacancyEntity>
 
-    fun countByTeamIdAndStatusAndCreatedAtLessThanEqual(
+    fun countByTeamIdAndStatusAndCreatedAtLessThan(
         teamId: UUID,
         status: VacancyStatus,
         to: Instant,
     ): Long
 
-    fun countByTeamCompanyIdAndStatusAndCreatedAtLessThanEqual(
+    fun countByTeamCompanyIdAndStatusAndCreatedAtLessThan(
         companyId: UUID,
         status: VacancyStatus,
         to: Instant,
@@ -85,6 +85,16 @@ interface JpaVacancyRepository :
 
     fun countByTeamCompanyIdAndClosedAtGreaterThanEqualAndClosedAtLessThan(
         companyId: UUID,
+        from: Instant,
+        to: Instant,
+    ): Long
+
+    fun countByStatusAndCreatedAtLessThan(
+        status: VacancyStatus,
+        to: Instant,
+    ): Long
+
+    fun countByClosedAtGreaterThanEqualAndClosedAtLessThan(
         from: Instant,
         to: Instant,
     ): Long

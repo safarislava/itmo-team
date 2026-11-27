@@ -1,5 +1,6 @@
 package ru.ifmo.se.api.infrastructure.postgres.repository.adapter
 
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Repository
 import ru.ifmo.se.api.domain.model.ApplicationStatus
 import ru.ifmo.se.api.domain.model.CompanyId
@@ -10,41 +11,54 @@ import ru.ifmo.se.api.domain.model.VacancyStatus
 import ru.ifmo.se.api.domain.repository.HiringAnalyticsRepository
 import ru.ifmo.se.api.infrastructure.postgres.repository.JpaApplicationRepository
 import ru.ifmo.se.api.infrastructure.postgres.repository.JpaVacancyRepository
-import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneId
 
 @Repository
 class HiringAnalyticsRepositoryImpl(
     private val jpaVacancyRepository: JpaVacancyRepository,
     private val jpaApplicationRepository: JpaApplicationRepository,
 ) : HiringAnalyticsRepository {
+    @Cacheable(
+        value = ["hiring_statistics"],
+        key = "(#companyId ?: 'all') + ':' + (#teamId ?: 'all') + ':' + #from + ':' + #to",
+        condition = "#to.isBefore(T(java.time.LocalDate).now(T(java.time.ZoneId).of('Europe/Moscow')))",
+    )
     override fun getHiringStatistics(
-        from: Instant,
-        to: Instant,
+        from: LocalDate,
+        to: LocalDate,
         companyId: CompanyId?,
         teamId: TeamId?,
     ): HiringStatistics {
+        val fromInstant = from.atStartOfDay(ZONE_MOSCOW).toInstant()
+        val toExclusiveInstant = to.plusDays(1).atStartOfDay(ZONE_MOSCOW).toInstant()
+
         val openVacancies =
             when {
                 teamId != null -> {
                     jpaVacancyRepository
-                        .countByTeamIdAndStatusAndCreatedAtLessThanEqual(
+                        .countByTeamIdAndStatusAndCreatedAtLessThan(
                             teamId.value,
                             VacancyStatus.OPEN,
-                            to,
+                            toExclusiveInstant,
                         ).toInt()
                 }
 
                 companyId != null -> {
                     jpaVacancyRepository
-                        .countByTeamCompanyIdAndStatusAndCreatedAtLessThanEqual(
+                        .countByTeamCompanyIdAndStatusAndCreatedAtLessThan(
                             companyId.value,
                             VacancyStatus.OPEN,
-                            to,
+                            toExclusiveInstant,
                         ).toInt()
                 }
 
                 else -> {
-                    0
+                    jpaVacancyRepository
+                        .countByStatusAndCreatedAtLessThan(
+                            VacancyStatus.OPEN,
+                            toExclusiveInstant,
+                        ).toInt()
                 }
             }
 
@@ -54,8 +68,8 @@ class HiringAnalyticsRepositoryImpl(
                     jpaVacancyRepository
                         .countByTeamIdAndClosedAtGreaterThanEqualAndClosedAtLessThan(
                             teamId.value,
-                            from,
-                            to,
+                            fromInstant,
+                            toExclusiveInstant,
                         ).toInt()
                 }
 
@@ -63,13 +77,17 @@ class HiringAnalyticsRepositoryImpl(
                     jpaVacancyRepository
                         .countByTeamCompanyIdAndClosedAtGreaterThanEqualAndClosedAtLessThan(
                             companyId.value,
-                            from,
-                            to,
+                            fromInstant,
+                            toExclusiveInstant,
                         ).toInt()
                 }
 
                 else -> {
-                    0
+                    jpaVacancyRepository
+                        .countByClosedAtGreaterThanEqualAndClosedAtLessThan(
+                            fromInstant,
+                            toExclusiveInstant,
+                        ).toInt()
                 }
             }
 
@@ -77,7 +95,7 @@ class HiringAnalyticsRepositoryImpl(
             when {
                 teamId != null -> jpaApplicationRepository.findAllByVacancyTeamId(teamId.value)
                 companyId != null -> jpaApplicationRepository.findAllByVacancyTeamCompanyId(companyId.value)
-                else -> emptyList()
+                else -> jpaApplicationRepository.findAll()
             }
 
         val totalApplications = applications.size
@@ -94,5 +112,9 @@ class HiringAnalyticsRepositoryImpl(
                     byStatus = byStatus,
                 ),
         )
+    }
+
+    companion object {
+        private val ZONE_MOSCOW: ZoneId = ZoneId.of("Europe/Moscow")
     }
 }

@@ -6,13 +6,13 @@ import ru.ifmo.se.api.domain.exception.AnalyticsBadRequestException
 import ru.ifmo.se.api.domain.model.Person
 import ru.ifmo.se.api.domain.model.PersonRole
 import ru.ifmo.se.api.domain.model.Team
-import java.time.Instant
+import java.time.LocalDate
 
 @Component
 class HiringAnalyticsPolicy {
     fun checkInterval(
-        from: Instant,
-        to: Instant,
+        from: LocalDate,
+        to: LocalDate,
     ) {
         if (!from.isBefore(to)) {
             throw AnalyticsBadRequestException("'from' must be strictly before 'to'.")

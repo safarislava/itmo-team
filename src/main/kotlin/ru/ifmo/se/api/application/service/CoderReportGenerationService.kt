@@ -12,7 +12,6 @@ import ru.ifmo.se.api.domain.repository.CoderReportRepository
 import ru.ifmo.se.api.domain.repository.PersonRepository
 import java.time.LocalDate
 import java.time.ZoneId
-import java.time.ZoneOffset
 
 @Service
 @WriteDataAccess
@@ -22,10 +21,8 @@ class CoderReportGenerationService(
     private val gitHubActivityProvider: GitHubActivityProvider,
 ) {
     @Transactional
-    fun generateDailyReports(date: LocalDate): List<CoderReport> {
-        val reportDate = date.atStartOfDay(ZoneOffset.UTC).toInstant()
-
-        return personRepository.findAllByRole(PersonRole.DEVELOPER).map { dev ->
+    fun generateDailyReports(date: LocalDate): List<CoderReport> =
+        personRepository.findAllByRole(PersonRole.DEVELOPER).map { dev ->
             val metrics =
                 dev.githubUsername?.takeIf { it.isNotBlank() }?.let { username ->
                     runCatching {
@@ -40,11 +37,10 @@ class CoderReportGenerationService(
                     id = CoderReportId.generate(),
                     coderId = dev.id,
                     metrics = metrics,
-                    reportDate = reportDate,
+                    reportDate = date,
                 )
             coderReportRepository.save(report)
         }
-    }
 
     companion object {
         val ZONE_MOSCOW: ZoneId = ZoneId.of("Europe/Moscow")

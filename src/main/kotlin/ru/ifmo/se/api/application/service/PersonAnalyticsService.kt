@@ -15,9 +15,7 @@ import ru.ifmo.se.api.domain.model.ProductivityPoint
 import ru.ifmo.se.api.domain.repository.CoderReportRepository
 import ru.ifmo.se.api.domain.repository.PersonRepository
 import java.time.DayOfWeek
-import java.time.Instant
 import java.time.LocalDate
-import java.time.ZoneOffset
 import java.time.temporal.TemporalAdjusters
 
 @Service
@@ -31,8 +29,8 @@ class PersonAnalyticsService(
     fun getPersonStatistics(
         caller: Person,
         personId: PersonId,
-        from: Instant,
-        to: Instant,
+        from: LocalDate,
+        to: LocalDate,
         granularity: Granularity,
     ): PersonStatistics {
         personAnalyticsPolicy.checkInterval(from, to)
@@ -64,7 +62,7 @@ class PersonAnalyticsService(
             Granularity.DAY -> {
                 reports.map { report ->
                     ProductivityPoint(
-                        periodStart = report.reportDate.atZone(ZoneOffset.UTC).toLocalDate(),
+                        periodStart = report.reportDate,
                         metrics = report.metrics,
                     )
                 }
@@ -83,14 +81,12 @@ class PersonAnalyticsService(
         }
 
     private fun toBucketDate(
-        date: Instant,
+        date: LocalDate,
         granularity: Granularity,
-    ): LocalDate {
-        val localDate = date.atZone(ZoneOffset.UTC).toLocalDate()
-        return when (granularity) {
-            Granularity.DAY -> localDate
-            Granularity.WEEK -> localDate.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
-            Granularity.MONTH -> localDate.withDayOfMonth(1)
+    ): LocalDate =
+        when (granularity) {
+            Granularity.DAY -> date
+            Granularity.WEEK -> date.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
+            Granularity.MONTH -> date.withDayOfMonth(1)
         }
-    }
 }

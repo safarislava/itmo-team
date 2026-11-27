@@ -18,6 +18,7 @@ repositories {
 dependencies {
     implementation(libs.bundles.spring.boot.starters)
     implementation(libs.kotlin.reflect)
+    implementation(libs.jackson.module.kotlin)
     implementation(libs.jjwt.api)
     runtimeOnly(libs.bundles.jjwt.runtime)
     implementation(libs.aws.s3)

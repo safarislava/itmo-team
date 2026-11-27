@@ -7,7 +7,7 @@ import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
-import java.time.Instant
+import java.time.LocalDate
 import java.util.UUID
 
 @Entity
@@ -23,5 +23,5 @@ class CoderReportEntity(
     var countClosedPr: Int,
     var countReviewedPr: Int,
     var countCommits: Int,
-    var reportDate: Instant,
+    var reportDate: LocalDate,
 ) : BasicEntity()

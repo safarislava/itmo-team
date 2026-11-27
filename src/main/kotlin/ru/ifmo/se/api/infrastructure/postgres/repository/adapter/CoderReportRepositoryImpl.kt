@@ -1,5 +1,6 @@
 package ru.ifmo.se.api.infrastructure.postgres.repository.adapter
 
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Repository
 import ru.ifmo.se.api.domain.model.CoderReport
 import ru.ifmo.se.api.domain.model.CoderReportId
@@ -9,7 +10,7 @@ import ru.ifmo.se.api.domain.model.TeamId
 import ru.ifmo.se.api.domain.repository.CoderReportRepository
 import ru.ifmo.se.api.infrastructure.postgres.mapper.CoderReportEntityMapper
 import ru.ifmo.se.api.infrastructure.postgres.repository.JpaCoderReportRepository
-import java.time.Instant
+import java.time.LocalDate
 import kotlin.jvm.optionals.getOrNull
 
 @Repository
@@ -25,48 +26,18 @@ class CoderReportRepositoryImpl(
         return coderReportEntityMapper.toDomain(jpaCoderReportRepository.save(entity))
     }
 
+    @Cacheable(
+        value = ["coder_reports"],
+        key = "#coderId + ':' + #from + ':' + #to",
+    )
     override fun findByCoderIdAndReportDateBetween(
         coderId: PersonId,
-        from: Instant,
-        to: Instant,
+        from: LocalDate,
+        to: LocalDate,
     ): List<CoderReport> =
         jpaCoderReportRepository
-            .findByCoderIdAndReportDateGreaterThanEqualAndReportDateLessThanOrderByReportDateAsc(
+            .findByCoderIdAndReportDateGreaterThanEqualAndReportDateLessThanEqualOrderByReportDateAsc(
                 coderId.value,
-                from,
-                to,
-            ).map(coderReportEntityMapper::toDomain)
-
-    override fun findByTeamIdAndReportDateBetween(
-        teamId: TeamId,
-        from: Instant,
-        to: Instant,
-    ): List<CoderReport> =
-        jpaCoderReportRepository
-            .findByCoderTeamIdAndReportDateGreaterThanEqualAndReportDateLessThanOrderByReportDateAsc(
-                teamId.value,
-                from,
-                to,
-            ).map(coderReportEntityMapper::toDomain)
-
-    override fun findByCompanyIdAndReportDateBetween(
-        companyId: CompanyId,
-        from: Instant,
-        to: Instant,
-    ): List<CoderReport> =
-        jpaCoderReportRepository
-            .findByCoderCompanyIdAndReportDateGreaterThanEqualAndReportDateLessThanOrderByReportDateAsc(
-                companyId.value,
-                from,
-                to,
-            ).map(coderReportEntityMapper::toDomain)
-
-    override fun findAllByReportDateBetween(
-        from: Instant,
-        to: Instant,
-    ): List<CoderReport> =
-        jpaCoderReportRepository
-            .findByReportDateGreaterThanEqualAndReportDateLessThanOrderByReportDateAsc(
                 from,
                 to,
             ).map(coderReportEntityMapper::toDomain)
