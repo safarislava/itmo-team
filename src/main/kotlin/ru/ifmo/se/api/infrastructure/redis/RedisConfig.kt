@@ -1,5 +1,6 @@
 package ru.ifmo.se.api.infrastructure.redis
 
+import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.redis.connection.RedisConnectionFactory
@@ -10,6 +11,7 @@ import ru.ifmo.se.api.infrastructure.redis.entity.RefreshTokenEntity
 import tools.jackson.databind.ObjectMapper
 
 @Configuration
+@EnableConfigurationProperties(SubmissionQueueProperties::class)
 class RedisConfig {
     @Bean
     fun refreshTokenRedisTemplate(
