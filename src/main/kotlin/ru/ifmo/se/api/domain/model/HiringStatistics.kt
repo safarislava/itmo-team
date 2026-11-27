@@ -1,6 +1,6 @@
 package ru.ifmo.se.api.domain.model
 
-import java.time.Instant
+import java.time.LocalDate
 
 data class HiringApplicationsMetrics(
     val total: Int,
@@ -8,8 +8,8 @@ data class HiringApplicationsMetrics(
 )
 
 data class HiringStatistics(
-    val from: Instant,
-    val to: Instant,
+    val from: LocalDate,
+    val to: LocalDate,
     val openVacancies: Int,
     val closedVacancies: Int,
     val applications: HiringApplicationsMetrics,

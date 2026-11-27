@@ -14,7 +14,8 @@ import ru.ifmo.se.api.domain.model.TeamId
 import ru.ifmo.se.api.infrastructure.security.annotation.RequiresRole
 import ru.ifmo.se.api.presentation.dto.response.HiringStatisticsResponse
 import ru.ifmo.se.api.presentation.mapper.AnalyticsResponseMapper
-import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneId
 import java.util.UUID
 
 @Validated
@@ -28,17 +29,28 @@ class HiringAnalyticsController(
     @RequiresRole(PersonRole.MANAGER)
     fun getHiringStatistics(
         @AuthenticationPrincipal currentPerson: Person,
-        @RequestParam from: Instant,
-        @RequestParam to: Instant,
+        @RequestParam from: LocalDate,
+        @RequestParam to: LocalDate,
         @RequestParam(required = false) teamId: UUID?,
     ): ResponseEntity<HiringStatisticsResponse> {
+        val tomorrow = LocalDate.now(ZONE_MOSCOW).plusDays(1)
+        val (effectiveFrom, effectiveTo) =
+            if (!from.isBefore(to)) {
+                from to to
+            } else {
+                minOf(from, tomorrow) to minOf(to, tomorrow)
+            }
         val stats =
             hiringAnalyticsService.getHiringStatistics(
                 caller = currentPerson,
-                from = from,
-                to = to,
+                from = effectiveFrom,
+                to = effectiveTo,
                 teamId = teamId?.let { TeamId(it) },
             )
         return ResponseEntity.ok(analyticsResponseMapper.toResponse(stats))
+    }
+
+    companion object {
+        private val ZONE_MOSCOW: ZoneId = ZoneId.of("Europe/Moscow")
     }
 }

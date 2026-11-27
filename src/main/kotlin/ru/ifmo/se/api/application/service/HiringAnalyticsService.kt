@@ -11,7 +11,7 @@ import ru.ifmo.se.api.domain.model.TeamId
 import ru.ifmo.se.api.domain.repository.CompanyRepository
 import ru.ifmo.se.api.domain.repository.HiringAnalyticsRepository
 import ru.ifmo.se.api.domain.repository.TeamRepository
-import java.time.Instant
+import java.time.LocalDate
 
 @Service
 @Transactional(readOnly = true)
@@ -24,8 +24,8 @@ class HiringAnalyticsService(
 ) {
     fun getHiringStatistics(
         caller: Person,
-        from: Instant,
-        to: Instant,
+        from: LocalDate,
+        to: LocalDate,
         teamId: TeamId?,
     ): HiringStatistics {
         hiringAnalyticsPolicy.checkInterval(from, to)
