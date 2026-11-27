@@ -11,21 +11,4 @@ interface JpaCoderReportRepository : JpaRepository<CoderReportEntity, UUID> {
         from: LocalDate,
         to: LocalDate,
     ): List<CoderReportEntity>
-
-    fun findByCoderTeamIdAndReportDateGreaterThanEqualAndReportDateLessThanEqualOrderByReportDateAsc(
-        teamId: UUID,
-        from: LocalDate,
-        to: LocalDate,
-    ): List<CoderReportEntity>
-
-    fun findByCoderCompanyIdAndReportDateGreaterThanEqualAndReportDateLessThanEqualOrderByReportDateAsc(
-        companyId: UUID,
-        from: LocalDate,
-        to: LocalDate,
-    ): List<CoderReportEntity>
-
-    fun findByReportDateGreaterThanEqualAndReportDateLessThanEqualOrderByReportDateAsc(
-        from: LocalDate,
-        to: LocalDate,
-    ): List<CoderReportEntity>
 }

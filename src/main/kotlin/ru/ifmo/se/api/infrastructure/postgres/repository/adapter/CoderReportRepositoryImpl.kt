@@ -41,38 +41,4 @@ class CoderReportRepositoryImpl(
                 from,
                 to,
             ).map(coderReportEntityMapper::toDomain)
-
-    override fun findByTeamIdAndReportDateBetween(
-        teamId: TeamId,
-        from: LocalDate,
-        to: LocalDate,
-    ): List<CoderReport> =
-        jpaCoderReportRepository
-            .findByCoderTeamIdAndReportDateGreaterThanEqualAndReportDateLessThanEqualOrderByReportDateAsc(
-                teamId.value,
-                from,
-                to,
-            ).map(coderReportEntityMapper::toDomain)
-
-    override fun findByCompanyIdAndReportDateBetween(
-        companyId: CompanyId,
-        from: LocalDate,
-        to: LocalDate,
-    ): List<CoderReport> =
-        jpaCoderReportRepository
-            .findByCoderCompanyIdAndReportDateGreaterThanEqualAndReportDateLessThanEqualOrderByReportDateAsc(
-                companyId.value,
-                from,
-                to,
-            ).map(coderReportEntityMapper::toDomain)
-
-    override fun findAllByReportDateBetween(
-        from: LocalDate,
-        to: LocalDate,
-    ): List<CoderReport> =
-        jpaCoderReportRepository
-            .findByReportDateGreaterThanEqualAndReportDateLessThanEqualOrderByReportDateAsc(
-                from,
-                to,
-            ).map(coderReportEntityMapper::toDomain)
 }

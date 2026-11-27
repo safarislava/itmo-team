@@ -17,21 +17,4 @@ interface CoderReportRepository {
         from: LocalDate,
         to: LocalDate,
     ): List<CoderReport>
-
-    fun findByTeamIdAndReportDateBetween(
-        teamId: TeamId,
-        from: LocalDate,
-        to: LocalDate,
-    ): List<CoderReport>
-
-    fun findByCompanyIdAndReportDateBetween(
-        companyId: CompanyId,
-        from: LocalDate,
-        to: LocalDate,
-    ): List<CoderReport>
-
-    fun findAllByReportDateBetween(
-        from: LocalDate,
-        to: LocalDate,
-    ): List<CoderReport>
 }
