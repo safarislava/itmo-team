@@ -26,6 +26,7 @@ import ru.ifmo.se.api.infrastructure.postgres.extension.toPageRequest
 import ru.ifmo.se.api.infrastructure.postgres.extension.toPageResult
 import ru.ifmo.se.api.infrastructure.postgres.mapper.SubmissionEntityMapper
 import ru.ifmo.se.api.infrastructure.postgres.repository.JpaSubmissionRepository
+import java.time.Instant
 import java.util.UUID
 
 @Repository
@@ -93,8 +94,8 @@ class SubmissionRepositoryImpl(
 
     override fun findQueued(limit: Int): List<SubmissionId> =
         repo
-            .findIdsByStatus(
-                status = SubmissionStatus.QUEUED,
+            .findPendingQueueIds(
+                now = Instant.now(),
                 pageable = PageRequest.of(0, limit),
             ).map(::SubmissionId)
 }

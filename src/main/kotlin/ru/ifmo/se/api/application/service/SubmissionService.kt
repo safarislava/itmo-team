@@ -166,6 +166,9 @@ class SubmissionService(
                 attempt = attemptsCount + 1,
                 aiScore = null,
                 submittedAt = now,
+                leaseToken = null,
+                leaseUntil = null,
+                retryCount = 0,
                 response = null,
             )
 

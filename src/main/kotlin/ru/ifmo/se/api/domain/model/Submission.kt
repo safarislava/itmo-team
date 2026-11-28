@@ -1,6 +1,7 @@
 package ru.ifmo.se.api.domain.model
 
 import java.time.Instant
+import java.util.UUID
 
 data class Submission(
     val id: SubmissionId,
@@ -13,5 +14,8 @@ data class Submission(
     val attempt: Int,
     val aiScore: Int?,
     val submittedAt: Instant,
+    val leaseToken: UUID?,
+    val leaseUntil: Instant?,
+    val retryCount: Int,
     val response: SubmissionResponse?,
 )
