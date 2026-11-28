@@ -9,8 +9,8 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
-import ru.ifmo.se.api.domain.model.SubmissionStatus
 import ru.ifmo.se.api.infrastructure.postgres.entity.SubmissionEntity
+import java.time.Instant
 import java.util.Optional
 import java.util.UUID
 
@@ -43,12 +43,16 @@ interface JpaSubmissionRepository :
         """
         SELECT s.id
         FROM SubmissionEntity s
-        WHERE s.status = :status
+        WHERE s.status = ru.ifmo.se.api.domain.model.SubmissionStatus.QUEUED
+           OR (
+               s.status = ru.ifmo.se.api.domain.model.SubmissionStatus.RUNNING
+               AND s.leaseUntil < :now
+           )
         ORDER BY s.submittedAt ASC
         """,
     )
-    fun findIdsByStatus(
-        @Param("status") status: SubmissionStatus,
+    fun findPendingQueueIds(
+        @Param("now") now: Instant,
         pageable: Pageable,
     ): List<UUID>
 }
